@@ -97,7 +97,7 @@ export default {
       this.open = false
     }
   },
-  async created() {
+  created() {
     if (
       this.whatsNewModalVersion !== this.appVersion ||
       process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS

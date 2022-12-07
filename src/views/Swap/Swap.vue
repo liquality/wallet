@@ -462,6 +462,8 @@
         :exclude-asset="assetSelection === 'to' ? asset : toAsset"
         :asset-selection="assetSelection"
         @asset-selected="assetChanged"
+        :account="account"
+        :to-account="toAccount"
       />
     </div>
     <!-- Swap types -->
@@ -536,10 +538,10 @@ import ArrowDown from '@/assets/icons/arrow-down.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
-import Accounts from './Accounts'
 import QuotesModal from './QuotesModal'
 import SwapProvidersInfoModal from './SwapProvidersInfoModal'
 import SwapInfo from './SwapInfo'
+import Accounts from './Accounts'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'

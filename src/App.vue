@@ -1,9 +1,13 @@
 <template>
   <div id="app">
     <template v-if="brokerReady && localesLoaded">
-      <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
-      <router-view />
-      <GlobalModals v-if="unlockedAt && termsAcceptedAt" />
+      <template v-if="unlockedAt && termsAcceptedAt">
+        <Head :show-dapp-connections="showDappConnections" />
+        <GlobalModals />
+      </template>
+      <transition name="fade" mode="out-in">
+        <router-view />
+      </transition>
     </template>
     <div class="login-wrapper spinner-container" v-else>
       <SpinnerIcon class="btn-loading" />
@@ -14,12 +18,11 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Head from '@/components/Head.vue'
-import GlobalModals from '@/components/GlobalModals.vue'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 export default {
   components: {
     Head,
-    GlobalModals,
+    GlobalModals: () => import('@/components/GlobalModals.vue'),
     SpinnerIcon
   },
   data() {
@@ -50,8 +53,8 @@ export default {
     ...mapActions(['initializeAnalytics']),
     ...mapActions('app', ['setLocalePreference', 'getBrowserLocale', 'setWhatsNewModalContent'])
   },
-  async created() {
-    await this.initializeAnalytics()
+  async mounted() {
+    this.initializeAnalytics()
     if (this.locale) {
       await this.changeLocale(this.locale)
     } else {
@@ -61,21 +64,17 @@ export default {
         : process.env.VUE_APP_DEFAULT_LOCALE
       await this.changeLocale(_locale)
       // store the locale in state
-      await this.setLocalePreference({ locale: this.currentLocale })
+      await this.setLocalePreference({ locale: _locale })
     }
+
     if (
       this.whatsNewModalVersion !== this.appVersion ||
       process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
     ) {
       const content = await import(`@/locales/${this.currentLocale}/whats_new.json`)
-      await this.setWhatsNewModalContent({ content: content.default })
+      this.setWhatsNewModalContent({ content: content.default })
     }
     this.localesLoaded = true
-  },
-  watch: {
-    localeKey(newVal, oldVal) {
-      console.log('localeKey', newVal, oldVal)
-    }
   }
 }
 </script>
