@@ -1,29 +1,28 @@
 <template>
-  <Lazy id="app">
+  <div id="app">
     <template v-if="brokerReady && localesLoaded">
-      <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
-      <Lazy>
+      <template v-if="unlockedAt && termsAcceptedAt">
+        <Head :show-dapp-connections="showDappConnections" />
+        <GlobalModals />
+      </template>
+      <transition name="fade" mode="out-in">
         <router-view />
-      </Lazy>
-      <GlobalModals v-if="unlockedAt && termsAcceptedAt" />
+      </transition>
     </template>
     <div class="login-wrapper spinner-container" v-else>
       <SpinnerIcon class="btn-loading" />
     </div>
-  </Lazy>
+  </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 import Head from '@/components/Head.vue'
-import Lazy from '@/components/Lazy.vue'
-import GlobalModals from '@/components/GlobalModals.vue'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 export default {
   components: {
-    Lazy,
     Head,
-    GlobalModals,
+    GlobalModals: () => import('@/components/GlobalModals.vue'),
     SpinnerIcon
   },
   data() {
@@ -54,7 +53,7 @@ export default {
     ...mapActions(['initializeAnalytics']),
     ...mapActions('app', ['setLocalePreference', 'getBrowserLocale', 'setWhatsNewModalContent'])
   },
-  async created() {
+  async mounted() {
     this.initializeAnalytics()
     if (this.locale) {
       await this.changeLocale(this.locale)

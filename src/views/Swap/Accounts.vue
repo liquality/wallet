@@ -35,39 +35,38 @@ import { isEvmChain } from '@liquality/cryptoassets'
 
 export default {
   computed: {
-    props: {
-      account: Object,
-      toAccount: Object,
-      assetSelection: String,
-      excludeAsset: String
-    },
     ...mapState(['activeNetwork']),
     ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
     accounts() {
-      return (this.assetSelection === 'from' ? this.accountsWithBalance : this.accountsData).map(
-        (acc) => {
+      return (this.assetSelection === 'from' ? this.accountsWithBalance : this.accountsData)
+        .filter((acc) => {
+          if (isEvmChain(this.activeNetwork, acc.chain)) {
+            const _account = this.assetSelection === 'to' ? this.account : this.toAccount
+            if (_account) {
+              return _account.addresses[0] === acc.addresses[0] && acc.assets?.length > 0
+            }
+          }
+          return acc.assets?.length > 0
+        })
+        .map((acc) => {
           const assets = this.chainAssets[acc.chain].filter((asset) => asset !== this.excludeAsset)
           return {
             ...acc,
             assets
-          }.filter((acc) => {
-            if (isEvmChain(this.activeNetwork, acc.chain)) {
-              const _account = this.assetSelection === 'from' ? this.account : this.toAccount
-              if (_account) {
-                return _account.addresses[0] === acc.addresses[0] && acc.assets?.length > 0
-              }
-            }
-            return acc.assets?.length > 0
-          })
-        }
-      )
+          }
+        })
     }
   },
   components: {
     WalletAccounts,
     SearchIcon
   },
-  props: ['excludeAsset', 'assetSelection'],
+  props: {
+    account: Object,
+    toAccount: Object,
+    assetSelection: String,
+    excludeAsset: String
+  },
   data() {
     return {
       search: ''

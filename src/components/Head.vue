@@ -1,5 +1,5 @@
 <template>
-  <Lazy class="head">
+  <div class="head">
     <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo">
       <LogoIcon />
     </router-link>
@@ -29,7 +29,7 @@
       class="head_connection-drawer"
       v-click-away="hideConnectionDrawer"
     />
-  </Lazy>
+  </div>
 </template>
 
 <script>
@@ -42,14 +42,12 @@ import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ConnectionDisconnected from '@/assets/icons/connection_disconnected.svg'
 import ConnectionConnected from '@/assets/icons/connection_connected.svg'
 import ConnectionDrawer from '@/components/ConnectionDrawer.vue'
-import Lazy from '@/components/Lazy.vue'
 
 export default {
   directives: {
     clickAway
   },
   components: {
-    Lazy,
     ChevronUpIcon,
     ChevronDownIcon,
     LogoIcon,
@@ -82,6 +80,7 @@ export default {
   },
   methods: {
     ...mapActions(['changeActiveNetwork']),
+    ...mapActions('app', ['settingsModalOpen']),
     toggleShowNetworks() {
       this.showNetworks = !this.showNetworks
       if (this.showNetworks) {
@@ -96,19 +95,20 @@ export default {
       if (this.showConnectionDrawer) {
         this.showNetworks = false
       }
+      this.settingsModalOpen(false)
     },
     hideConnectionDrawer() {
       this.showConnectionDrawer = false
     },
-    async switchNetwork(network) {
-      await this.changeActiveNetwork({ network })
+    switchNetwork(network) {
+      this.changeActiveNetwork({ network })
       if (this.$route.name !== 'WalletAssets') {
-        await this.$router.replace({ name: 'WalletAssets' })
+        this.$router.replace({ name: 'WalletAssets' })
       }
       this.showNetworks = false
     }
   },
-  created() {
+  mounted() {
     if (this.showDappConnections) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs.length > 0) {

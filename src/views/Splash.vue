@@ -6,7 +6,7 @@
     <div class="splash_tagline">
       <NewWalletText class="mt-4" />
     </div>
-    <div class="footer-container">
+    <div class="footer-container" v-if="showFooter">
       <router-link :to="{ path: '/onboarding/home', query: { isImport: true } }"
         ><p class="text-center" id="import_with_seed_phrase_option">
           {{ $t('pages.splash.importWithSeedPhrase') }}
@@ -19,7 +19,7 @@
           </button></router-link
         >
       </p>
-      <p v-if="!keyUpdatedAt">
+      <p v-else>
         <router-link
           :to="{
             path: termsAcceptedAt ? '/onboarding/setup' : '/onboarding/home',
@@ -45,11 +45,20 @@ export default {
     NewWalletText
   },
   computed: mapState(['keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
-  async created() {
+  data() {
+    return {
+      showFooter: false
+    }
+  },
+  mounted() {
     if (this.unlockedAt) {
       this.$router.replace('/wallet')
     } else if (this.keyUpdatedAt) {
       this.$router.replace('/open')
+    } else {
+      this.$nextTick(() => {
+        this.showFooter = true
+      })
     }
   }
 }

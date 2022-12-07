@@ -1,5 +1,5 @@
 <template>
-  <Lazy>
+  <div>
     <div class="navbar">
       <router-link
         v-if="showBack"
@@ -61,7 +61,7 @@
         </li>
       </ul>
     </div>
-  </Lazy>
+  </div>
 </template>
 
 <script>
@@ -79,14 +79,12 @@ import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 import KeyIcon from '@/assets/icons/key.svg'
 import { ChainId } from '@liquality/cryptoassets'
 import { version as walletVersion } from '../../package.json'
-import Lazy from '@/components/Lazy.vue'
 
 export default {
   directives: {
     clickAway
   },
   components: {
-    Lazy,
     ChevronLeftIcon,
     HamburgerIcon,
     LockIcon,
@@ -115,6 +113,7 @@ export default {
   },
   computed: {
     ...mapState(['experiments', 'activeNetwork']),
+    ...mapGetters('app', ['isSettingsModalOpen']),
     ...mapGetters(['accountItem']),
     account() {
       if (this.$route.params.accountId) {

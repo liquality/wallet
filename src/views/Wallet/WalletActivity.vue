@@ -12,17 +12,14 @@
 </template>
 
 <script>
-import ActivityFilter from '@/components/ActivityFilter'
-import TransactionList from '@/components/TransactionList'
 import { mapGetters, mapState } from 'vuex'
-import EmptyActivity from '@/components/EmptyActivity'
 import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 
 export default {
   components: {
-    ActivityFilter,
-    TransactionList,
-    EmptyActivity
+    ActivityFilter: () => import('@/components/ActivityFilter'),
+    TransactionList: () => import('@/components/TransactionList'),
+    EmptyActivity: () => import('@/components/EmptyActivity')
   },
   data() {
     return {

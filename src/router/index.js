@@ -74,22 +74,22 @@ const routes = [
   {
     path: '/wallet',
     name: 'Wallet',
-    component: () => import('@/views/Wallet/Wallet.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/Wallet.vue'),
     meta: { protect: true },
     children: [
       {
         path: 'assets',
-        component: () => import('@/views/Wallet/WalletAssets.vue'),
+        component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/WalletAssets.vue'),
         name: 'WalletAssets'
       },
       {
         path: 'activity',
-        component: () => import('@/views/Wallet/WalletActivity.vue'),
+        component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/WalletActivity.vue'),
         name: 'WalletActivity'
       },
       {
         path: 'nfts',
-        component: () => import('@/views/Wallet/WalletNFTs.vue'),
+        component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/WalletNFTs.vue'),
         name: 'WalletNFTs'
       },
       {
@@ -146,7 +146,7 @@ const routes = [
   // Accounts
   {
     path: '/accounts/management',
-    component: import('@/views/Accounts/Manage.vue'),
+    component: () => import('@/views/Accounts/Manage.vue'),
     name: 'ManageAccounts',
     props: true,
     meta: { protect: true }

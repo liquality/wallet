@@ -1,5 +1,5 @@
 <template>
-  <Lazy class="wallet">
+  <div class="wallet">
     <NavBar showMenu="true">
       <span class="wallet-header">
         <strong>{{ $t('common.overview') }}</strong>
@@ -14,20 +14,17 @@
       <WalletStats v-else />
       <WalletTabs />
     </div>
-  </Lazy>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { isERC20 } from '@liquality/wallet-core/dist/src/utils/asset'
 import NavBar from '@/components/NavBar.vue'
-import InfoNotification from '@/components/InfoNotification.vue'
-import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
 import NFTStats from './NFTStats'
 import { reportLiqualityError } from '@liquality/error-parser'
-import Lazy from '@/components/Lazy.vue'
 
 export default {
   components: {
@@ -35,21 +32,10 @@ export default {
     WalletStats,
     NFTStats,
     WalletTabs,
-    InfoNotification,
-    LedgerRequestMessage,
-    Lazy
+    InfoNotification: () => import('@/components/InfoNotification.vue'),
+    LedgerRequestMessage: () => import('@/components/LedgerRequestMessage.vue')
   },
-  mounted() {
-    try {
-      this.updateBalances({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        loadingInitialBalance: true
-      })
-    } catch (error) {
-      // TODO: manage error
-      reportLiqualityError(error)
-    }
+  created() {
     this.getNFTs()
   },
   computed: {
