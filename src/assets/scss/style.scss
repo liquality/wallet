@@ -872,6 +872,11 @@ svg.qr-icon {
   z-index: 9999;
 }
 
+
+.modal-dialog {
+  min-width: 320px !important;
+}
+
 .modal-dialog-bottom {
   display: flex;
   align-items: flex-end;
