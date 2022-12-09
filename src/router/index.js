@@ -48,7 +48,19 @@ const routes = [
     path: '/settings',
     component: () => import('@/views/Settings'),
     name: 'Settings',
-    meta: { protect: true }
+    meta: { protect: true },
+    children: [
+      {
+        path: '',
+        name: 'AllSettings',
+        component: () => import('@/views/SettingItems.vue')
+      },
+      {
+        path: 'accounts',
+        name: 'AccountSettings',
+        component: () => import('@/views/AccountSettings.vue')
+      }
+    ]
   },
   {
     path: '/settings/experiments',
