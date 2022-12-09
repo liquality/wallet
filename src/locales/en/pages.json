@@ -77,8 +77,17 @@
     "done": "Done!",
     "forgetAllConnections": "Forget all connections",
     "version": "Version",
-    "accounts": "Accounts",
-    "accountsSub": "Manage account RPC network settings."
+    "networks": "Networks",
+    "networksSub": "Manage custom RPC network settings.",
+    "customRpcForm": {
+      "networkName": "Network Name",
+      "newRpcURL": "New RPC URL",
+      "chainId": "Chain ID",
+      "currencySymbol": "Currency symbol",
+      "blockExplorerUrl": "Block explorer URL (optional)",
+      "save": "Save",
+      "default": "Default"
+    }
   },
   "experiments": {
     "experiments": "Experiments",

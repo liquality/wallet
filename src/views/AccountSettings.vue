@@ -76,9 +76,7 @@ export default {
     prettyBalance,
 
     toggleExpandedAccounts(id) {
-      console.log('Add id', id)
       const idx = this.expandedAccounts.findIndex((chainId) => chainId === id)
-      console.log('idx', idx, ...this.expandedAccounts)
       if (idx >= 0) {
         this.expandedAccounts.splice(idx, 1)
       } else {

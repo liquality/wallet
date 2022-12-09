@@ -1,29 +1,43 @@
 <template>
   <div class="rpc-form">
     <div class="rpc-form-control">
-      <label>Network Name</label>
-      <input type="text" v-model="formData.networkName" placeholder="network name" />
+      <label>{{ $t(`pages.settings.customRpcForm.networkName`) }}</label>
+      <input
+        :disabled="true"
+        type="text"
+        v-model="formData.networkName"
+        placeholder="network name"
+      />
     </div>
     <div class="rpc-form-control">
-      <label>New RPC URl</label>
+      <label>{{ $t(`pages.settings.customRpcForm.newRpcURL`) }}</label>
       <input type="text" v-model="formData.newRpcUrl" placeholder="new rpc url" />
     </div>
     <div class="rpc-form-control">
-      <label>Chain ID</label>
-      <input type="text" v-model="formData.chainId" placeholder="chain ID" />
+      <label>{{ $t(`pages.settings.customRpcForm.chainId`) }}</label>
+      <input type="text" :disabled="true" v-model="formData.chainId" placeholder="chain ID" />
     </div>
     <div class="rpc-form-control">
-      <label>Currency symbol</label>
-      <input type="text" v-model="formData.currencySymbol" placeholder="currency synbol" />
+      <label>{{ $t(`pages.settings.customRpcForm.currencySymbol`) }}</label>
+      <input
+        type="text"
+        :disabled="true"
+        v-model="formData.currencySymbol"
+        placeholder="currency synbol"
+      />
     </div>
     <div class="rpc-form-control">
-      <label>Block explorer URL(Optional)</label>
+      <label>{{ $t(`pages.settings.customRpcForm.blockExplorerUrl`) }}</label>
       <input type="text" v-model="formData.blockexplorerUrl" placeholder="block explorer url" />
     </div>
     <div class="rpc-form-control">
       <div class="handlers">
-        <button :disabled="!canSubmit">Submit</button>
-        <button>Cancel</button>
+        <button @click="formSubmitHandler" :disabled="!canSubmit">
+          {{ $t(`pages.settings.customRpcForm.save`) }}
+        </button>
+        <button @click="resetDefault">
+          {{ $t(`pages.settings.customRpcForm.default`) }}
+        </button>
       </div>
     </div>
   </div>
@@ -49,15 +63,30 @@ export default {
       return !!(networkName && newRpcUrl && chainId && currencySymbol)
     }
   },
+  methods: {
+    formSubmitHandler() {
+      // TODO :: Handle functionality from vuex (inside wallet-core)
+      console.log('Save changes', this.formData)
+    },
+    getBaseUrl(url) {
+      const pathArray = url.split('/'),
+        protocol = pathArray[0],
+        host = pathArray[2]
+      return protocol + '//' + host
+    },
+    resetDefault() {
+      const { chain, network, asset } = this.account
+      const { chainId, rpcUrls } = network // More:: coinType, isTestnet, name, networkId
+
+      this.formData.networkName = chain
+      this.formData.chainId = chainId
+      this.formData.currencySymbol = asset
+      this.formData.newRpcUrl = this.getBaseUrl(rpcUrls[0])
+    }
+  },
   created() {
     console.log('Account info', this.account)
-    const { chain, network, asset } = this.account
-    const { chainId, rpcUrls } = network // More:: coinType, isTestnet, name, networkId
-
-    this.formData.networkName = chain
-    this.formData.chainId = chainId
-    this.formData.currencySymbol = asset
-    this.formData.newRpcUrl = rpcUrls[0]
+    this.resetDefault()
   }
 }
 </script>

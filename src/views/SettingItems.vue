@@ -93,11 +93,11 @@
       <router-link to="/settings/accounts">
         <div class="setting-item_title flex-fill mb-2">
           <div class="setting-item_title_accounts">
-            {{ $t('pages.settings.accounts') }}
+            {{ $t('pages.settings.networks') }}
             <ChevronRightIcon />
           </div>
           <span class="setting-item_sub">
-            {{ $t('pages.settings.accountsSub') }}
+            {{ $t('pages.settings.networksSub') }}
           </span>
         </div>
       </router-link>
