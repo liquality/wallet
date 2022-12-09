@@ -78,7 +78,7 @@
     "forgetAllConnections": "Forget all connections",
     "version": "Version",
     "accounts": "Accounts",
-    "accountsSub": "Manage account default network settings."
+    "accountsSub": "Manage account RPC network settings."
   },
   "experiments": {
     "experiments": "Experiments",

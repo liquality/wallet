@@ -31,6 +31,7 @@
 <script>
 export default {
   name: 'CustomRpcSettingsForm',
+  props: ['account'],
   data() {
     return {
       formData: {
@@ -47,6 +48,16 @@ export default {
       const { networkName, newRpcUrl, chainId, currencySymbol } = this.formData
       return !!(networkName && newRpcUrl && chainId && currencySymbol)
     }
+  },
+  created() {
+    console.log('Account info', this.account)
+    const { chain, network, asset } = this.account
+    const { chainId, rpcUrls } = network // More:: coinType, isTestnet, name, networkId
+
+    this.formData.networkName = chain
+    this.formData.chainId = chainId
+    this.formData.currencySymbol = asset
+    this.formData.newRpcUrl = rpcUrls[0]
   }
 }
 </script>

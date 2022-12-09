@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div>
     <div class="setting-item" id="settings_item_default_wallet">
       <div class="setting-item_title flex-fill mb-2">
         {{ $t('pages.settings.title') }}
@@ -92,7 +92,10 @@
     <div class="setting-item" id="settings_item_wallet_logs">
       <router-link to="/settings/accounts">
         <div class="setting-item_title flex-fill mb-2">
-          {{ $t('pages.settings.accounts') }}
+          <div class="setting-item_title_accounts">
+            {{ $t('pages.settings.accounts') }}
+            <ChevronRightIcon />
+          </div>
           <span class="setting-item_sub">
             {{ $t('pages.settings.accountsSub') }}
           </span>
@@ -104,6 +107,7 @@
 <script>
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { getWalletStateLogs, downloadFile } from '@/utils/export'
 import { version } from '../../package.json'
@@ -112,7 +116,8 @@ export default {
   name: 'SettingItems',
   components: {
     ChevronUpIcon,
-    ChevronDownIcon
+    ChevronDownIcon,
+    ChevronRightIcon
   },
   data: function () {
     return {
@@ -226,3 +231,16 @@ export default {
   }
 }
 </script>
+<style scoped lang="scss">
+.setting-item_title {
+  &_accounts {
+    display: inline-flex;
+    align-items: center;
+
+    .svg {
+      height: 6px !important;
+      margin-left: 4px !important;
+    }
+  }
+}
+</style>
