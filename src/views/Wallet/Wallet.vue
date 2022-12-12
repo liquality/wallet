@@ -35,8 +35,18 @@ export default {
     InfoNotification: () => import('@/components/InfoNotification.vue'),
     LedgerRequestMessage: () => import('@/components/LedgerRequestMessage.vue')
   },
-  created() {
-    this.getNFTs()
+  async mounted() {
+    try {
+      await this.updateBalances({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        loadingInitialBalance: true
+      })
+    } catch (error) {
+      // TODO: manage error
+      reportLiqualityError(error)
+    }
+    await this.getNFTs()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),

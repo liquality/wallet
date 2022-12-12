@@ -20,6 +20,6 @@ new Vue({
   render: (h) => h(App)
 }).$mount('#app')
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_USE_VUE_DEV_TOOLS === true) {
   devtools.connect()
 }
