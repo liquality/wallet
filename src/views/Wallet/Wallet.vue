@@ -37,16 +37,18 @@ export default {
   },
   async mounted() {
     try {
-      await this.updateBalances({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        loadingInitialBalance: true
-      })
+      await Promise.all([
+        this.updateBalances({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          loadingInitialBalance: true
+        }),
+        this.getNFTs()
+      ])
     } catch (error) {
       // TODO: manage error
       reportLiqualityError(error)
     }
-    await this.getNFTs()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
