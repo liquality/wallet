@@ -54,7 +54,11 @@
         <div class="nft-img">
           <img
             ref="nftImage"
-            :src="assetOriginalImageUrl(nftAsset?.image_original_url) || nftAsset?.image_preview_url || thumbnailImage"
+            :src="
+              assetOriginalImageUrl(nftAsset?.image_original_url) ||
+              nftAsset?.image_preview_url ||
+              thumbnailImage
+            "
             :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftImage')"
           />
@@ -334,7 +338,7 @@ export default {
     },
     assetOriginalImageUrl(url) {
       return url.replace('ipfs://', 'https://ipfs.io/ipfs/')
-    },
+    }
   }
 }
 </script>
