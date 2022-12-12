@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "version": "0.81.1",
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
@@ -21,10 +21,7 @@
     "1024": "icons/1024x1024.png"
   },
   "background": {
-    "scripts": [
-      "js/background.js"
-    ],
-    "persistent": true
+    "service_worker": "./js/background.js"
   },
   "content_scripts": [
     {
@@ -34,13 +31,17 @@
         "https://*/*"
       ],
       "js": [
+        "js/browser-polyfill.js",
         "js/content-script.js"
       ],
       "run_at": "document_start",
       "all_frames": false
     }
   ],
-  "browser_action": {
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/16x16.png",

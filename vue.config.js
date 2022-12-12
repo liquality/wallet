@@ -34,6 +34,19 @@ module.exports = {
             to({ context, absoluteFilename }) {
               return `_locales/${path.relative(context, absoluteFilename)}`
             }
+          },
+          {
+            context: './src',
+            from: 'manifest.json',
+            to({ context, absoluteFilename }) {
+              return `./${path.relative(context, absoluteFilename)}`
+            }
+          },
+          {
+            from: 'node_modules/webextension-polyfill/dist/browser-polyfill.js',
+            to({ context, absoluteFilename }) {
+              return `./js/${path.relative(context, absoluteFilename)}`
+            }
           }
         ]
       })
@@ -81,32 +94,10 @@ module.exports = {
       .test(/\.html$/)
       .use('raw-loader')
       .loader('raw-loader')
-  },
 
-  pluginOptions: {
-    browserExtension: {
-      componentOptions: {
-        background: {
-          entry: 'src/background.js'
-        },
-        contentScripts: {
-          entries: {
-            'content-script': ['src/contentScript.js']
-          }
-        }
-      },
-      extensionReloaderOptions: {
-        entries: {
-          contentScript: ['pageProvider', 'content-script'],
-          background: 'background'
-        }
-      },
-      manifestTransformer: (manifest) => {
-        manifest.content_security_policy =
-          "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.segment.com 'sha256-ZgDy59Dh4jH9g/vcPYFpoQ1wumB4IdPEOS1BJc08i+Y='; object-src 'self';"
-        return manifest
-      }
-    }
+    config.entry('background').add(path.resolve('./src/background.js')).end()
+
+    config.entry('content-script').add(path.resolve('./src/contentScript.js')).end()
   },
 
   pages: {

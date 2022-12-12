@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { buildConfig } from '@liquality/wallet-core'
 import { getChain, getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
+// import browser from 'webextension-polyfill'
 new Script().start()
 
 async function setupTerraStreams() {
@@ -44,8 +46,8 @@ function injectProviders(state) {
 
   setupTerraStreams()
 
-  inject(`window.liquality = ${JSON.stringify(injectConfig)};`)
-  inject('#PAGEPROVIDER#')
+  // inject(`window.liquality = ${JSON.stringify(injectConfig)};`)
+  // inject('#PAGEPROVIDER#')
 }
 
 function getGlobalEthereumChain(state) {

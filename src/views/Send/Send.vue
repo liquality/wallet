@@ -576,7 +576,7 @@ export default {
             customFee: this.customFee
           })
           const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
-          chrome.tabs.create({ url: browser.runtime.getURL(url) })
+          browser.tabs.create({ url: browser.runtime.getURL(url) })
         } else {
           this.currentStep = 'confirm'
         }

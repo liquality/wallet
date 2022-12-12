@@ -6,7 +6,7 @@ export const isBackgroundScript = (context) => {
   if (isBgScr !== undefined) return isBgScr
 
   try {
-    isBgScr = context === browser.extension.getBackgroundPage()
+    isBgScr = context === chrome.extension.getBackgroundPage()
   } catch (e) {
     isBgScr = false
   }
@@ -14,9 +14,9 @@ export const isBackgroundScript = (context) => {
   return isBgScr
 }
 
-export const getAppId = () => browser.runtime.id
+export const getAppId = () => chrome.runtime.id
 
-export const getRootURL = () => browser.runtime.getURL('/')
+export const getRootURL = () => chrome.runtime.getURL('/')
 
 export const createPopup = (url, closeCallback = undefined) => {
   const options = {
@@ -30,7 +30,7 @@ export const createPopup = (url, closeCallback = undefined) => {
     options.focused = true
   }
 
-  const creation = browser.windows.create(options)
+  const creation = chrome.windows.create(options)
   if (closeCallback) {
     creation.then((popupWindow) =>
       chrome.windows.onRemoved.addListener((windowId) => {
@@ -40,9 +40,9 @@ export const createPopup = (url, closeCallback = undefined) => {
   }
 }
 
-export const connectToBackground = (name) => browser.runtime.connect({ name })
+export const connectToBackground = (name) => chrome.runtime.connect({ name })
 
-export const handleConnection = (callback) => browser.runtime.onConnect.addListener(callback)
+export const handleConnection = (callback) => chrome.runtime.onConnect.addListener(callback)
 
 export const newConnectId = () => `##${Math.random().toString(36).substring(2)}##`
 

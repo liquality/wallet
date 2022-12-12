@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import VuexPersist from 'vuex-persist'
 import { omit } from 'lodash-es'
 
@@ -9,6 +10,23 @@ import { migrations } from '@liquality/wallet-core'
 import { updateErrorReporterConfig } from '@liquality/error-parser'
 
 const { isMigrationNeeded, processMigrations } = migrations
+
+/**
+ * This script add properties in globalThis and initialises them with undefined.
+ * This is workaround needed to avoid error in dependencies expecting to be run in a browser
+ * these dependencies are not available to service worker in MV3.
+ */
+const keys = ['XMLHttpRequest']
+
+keys.forEach((key) => {
+  if (!Reflect.has(globalThis, key)) {
+    globalThis[key] = undefined
+  }
+})
+
+if (!Reflect.has(globalThis, 'window')) {
+  globalThis.window = globalThis
+}
 
 const Broker = (state) => {
   if (isBackgroundScript(window)) {

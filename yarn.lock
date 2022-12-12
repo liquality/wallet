@@ -5318,6 +5318,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webextension-polyfill@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "@types/webextension-polyfill@npm:0.9.2"
+  checksum: c1ce97ee3f32140cce6d3e399d80603a4ac29650557486592a4cb48e94be7ae149e33c97b65bb1c2ed8a8634852db4b8943d6d5c50354df002cc251531c9bc74
+  languageName: node
+  linkType: hard
+
 "@types/webpack-dev-server@npm:^3.11.0":
   version: 3.11.6
   resolution: "@types/webpack-dev-server@npm:3.11.6"
@@ -5342,18 +5349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack-sources@npm:^0.1.5":
-  version: 0.1.9
-  resolution: "@types/webpack-sources@npm:0.1.9"
-  dependencies:
-    "@types/node": "*"
-    "@types/source-list-map": "*"
-    source-map: ^0.6.1
-  checksum: bc09c584c7047e8aed29801a3981787dee3898e9e7a99891a362df114fcac3879eea5a00932314866a01b25220391839be09fe1487b16d4970ff4a7afd5b9725
-  languageName: node
-  linkType: hard
-
-"@types/webpack@npm:^4, @types/webpack@npm:^4.0.0, @types/webpack@npm:^4.39.8":
+"@types/webpack@npm:^4, @types/webpack@npm:^4.0.0":
   version: 4.41.33
   resolution: "@types/webpack@npm:4.41.33"
   dependencies:
@@ -6003,26 +5999,6 @@ __metadata:
   bin:
     vue-cli-service: bin/vue-cli-service.js
   checksum: a054de4a67a2be140c63b788aeb1301fea8549a7b8055b3de5a7830de9d9a27678c48c2a8e0ded737857695db3f370ceb24995fee97c4e48f7dd92c406773dfc
-  languageName: node
-  linkType: hard
-
-"@vue/cli-shared-utils@npm:^3.0.0-rc.3":
-  version: 3.12.1
-  resolution: "@vue/cli-shared-utils@npm:3.12.1"
-  dependencies:
-    "@hapi/joi": ^15.0.1
-    chalk: ^2.4.1
-    execa: ^1.0.0
-    launch-editor: ^2.2.1
-    lru-cache: ^5.1.1
-    node-ipc: ^9.1.1
-    open: ^6.3.0
-    ora: ^3.4.0
-    request: ^2.87.0
-    request-promise-native: ^1.0.7
-    semver: ^6.0.0
-    string.prototype.padstart: ^3.0.0
-  checksum: c724f8fda422391cbe291634ac7a6beeefef942ef49b5b395996c46bfd0a139dda7bf1b45b27364d1bd3bcce9ad8036d9a6459405434cad149a38c8a0c25da53
   languageName: node
   linkType: hard
 
@@ -9278,7 +9254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colors@npm:^1.3.3, colors@npm:^1.4.0":
+"colors@npm:^1.3.3":
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
   checksum: 98aa2c2418ad87dedf25d781be69dc5fc5908e279d9d30c34d8b702e586a0474605b3a189511482b9d5ed0d20c867515d22749537f7bc546256c6014f3ebdcec
@@ -9575,7 +9551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-webpack-plugin@npm:^5.1.1, copy-webpack-plugin@npm:^5.1.2":
+"copy-webpack-plugin@npm:^5.1.1":
   version: 5.1.2
   resolution: "copy-webpack-plugin@npm:5.1.2"
   dependencies:
@@ -11674,7 +11650,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"easy-stack@npm:1.0.1, easy-stack@npm:^1.0.1":
+"easy-stack@npm:1.0.1":
   version: 1.0.1
   resolution: "easy-stack@npm:1.0.1"
   checksum: 161a99e497b3857b0be4ec9e1ebbe90b241ea9d84702f9881b8e5b3f6822065b8c4e33436996935103e191bffba3607de70712a792f4d406a050def48c6bc381
@@ -15475,16 +15451,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"imports-loader@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "imports-loader@npm:0.8.0"
-  dependencies:
-    loader-utils: ^1.0.2
-    source-map: ^0.6.1
-  checksum: a8c5e4418f02a052e79c50c13afb999563b2fbbcdc07f0fe0c18ac0be8dbfa8b19bc0d63b7e6d7b2fa580a062fd8ac5ab7c9c12d57f9beb7e058312d51aec51f
-  languageName: node
-  linkType: hard
-
 "imurmurhash@npm:^0.1.4":
   version: 0.1.4
   resolution: "imurmurhash@npm:0.1.4"
@@ -17714,15 +17680,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-queue@npm:2.0.2":
-  version: 2.0.2
-  resolution: "js-queue@npm:2.0.2"
-  dependencies:
-    easy-stack: ^1.0.1
-  checksum: 5049c3f648315ed13e46755704ff5453df70f7e8e1812acf1f98d6700efbec32421f76294a0e63fd2a9f8aabaf124233bbb308f9a2caec9d9f3d833ab5a73079
-  languageName: node
-  linkType: hard
-
 "js-sdsl@npm:^4.1.4":
   version: 4.1.5
   resolution: "js-sdsl@npm:4.1.5"
@@ -18591,6 +18548,7 @@ __metadata:
     "@terra-money/terra.js": ^3.1.6
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/vue": ^5.8.2
+    "@types/webextension-polyfill": ^0.9.2
     "@vue/cli-plugin-babel": 4.5.15
     "@vue/cli-plugin-eslint": ~4.5.0
     "@vue/cli-plugin-router": 4.5.15
@@ -18656,7 +18614,6 @@ __metadata:
     uuid: ^8.1.0
     v-tooltip: ^2.0.3
     vue: ^2.6.11
-    vue-cli-plugin-browser-extension: ^0.25.1
     vue-date-pick: ^1.4.1
     vue-js-toggle-button: ^1.3.3
     vue-loader: ^17.0.0
@@ -18665,6 +18622,7 @@ __metadata:
     vue-template-compiler: ^2.6.14
     vuex: ^3.1.3
     vuex-persist: 3.1.3
+    webextension-polyfill: ^0.10.0
   languageName: unknown
   linkType: soft
 
@@ -19106,7 +19064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:4.1.x, lru-cache@npm:^4.0.1, lru-cache@npm:^4.1.2, lru-cache@npm:^4.1.5":
+"lru-cache@npm:^4.0.1, lru-cache@npm:^4.1.2, lru-cache@npm:^4.1.5":
   version: 4.1.5
   resolution: "lru-cache@npm:4.1.5"
   dependencies:
@@ -20716,17 +20674,6 @@ __metadata:
   version: 0.4.0
   resolution: "node-int64@npm:0.4.0"
   checksum: d0b30b1ee6d961851c60d5eaa745d30b5c95d94bc0e74b81e5292f7c42a49e3af87f1eb9e89f59456f80645d679202537de751b7d72e9e40ceea40c5e449057e
-  languageName: node
-  linkType: hard
-
-"node-ipc@npm:^9.1.1":
-  version: 9.2.1
-  resolution: "node-ipc@npm:9.2.1"
-  dependencies:
-    event-pubsub: 4.3.0
-    js-message: 1.0.7
-    js-queue: 2.0.2
-  checksum: a38aa4c8ca4317b293e0ce21f0a3a4941fc51c054800b35e263fcfe3e0feeb60e7d2c497f015054b28783316c6e7d9cc3837af9d9958bcbd8c577d0cdf6964b7
   languageName: node
   linkType: hard
 
@@ -24142,15 +24089,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:5.5.x":
-  version: 5.5.1
-  resolution: "semver@npm:5.5.1"
-  bin:
-    semver: ./bin/semver
-  checksum: ab920176f5324376c683a2f1bdb5f8d5ccdcc3f5c0a4547bddae7958a457f0813cf9f32ef3cdc77a40c1066d9c3a7599a986d47abae628d37bc637a0f6e6bbc5
-  languageName: node
-  linkType: hard
-
 "semver@npm:^6.0.0, semver@npm:^6.1.0, semver@npm:^6.1.1, semver@npm:^6.1.2, semver@npm:^6.2.0, semver@npm:^6.3.0":
   version: 6.3.0
   resolution: "semver@npm:6.3.0"
@@ -25238,17 +25176,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string.prototype.padstart@npm:^3.0.0":
-  version: 3.1.3
-  resolution: "string.prototype.padstart@npm:3.1.3"
-  dependencies:
-    call-bind: ^1.0.2
-    define-properties: ^1.1.3
-    es-abstract: ^1.19.1
-  checksum: 8bf8bc1d25edc79c4db285aa8dfd5d269dac4024631e8ae13202c2126348a07e00b153d6bf7b858c5bd716e44675a7fbb50baedd3e8970e1034bb86be22c9475
-  languageName: node
-  linkType: hard
-
 "string.prototype.trimend@npm:^1.0.5":
   version: 1.0.5
   resolution: "string.prototype.trimend@npm:1.0.5"
@@ -25902,7 +25829,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:0.0.x, tmp@npm:^0.0.33":
+"tmp@npm:^0.0.33":
   version: 0.0.33
   resolution: "tmp@npm:0.0.33"
   dependencies:
@@ -26755,16 +26682,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"useragent@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "useragent@npm:2.3.0"
-  dependencies:
-    lru-cache: 4.1.x
-    tmp: 0.0.x
-  checksum: 966e418122ca87cf54266360f4cb13b61dea36a8dcc7a34bad0eb447ab7b3b3fbbeda64135eb5bfb015e0d97924364bd2196b819f485cfe883a0dd57064573c4
-  languageName: node
-  linkType: hard
-
 "uslug@npm:^1.0.4":
   version: 1.0.4
   resolution: "uslug@npm:1.0.4"
@@ -27019,21 +26936,6 @@ __metadata:
   version: 1.1.2
   resolution: "vm-browserify@npm:1.1.2"
   checksum: 10a1c50aab54ff8b4c9042c15fc64aefccce8d2fb90c0640403242db0ee7fb269f9b102bdb69cfb435d7ef3180d61fd4fb004a043a12709abaf9056cfd7e039d
-  languageName: node
-  linkType: hard
-
-"vue-cli-plugin-browser-extension@npm:^0.25.1":
-  version: 0.25.2
-  resolution: "vue-cli-plugin-browser-extension@npm:0.25.2"
-  dependencies:
-    "@vue/cli-shared-utils": ^3.0.0-rc.3
-    copy-webpack-plugin: ^5.1.2
-    imports-loader: ^0.8.0
-    webextension-polyfill: ^0.4.0
-    webpack: ^4.16.0
-    webpack-extension-reloader: ^1.1.0
-    zip-webpack-plugin: ^3.0.0
-  checksum: 453404c51aebf0f88707c5f56ffab26b9f85ff45848d12601deceff4593d87a4e7a50bfacc393d949ba58830e0620856585b1534841c09def7ac94f0936a7e25
   languageName: node
   linkType: hard
 
@@ -27620,17 +27522,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webextension-polyfill@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "webextension-polyfill@npm:0.4.0"
-  checksum: a6c39fb881a2181460a83d12eec429680a822d19fcf7e45f504243a529829778f6e39a1b66cb7efeef64895b35aa5e28149684317e4f72e384dbb00d8e491811
-  languageName: node
-  linkType: hard
-
-"webextension-polyfill@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "webextension-polyfill@npm:0.5.0"
-  checksum: 629b8cb19281d869df956963cf798ef1f02fb52e4ca757782d1800ad0ac77f9a7fdc81714c9518b32228a0937aedea98c23a6c776d6f2985b75da02e8a087067
+"webextension-polyfill@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "webextension-polyfill@npm:0.10.0"
+  checksum: 4a59036bda571360c2c0b2fb03fe1dc244f233946bcf9a6766f677956c40fd14d270aaa69cdba95e4ac521014afbe4008bfa5959d0ac39f91c990eb206587f91
   languageName: node
   linkType: hard
 
@@ -27765,27 +27660,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-extension-reloader@npm:^1.1.0":
-  version: 1.1.4
-  resolution: "webpack-extension-reloader@npm:1.1.4"
-  dependencies:
-    "@types/webpack": ^4.39.8
-    "@types/webpack-sources": ^0.1.5
-    colors: ^1.4.0
-    lodash: ^4.17.15
-    minimist: ^1.2.0
-    useragent: ^2.3.0
-    webextension-polyfill: ^0.5.0
-    webpack-sources: ^1.4.3
-    ws: ^7.2.0
-  peerDependencies:
-    webpack: ^4
-  bin:
-    webpack-extension-reloader: ./dist/webpack-extension-reloader-cli.js
-  checksum: 9822b6adf2eda753a3dcaf850c86bbd9c12b4cac5d79a51bc7792413750eb19594d62be335b3b091930736bf5c5222be6b85804fc9435ef52772c20e0188fae2
-  languageName: node
-  linkType: hard
-
 "webpack-log@npm:^2.0.0":
   version: 2.0.0
   resolution: "webpack-log@npm:2.0.0"
@@ -27815,7 +27689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^4.0.0, webpack@npm:^4.16.0":
+"webpack@npm:^4.0.0":
   version: 4.46.0
   resolution: "webpack@npm:4.46.0"
   dependencies:
@@ -28226,7 +28100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7.0.0, ws@npm:^7.2.0, ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.5, ws@npm:^7.5.9":
+"ws@npm:^7.0.0, ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.5, ws@npm:^7.5.9":
   version: 7.5.9
   resolution: "ws@npm:7.5.9"
   peerDependencies:
@@ -28424,13 +28298,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yamlparser@npm:0.0.x":
-  version: 0.0.2
-  resolution: "yamlparser@npm:0.0.2"
-  checksum: 9f09b0af2bc24f22153250b0eac88b491d59c38449fbfec665d13e746941e3a089f47c592a9ca8d9f0aab8b7014fe813642f955de93d23a179f05fe1e29e6f3e
-  languageName: node
-  linkType: hard
-
 "yargs-parser@npm:10.x":
   version: 10.1.0
   resolution: "yargs-parser@npm:10.1.0"
@@ -28570,15 +28437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yazl@npm:^2.4.3":
-  version: 2.5.1
-  resolution: "yazl@npm:2.5.1"
-  dependencies:
-    buffer-crc32: ~0.2.3
-  checksum: daec5154b5485d8621bfea359e905ddca0b2f068430a4aa0a802bf5d67391157a383e0c2767acccbf5964264851da643bc740155a9458e2d8dce55b94c1cc2ed
-  languageName: node
-  linkType: hard
-
 "yocto-queue@npm:^0.1.0":
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
@@ -28595,18 +28453,6 @@ __metadata:
     normalize-path: ^1.0.0
     strip-indent: ^2.0.0
   checksum: 6810adaf6be7b6cc115ed9454e5a4e8e0949deecb107d65dc0c196051e862f04d6394ad12fbef0d51e6c730329992ae98625ba82cba5e34775023ddb6dc921b8
-  languageName: node
-  linkType: hard
-
-"zip-webpack-plugin@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "zip-webpack-plugin@npm:3.0.0"
-  dependencies:
-    webpack-sources: ^1.1.0
-    yazl: ^2.4.3
-  peerDependencies:
-    webpack: ^4.0.0
-  checksum: 811caf03696e15ff43014c7ed08124e7a52d597eaced19c30d4045a15a8212ff5267d15f8320e3c5ac4d8f376c8fb09ca7c6d614a8a2ec2a9f6b7c7612e98b8a
   languageName: node
   linkType: hard
 
