@@ -5,9 +5,7 @@
         <Head :show-dapp-connections="showDappConnections" />
         <GlobalModals />
       </template>
-      <transition name="fade" mode="out-in">
-        <router-view />
-      </transition>
+      <router-view />
     </template>
     <div class="login-wrapper spinner-container" v-else>
       <SpinnerIcon class="btn-loading" />
