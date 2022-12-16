@@ -3,9 +3,15 @@ import VueRouter from 'vue-router'
 import store, { broker } from '../store'
 
 import Splash from '@/views/Splash.vue'
+import ManageAssets from '@/views/ManageAssets'
+import OpenWallet from '@/views/Open.vue'
+import WalletAssets from '@/views/Wallet/WalletAssets.vue'
+import Wallet from '@/views/Wallet/Wallet.vue'
 
-const Warning = () => import('@/views/Onboarding/SeedPhrase/Warning.vue')
-const LoginPhrase = () => import('@/views/Onboarding/SeedPhrase/LoginPhrase.vue')
+const Warning = () =>
+  import(/* webpackPrefetch: true */ '@/views/Onboarding/SeedPhrase/Warning.vue')
+const LoginPhrase = () =>
+  import(/* webpackPrefetch: true */ '@/views/Onboarding/SeedPhrase/LoginPhrase.vue')
 
 Vue.use(VueRouter)
 
@@ -19,25 +25,25 @@ const routes = [
   },
   {
     path: '/onboarding/import',
-    component: () => import('@/views/Onboarding/ImportWallet.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Onboarding/ImportWallet.vue'),
     meta: { protect: false }
   },
   {
     path: '/open',
     name: 'OpenWallet',
-    component: () => import('@/views/Open.vue'),
+    component: OpenWallet,
     meta: { protect: false }
   },
   {
     path: '/onboarding/setup/:seedphrase?',
-    component: () => import('@/views/Onboarding/OnboardingSetup.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Onboarding/OnboardingSetup.vue'),
     name: 'OnboardingSetup',
     props: true,
     meta: { protect: false }
   },
   {
     path: '/onboarding/home',
-    component: () => import('@/views/Onboarding/OnboardingHome.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Onboarding/OnboardingHome.vue'),
     name: 'OnboardingHome',
     meta: { protect: false }
   },
@@ -46,7 +52,7 @@ const routes = [
   // Settings
   {
     path: '/settings',
-    component: () => import('@/views/Settings'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Settings'),
     name: 'Settings',
     meta: { protect: true },
     children: [
@@ -64,19 +70,19 @@ const routes = [
   },
   {
     path: '/settings/experiments',
-    component: () => import('@/views/Experiments'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Experiments'),
     name: 'Experiments',
     meta: { protect: true }
   },
   {
     path: '/settings/manage-assets',
-    component: () => import('@/views/ManageAssets'),
+    component: ManageAssets,
     name: 'ManageAssets',
     meta: { protect: true }
   },
   {
     path: '/settings/manage-assets/custom-token',
-    component: () => import('@/views/CustomToken'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/CustomToken'),
     name: 'CustomToken',
     meta: { protect: true }
   },
@@ -86,12 +92,12 @@ const routes = [
   {
     path: '/wallet',
     name: 'Wallet',
-    component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/Wallet.vue'),
+    component: Wallet,
     meta: { protect: true },
     children: [
       {
         path: 'assets',
-        component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/WalletAssets.vue'),
+        component: WalletAssets,
         name: 'WalletAssets'
       },
       {
@@ -112,45 +118,46 @@ const routes = [
   },
   {
     path: '/wallet/nfts/activity/:id',
-    component: () => import('@/views/Wallet/NFTActivity.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/NFTActivity.vue'),
     name: 'NFTActivity',
     props: true
   },
   {
     path: '/wallet/nfts/send',
-    component: () => import('@/views/Send/SendNFT.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Send/SendNFT.vue'),
     name: 'SendNFT'
   },
   {
     path: '/details/nft-transaction/:id',
-    component: () => import('@/views/Details/NFTTransactionDetails.vue'),
+    component: () =>
+      import(/* webpackPrefetch: true */ '@/views/Details/NFTTransactionDetails.vue'),
     name: 'NFTTransactionDetails',
     props: true
   },
   // Details
   {
     path: '/details/swap/:id',
-    component: () => import('@/views/Details/SwapDetails.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/SwapDetails.vue'),
     name: 'SwapDetails',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/details/transaction/:id',
-    component: () => import('@/views/Details/TransactionDetails.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/TransactionDetails.vue'),
     name: 'TransactionDetails',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/details/nft-collection/:id',
-    component: () => import('@/views/Details/NFTCollectionList.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/NFTCollectionList.vue'),
     name: 'NFTCollectionList',
     props: true
   },
   {
     path: '/details/nft-asset/:id',
-    component: () => import('@/views/Details/NFTAssetDetails.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/NFTAssetDetails.vue'),
     name: 'NFTAssetDetails',
     props: true
   },
@@ -158,21 +165,22 @@ const routes = [
   // Accounts
   {
     path: '/accounts/management',
-    component: () => import('@/views/Accounts/Manage.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Accounts/Manage.vue'),
     name: 'ManageAccounts',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/accounts/create/:chainId?',
-    component: () => import('@/views/Accounts/Create.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Accounts/Create.vue'),
     name: 'CreateAccount',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/accounts/hardware-wallet',
-    component: () => import('@/views/Accounts/HardwareWallet/HardwareWallet.vue'),
+    component: () =>
+      import(/* webpackPrefetch: true */ '@/views/Accounts/HardwareWallet/HardwareWallet.vue'),
     props: true,
     name: 'HardwareWallet',
     meta: { protect: true }
@@ -180,28 +188,28 @@ const routes = [
   {
     name: 'Account',
     path: '/accounts/:accountId/:asset',
-    component: () => import('@/views/Account.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Account.vue'),
     props: true,
     meta: { protect: true }
   },
   {
     name: 'Send',
     path: '/accounts/:accountId/:asset/send',
-    component: () => import('@/views/Send/Send.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Send/Send.vue'),
     props: true,
     meta: { protect: true }
   },
   {
     name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
-    component: () => import('@/views/Receive.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Receive.vue'),
     props: true,
     meta: { protect: true }
   },
   {
     name: 'Swap',
     path: '/accounts/:accountId/:routeAsset/swap',
-    component: () => import('@/views/Swap/Swap.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Swap/Swap.vue'),
     props: true,
     meta: { protect: true }
   },
@@ -209,7 +217,7 @@ const routes = [
   // Assets list
   {
     path: '/assets/:action',
-    component: () => import('@/views/AssetList.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/AssetList.vue'),
     props: true,
     meta: { protect: true }
   },
@@ -217,37 +225,37 @@ const routes = [
   // Injection
   {
     path: '/request-unlock',
-    component: () => import('@/views/RequestUnlockWallet.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/RequestUnlockWallet.vue'),
     meta: { protect: false }
   },
   {
     path: '/enable',
-    component: () => import('@/views/Enable.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Enable.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/send',
-    component: () => import('@/views/PermissionSend.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionSend.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/terra',
-    component: () => import('@/views/PermissionTerra.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionTerra.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/sign',
-    component: () => import('@/views/PermissionSign.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionSign.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/signPsbt',
-    component: () => import('@/views/PermissionSignPsbt.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionSignPsbt.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/default',
-    component: () => import('@/views/Permission.vue'),
+    component: () => import(/* webpackPrefetch: true */ '@/views/Permission.vue'),
     meta: { protect: false }
   },
   // Injection
@@ -265,7 +273,8 @@ const routes = [
   },
   {
     path: '/seedreveal',
-    component: () => import('@/views/Onboarding/SeedPhrase/PhraseReveal'),
+    component: () =>
+      import(/* webpackPrefetch: true */ '@/views/Onboarding/SeedPhrase/PhraseReveal'),
     meta: { protect: true }
   },
 

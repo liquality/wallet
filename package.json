@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.81.0",
+  "version": "0.81.3",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -23,8 +23,8 @@
     "devtools": "node_modules/.bin/vue-devtools"
   },
   "dependencies": {
-    "@liquality/cryptoassets": "2.1.0-next.2",
-    "@liquality/error-parser": "2.0.1-next.2",
+    "@liquality/cryptoassets": "2.1.0",
+    "@liquality/error-parser": "2.0.1",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",

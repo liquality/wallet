@@ -6,6 +6,7 @@ import Foreground from './Foreground'
 import { isBackgroundScript } from './utils'
 import Storage from './Storage'
 import { migrations } from '@liquality/wallet-core'
+import { updateErrorReporterConfig } from '@liquality/error-parser'
 
 const { isMigrationNeeded, processMigrations } = migrations
 
@@ -38,6 +39,11 @@ const Broker = (state) => {
       }
       const state = await restoreState(key, storage)
       vuexPersist.restoreState = restoreState // Remove hook
+
+      updateErrorReporterConfig({
+        useReporter: state.analytics?.acceptedDate > 0 || state.experiments?.reportErrors
+      })
+
       return state
     }
 
