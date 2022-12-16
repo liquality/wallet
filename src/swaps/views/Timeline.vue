@@ -293,7 +293,7 @@
           <tr v-if="item.error">
             <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ translatedItemError }} 
+              <pre>{{ translatedItemError }}
                 <CopyError
                   :translatedError="translatedItemError"
                   :liqualityErrorString="item.error"
@@ -629,6 +629,7 @@ export default {
 
     pre {
       margin: 0px;
+      white-space: initial;
     }
   }
 
