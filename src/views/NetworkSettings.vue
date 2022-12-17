@@ -1,34 +1,28 @@
 <template>
   <div>
-    <div
-      v-for="(account, idx) in chains"
-      :key="`account-${idx}`"
-      class="overview-screen-chain-section"
-      :id="idx"
-    >
-      <ListItem @item-selected="toggleExpandedAccounts(idx)">
+    <div v-for="(settings, idx) in chains" :key="`chain-${idx}`" class="overview-screen-chain-section" :id="idx">
+      <ListItem @item-selected="toggleExpandedChain(idx)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': 'white' }"></div>
           <div class="prefix-icon-container">
-            <MinusIcon v-if="shouldExpandAccount(idx)" class="prefix-icon" />
+            <MinusIcon v-if="shouldExpandChain(idx)" class="prefix-icon" />
             <PlusIcon v-else class="prefix-icon" />
           </div>
         </template>
         <template #icon>
-          <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+          <img :src="getAccountIcon(settings.chain)" class="asset-icon" />
         </template>
-        {{ account.chain }}
+        {{ settings.chain }}
       </ListItem>
-      <div class="account-assets" :class="{ active: shouldExpandAccount(idx) }">
-        <CustomRpcSettingsForm :account="account" />
+      <div class="account-assets" :class="{ active: shouldExpandChain(idx) }">
+        <CustomRpcSettingsForm :settings="settings" />
       </div>
     </div>
   </div>
 </template>
 <script>
 import ListItem from '@/components/ListItem'
-import { buildConfig } from '@liquality/wallet-core'
-import { getChain, getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
+import { getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
 import { mapState, mapGetters } from 'vuex'
 import { getAccountIcon } from '@/utils/accounts'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
@@ -42,7 +36,7 @@ import MinusIcon from '@/assets/icons/minus_icon.svg'
 import CustomRpcSettingsForm from '@/components/CustomRpcSettingsForm.vue'
 
 export default {
-  name: 'AccountSettings',
+  name: 'NetworkSettings',
   components: {
     ListItem,
     PlusIcon,
@@ -51,21 +45,24 @@ export default {
   },
   data() {
     return {
-      expandedAccounts: []
+      expandedChains: []
     }
   },
   computed: {
-    ...mapState(['activeNetwork']),
-    ...mapGetters(['accountsData']),
+    ...mapState(['activeNetwork', 'enabledChains', 'activeWalletId']),
+    ...mapGetters(['chainSettings']),
 
     chains() {
-      return buildConfig.chains
-        .filter((chain) => isEvmChain(this.activeNetwork, chain))
-        .map((chain) => {
-          const network = getChain(this.activeNetwork, chain).network
-          const asset = getNativeAssetCode(this.activeNetwork, chain)
-          return { chain, asset, network }
-        })
+      return Object.keys(this.chainSettings).filter(
+        (chain) => isEvmChain(this.activeNetwork, chain) &&
+          this.enabledChains[this.activeWalletId]?.[this.activeNetwork]?.includes(chain))
+        .map(
+          chain => {
+            const network = this.chainSettings[chain]
+            const asset = getNativeAssetCode(this.activeNetwork, chain)
+            return { chain, asset, network }
+          }
+        )
     }
   },
   methods: {
@@ -75,16 +72,16 @@ export default {
     formatFiat,
     prettyBalance,
 
-    toggleExpandedAccounts(id) {
-      const idx = this.expandedAccounts.findIndex((chainId) => chainId === id)
+    toggleExpandedChain(id) {
+      const idx = this.expandedChains.findIndex((chainId) => chainId === id)
       if (idx >= 0) {
-        this.expandedAccounts.splice(idx, 1)
+        this.expandedChains.splice(idx, 1)
       } else {
-        this.expandedAccounts.push(id)
+        this.expandedChains.push(id)
       }
     },
-    shouldExpandAccount(chainId) {
-      return this.expandedAccounts.includes(chainId)
+    shouldExpandChain(chainId) {
+      return this.expandedChains.includes(chainId)
     }
   }
 }
@@ -93,6 +90,7 @@ export default {
 .ledger-tag {
   color: #4763cd;
 }
+
 .detail-content {
   display: flex;
   align-items: center;
@@ -122,6 +120,7 @@ export default {
   display: flex;
   align-items: center;
   margin-left: 12px;
+
   .prefix-icon {
     width: 12px;
   }

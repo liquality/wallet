@@ -62,9 +62,9 @@ const routes = [
         component: () => import('@/views/SettingItems.vue')
       },
       {
-        path: 'accounts',
-        name: 'AccountSettings',
-        component: () => import('@/views/AccountSettings.vue')
+        path: 'networks',
+        name: 'NetworkSettings',
+        component: () => import('@/views/NetworkSettings.vue')
       }
     ]
   },

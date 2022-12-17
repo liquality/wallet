@@ -90,7 +90,7 @@
       </div>
     </div>
     <div class="setting-item" id="settings_item_wallet_logs">
-      <router-link to="/settings/accounts">
+      <router-link :to="{ name: 'NetworkSettings' }">
         <div class="setting-item_title flex-fill mb-2">
           <div class="setting-item_title_accounts">
             {{ $t('pages.settings.networks') }}

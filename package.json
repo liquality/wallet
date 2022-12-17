@@ -23,6 +23,7 @@
     "devtools": "node_modules/.bin/vue-devtools"
   },
   "dependencies": {
+    "@chainify/hw-ledger": "^1.2.33",
     "@liquality/cryptoassets": "2.1.0",
     "@liquality/error-parser": "2.0.1",
     "@liquality/ethereum-utils": "^1.13.12",
@@ -122,5 +123,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
+  },
+  "resolutions": {
+    "liquality": "link:/Users/bradley/Code/Liquality/wallet-core",
+    "@liquality/cryptoassets": "link:/Users/bradley/Code/Liquality/wallet-core/packages/cryptoassets",
+    "@liquality/error-parser": "link:/Users/bradley/Code/Liquality/wallet-core/packages/error-parser",
+    "@liquality/wallet-core": "link:/Users/bradley/Code/Liquality/wallet-core/packages/wallet-core"
   }
 }

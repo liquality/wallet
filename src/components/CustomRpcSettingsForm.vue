@@ -2,12 +2,7 @@
   <div class="rpc-form">
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.networkName`) }}</label>
-      <input
-        :disabled="true"
-        type="text"
-        v-model="formData.networkName"
-        placeholder="network name"
-      />
+      <input :disabled="true" type="text" v-model="formData.networkName" placeholder="network name" />
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.newRpcURL`) }}</label>
@@ -19,33 +14,29 @@
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.currencySymbol`) }}</label>
-      <input
-        type="text"
-        :disabled="true"
-        v-model="formData.currencySymbol"
-        placeholder="currency synbol"
-      />
+      <input type="text" :disabled="true" v-model="formData.currencySymbol" placeholder="currency synbol" />
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.blockExplorerUrl`) }}</label>
       <input type="text" v-model="formData.blockexplorerUrl" placeholder="block explorer url" />
     </div>
-    <div class="rpc-form-control">
-      <div class="handlers">
-        <button @click="formSubmitHandler" :disabled="!canSubmit">
-          {{ $t(`pages.settings.customRpcForm.save`) }}
-        </button>
-        <button @click="resetDefault">
-          {{ $t(`pages.settings.customRpcForm.default`) }}
-        </button>
-      </div>
+    <div class="rpc-form-control mt-3">
+      <div class="button-group">
+          <button class="btn btn-primary btn-lg btn-icon" @click="formSubmitHandler" :disabled="!canSubmit">
+            {{ $t(`pages.settings.customRpcForm.save`) }}
+          </button>
+          <button class="btn btn-light btn-outline-primary btn-lg ml-2" @click="resetDefault">
+            {{ $t(`pages.settings.customRpcForm.default`) }}
+          </button>
+        </div>
     </div>
   </div>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'CustomRpcSettingsForm',
-  props: ['account'],
+  props: ['settings'],
   data() {
     return {
       formData: {
@@ -58,15 +49,35 @@ export default {
     }
   },
   computed: {
+    ...mapState(['activeNetwork', 'activeWalletId']),
     canSubmit() {
       const { networkName, newRpcUrl, chainId, currencySymbol } = this.formData
       return !!(networkName && newRpcUrl && chainId && currencySymbol)
     }
   },
   methods: {
-    formSubmitHandler() {
-      // TODO :: Handle functionality from vuex (inside wallet-core)
-      console.log('Save changes', this.formData)
+    ...mapActions(['saveCustomChainSettings', 'removeCustomChainSettings']),
+    async formSubmitHandler() {
+      const { chain, network, asset } = this.settings
+      const { name,
+        coinType,
+        isTestnet,
+        chainId,
+        rpcUrl,
+        helperUrl,
+        custom } = network
+
+      const payload = {
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        chainId,
+        chanifyNetwork: {
+          ...network,
+          rpcUrl: this.formData.newRpcUrl
+        }
+      }
+
+      await this.saveCustomChainSettings(payload)
     },
     getBaseUrl(url) {
       const pathArray = url.split('/'),
@@ -74,19 +85,33 @@ export default {
         host = pathArray[2]
       return protocol + '//' + host
     },
-    resetDefault() {
-      const { chain, network, asset } = this.account
-      const { chainId, rpcUrls } = network // More:: coinType, isTestnet, name, networkId
-
-      this.formData.networkName = chain
+    async resetDefault() {
+      const { chain } = this.settings
+      await this.removeCustomChainSettings({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        chainId: chain
+      })
+      this.setSettings()
+    },
+    setSettings() {
+      const { chain, network, asset } = this.settings
+      const { name,
+        coinType,
+        isTestnet,
+        chainId,
+        rpcUrl,
+        helperUrl,
+        custom } = network
+      this.formData.networkName = chainId
       this.formData.chainId = chainId
       this.formData.currencySymbol = asset
-      this.formData.newRpcUrl = this.getBaseUrl(rpcUrls[0])
+      this.formData.newRpcUrl = this.getBaseUrl(rpcUrl)
     }
   },
   created() {
-    console.log('Account info', this.account)
-    this.resetDefault()
+    console.log('Settings', this.settings)
+    this.setSettings()
   }
 }
 </script>
@@ -112,6 +137,7 @@ export default {
       display: block;
       margin: 0.5rem 0;
     }
+
     input {
       display: block;
       width: 100%;
@@ -135,22 +161,6 @@ export default {
       gap: 10px;
       padding: 12px 0;
       width: 100%;
-
-      button {
-        font-size: 0.875rem;
-        font-family: inherit;
-        line-height: 140%;
-        font-style: normal;
-        font-weight: normal;
-        font-weight: 500;
-        padding: 0.55rem 0.5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-sizing: border-box;
-        border-radius: 6px;
-        width: 100%;
-      }
     }
   }
 }
