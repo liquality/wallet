@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-for="(settings, idx) in chains" :key="`chain-${idx}`" class="overview-screen-chain-section" :id="idx">
-      <ListItem @item-selected="toggleExpandedChain(idx)">
+    <div v-for="settings in chainSettings" :key="`chain-${settings.chain}`" class="overview-screen-chain-section" :id="idx">
+      <ListItem @item-selected="toggleExpandedChain(settings.chain)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': 'white' }"></div>
           <div class="prefix-icon-container">
-            <MinusIcon v-if="shouldExpandChain(idx)" class="prefix-icon" />
+            <MinusIcon v-if="shouldExpandChain(settings.chain)" class="prefix-icon" />
             <PlusIcon v-else class="prefix-icon" />
           </div>
         </template>
@@ -14,7 +14,7 @@
         </template>
         {{ settings.chain }}
       </ListItem>
-      <div class="account-assets" :class="{ active: shouldExpandChain(idx) }">
+      <div class="account-assets" :class="{ active: shouldExpandChain(settings.chain) }">
         <CustomRpcSettingsForm :settings="settings" />
       </div>
     </div>
@@ -22,8 +22,7 @@
 </template>
 <script>
 import ListItem from '@/components/ListItem'
-import { getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { getAccountIcon } from '@/utils/accounts'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import {
@@ -49,21 +48,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'enabledChains', 'activeWalletId']),
-    ...mapGetters(['chainSettings']),
-
-    chains() {
-      return Object.keys(this.chainSettings).filter(
-        (chain) => isEvmChain(this.activeNetwork, chain) &&
-          this.enabledChains[this.activeWalletId]?.[this.activeNetwork]?.includes(chain))
-        .map(
-          chain => {
-            const network = this.chainSettings[chain]
-            const asset = getNativeAssetCode(this.activeNetwork, chain)
-            return { chain, asset, network }
-          }
-        )
-    }
+    ...mapGetters(['chainSettings'])
   },
   methods: {
     getAccountIcon,

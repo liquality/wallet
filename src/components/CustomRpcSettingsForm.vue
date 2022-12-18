@@ -78,6 +78,7 @@ export default {
       }
 
       await this.saveCustomChainSettings(payload)
+      this.setSettings()
     },
     getBaseUrl(url) {
       const pathArray = url.split('/'),
@@ -110,7 +111,6 @@ export default {
     }
   },
   created() {
-    console.log('Settings', this.settings)
     this.setSettings()
   }
 }
