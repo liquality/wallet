@@ -8,8 +8,11 @@
       >
         {{ $t('common.send') }}
       </NavBar>
-      <InfoNotification v-if="nativeAssetRequired">
-        <EthRequiredMessage :account-id="account.id" :action="'send'" />
+      <InfoNotification v-if="nativeAssetRequired || !isValidSendAmount">
+        <EthRequiredMessage v-if="nativeAssetRequired" :account-id="account.id" :action="'send'" />
+        <template v-else>
+          {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
+        </template>
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -18,7 +21,6 @@
             :amount="amount"
             :account="account"
             :amount-fiat="amountFiat"
-            :minimum-send-amount="minimumAssetSendAmount"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toggle-max="toggleMaxAmount"
             @update:amountFiat="updateSendAmount"
@@ -326,7 +328,8 @@ export default {
       domainData: {},
       domainResolver: null,
       minimumAssetsSendAmounts: {
-        SOL: 0.0015
+        SOL: 0.0015,
+        BTC: 0.0000055
       }
     }
   },
