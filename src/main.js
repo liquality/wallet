@@ -6,8 +6,11 @@ import router from './router'
 import { Localization } from './utils/localization'
 import ToggleButton from 'vue-js-toggle-button'
 import VTooltip from 'v-tooltip'
-
 import '@/assets/scss/style.scss'
+
+if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_USE_VUE_DEV_TOOLS) {
+  devtools.connect()
+}
 
 Vue.use(ToggleButton)
 Vue.use(VTooltip)
@@ -20,6 +23,3 @@ new Vue({
   render: (h) => h(App)
 }).$mount('#app')
 
-if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_USE_VUE_DEV_TOOLS === true) {
-  devtools.connect()
-}
