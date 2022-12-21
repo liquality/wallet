@@ -18,9 +18,10 @@
             :amount="amount"
             :account="account"
             :amount-fiat="amountFiat"
+            :minimum-send-amount="minimumAssetSendAmount"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toggle-max="toggleMaxAmount"
-            @update:amountFiat="(amount) => (amountFiat = amount)"
+            @update:amountFiat="updateSendAmount"
             :max="available"
             :available="available"
             :max-fiat="prettyFiatBalance(available, fiatRates[asset])"
@@ -128,7 +129,7 @@
               class="btn btn-primary btn-lg"
               id="send_review_button"
               @click="review"
-              :disabled="!canSend"
+              :disabled="!canSend || !isValidSendAmount"
             >
               {{ $t('common.review') }}
             </button>
@@ -323,7 +324,10 @@ export default {
       memo: '',
       updatingFees: false,
       domainData: {},
-      domainResolver: null
+      domainResolver: null,
+      minimumAssetsSendAmounts: {
+        SOL: 0.0015
+      }
     }
   },
   mounted() {
@@ -343,17 +347,20 @@ export default {
     networkWalletBalances() {
       return this.account?.balances
     },
+    minimumAssetSendAmount() {
+      return this.minimumAssetsSendAmounts[this.asset] || 0
+    },
+    isValidSendAmount() {
+      return this.stateAmount >= this.minimumAssetSendAmount
+    },
     amount: {
       get() {
         return this.stateAmount
       },
       set(newValue) {
-        if (newValue && !isNaN(newValue)) {
-          this.stateAmount = newValue
-        } else {
-          this.stateAmount = 0.0
-        }
-        this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+        this.$nextTick(() => {
+          this.updateSendAmount(newValue)
+        })
       }
     },
     amountFiat: {
@@ -524,6 +531,14 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    updateSendAmount(newValue) {
+      if (newValue && !isNaN(newValue)) {
+        this.stateAmount = newValue
+      } else {
+        this.stateAmount = this.minimumAssetSendAmount
+      }
+      this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+    },
     async _updateSendFees(amount) {
       const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
       if (amount === undefined) {
@@ -724,6 +739,11 @@ export default {
         action: 'User on Send screen',
         label: `${this.asset}`
       }
+    })
+
+    //  Set Asset minimum send Amount
+    this.$nextTick(() => {
+      this.stateAmount = this.minimumAssetSendAmount || 0.0
     })
   },
   watch: {
