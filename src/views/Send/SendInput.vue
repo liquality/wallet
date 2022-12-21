@@ -66,8 +66,17 @@
     <div class="send-bottom">
       <div class="send-bottom-available" id="send_available_balance">
         <span class="text-muted">{{ $t('common.available') }}</span>
-        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }}<br />{{ asset }}
       </div>
+      <v-popover v-if="minimumSendAmount && minimumSendAmount > 0" offset="1" trigger="hover focus">
+        <div class="send-bottom-available">
+          <span class="text-muted capitalised">{{ $t('common.minimum') }}</span>
+          {{ minimumSendAmount }}<br />{{ asset }}
+        </div>
+        <template slot="popover">
+          {{ $t('common.minSendAmount') }}
+        </template>
+      </v-popover>
       <div class="send-bottom-options">
         <div class="btn-group">
           <v-popover offset="1" trigger="hover focus">
@@ -117,7 +126,8 @@ export default {
     'available',
     'maxFiat',
     'amountError',
-    'maxActive'
+    'maxActive',
+    'minimumSendAmount'
   ],
   computed: {
     ...mapState(['fiatRates'])
@@ -225,6 +235,10 @@ export default {
       text-transform: none;
       font-weight: $font-weight-light;
       font-size: $font-size-tiny;
+
+      .capitalised {
+        text-transform: capitalize;
+      }
     }
   }
 }
