@@ -1,4 +1,3 @@
-<!-- eslint-disable no-unused-vars -->
 <template>
   <div class="rpc-form">
     <div class="rpc-form-control">
@@ -48,7 +47,6 @@
   </div>
 </template>
 <script>
-
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'CustomRpcSettingsForm',
@@ -74,8 +72,8 @@ export default {
   methods: {
     ...mapActions(['saveCustomChainSettings', 'removeCustomChainSettings']),
     async formSubmitHandler() {
-      const { chain, network, asset } = this.settings
-      const { name, coinType, isTestnet, chainId, rpcUrl, helperUrl, custom } = network
+      const { network } = this.settings
+      const { chainId } = network
 
       const payload = {
         network: this.activeNetwork,
@@ -106,8 +104,8 @@ export default {
       this.setSettings()
     },
     setSettings() {
-      const { chain, network, asset } = this.settings
-      const { name, coinType, isTestnet, chainId, rpcUrl, helperUrl, custom } = network
+      const { network, asset } = this.settings
+      const { chainId, rpcUrl } = network
       this.formData.networkName = chainId
       this.formData.chainId = chainId
       this.formData.currencySymbol = asset
