@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div v-for="settings in chainSettings" :key="`chain-${settings.chain}`" class="overview-screen-chain-section" :id="idx">
+    <div
+      v-for="settings in chainSettings"
+      :key="`chain-${settings.chain}`"
+      class="overview-screen-chain-section"
+      :id="idx"
+    >
       <ListItem @item-selected="toggleExpandedChain(settings.chain)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': 'white' }"></div>

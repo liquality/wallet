@@ -1,8 +1,14 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
   <div class="rpc-form">
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.networkName`) }}</label>
-      <input :disabled="true" type="text" v-model="formData.networkName" placeholder="network name" />
+      <input
+        :disabled="true"
+        type="text"
+        v-model="formData.networkName"
+        placeholder="network name"
+      />
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.newRpcURL`) }}</label>
@@ -14,7 +20,12 @@
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.currencySymbol`) }}</label>
-      <input type="text" :disabled="true" v-model="formData.currencySymbol" placeholder="currency synbol" />
+      <input
+        type="text"
+        :disabled="true"
+        v-model="formData.currencySymbol"
+        placeholder="currency synbol"
+      />
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.blockExplorerUrl`) }}</label>
@@ -22,17 +33,22 @@
     </div>
     <div class="rpc-form-control mt-3">
       <div class="button-group">
-          <button class="btn btn-primary btn-lg btn-icon" @click="formSubmitHandler" :disabled="!canSubmit">
-            {{ $t(`pages.settings.customRpcForm.save`) }}
-          </button>
-          <button class="btn btn-light btn-outline-primary btn-lg ml-2" @click="resetDefault">
-            {{ $t(`pages.settings.customRpcForm.default`) }}
-          </button>
-        </div>
+        <button
+          class="btn btn-primary btn-lg btn-icon"
+          @click="formSubmitHandler"
+          :disabled="!canSubmit"
+        >
+          {{ $t(`pages.settings.customRpcForm.save`) }}
+        </button>
+        <button class="btn btn-light btn-outline-primary btn-lg ml-2" @click="resetDefault">
+          {{ $t(`pages.settings.customRpcForm.default`) }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
 <script>
+
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'CustomRpcSettingsForm',
@@ -59,13 +75,7 @@ export default {
     ...mapActions(['saveCustomChainSettings', 'removeCustomChainSettings']),
     async formSubmitHandler() {
       const { chain, network, asset } = this.settings
-      const { name,
-        coinType,
-        isTestnet,
-        chainId,
-        rpcUrl,
-        helperUrl,
-        custom } = network
+      const { name, coinType, isTestnet, chainId, rpcUrl, helperUrl, custom } = network
 
       const payload = {
         network: this.activeNetwork,
@@ -97,13 +107,7 @@ export default {
     },
     setSettings() {
       const { chain, network, asset } = this.settings
-      const { name,
-        coinType,
-        isTestnet,
-        chainId,
-        rpcUrl,
-        helperUrl,
-        custom } = network
+      const { name, coinType, isTestnet, chainId, rpcUrl, helperUrl, custom } = network
       this.formData.networkName = chainId
       this.formData.chainId = chainId
       this.formData.currencySymbol = asset
