@@ -95,5 +95,7 @@
         "ph": "Tagalog",
         "cb": "Cebuano"
     },
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "minSendAmount": "La cantidad mínima a enviar es "
+}
 }
