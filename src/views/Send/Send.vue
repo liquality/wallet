@@ -8,10 +8,10 @@
       >
         {{ $t('common.send') }}
       </NavBar>
-      <!-- <InfoNotification v-if="nativeAssetRequired">
+      <InfoNotification v-if="nativeAssetRequired">
         <EthRequiredMessage :account-id="account.id" :action="'send'" />
-      </InfoNotification> -->
-      <InfoNotification v-if="!isValidSendAmount">
+      </InfoNotification>
+      <InfoNotification v-else-if="!isValidSendAmount">
         {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
       </InfoNotification>
       <div class="wrapper form">
@@ -289,7 +289,7 @@ import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 import InfoNotification from '@/components/InfoNotification'
-// import EthRequiredMessage from '@/components/EthRequiredMessage'
+import EthRequiredMessage from '@/components/EthRequiredMessage'
 
 export default {
   components: {
@@ -303,7 +303,7 @@ export default {
     CustomFees,
     CustomFeesEIP1559,
     InfoNotification,
-    // EthRequiredMessage
+    EthRequiredMessage
   },
   mixins: [ledgerConnectMixin],
   data() {
@@ -364,7 +364,7 @@ export default {
     },
     amount: {
       get() {
-        return this.stateAmount // crypto value
+        return this.stateAmount
       },
       set(newValue) {
         this.updateSendAmount(newValue)
