@@ -96,6 +96,8 @@
         "cb": "Cebuano"
     },
     "noResults": "No results found",
-    "minSendAmount": "Minimum send amount required is ",
-    "minReserve": "Min reserve amount"
+    "minReserve": "Min reserve amount",
+    "settings": "Settings",
+    "customNetworkSettings": "Custom Network Settings",
+    "minSendAmount": "Minimum send amount is "
 }

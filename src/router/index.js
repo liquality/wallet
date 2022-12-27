@@ -53,8 +53,19 @@ const routes = [
   {
     path: '/settings',
     component: () => import(/* webpackPrefetch: true */ '@/views/Settings'),
-    name: 'Settings',
-    meta: { protect: true }
+    meta: { protect: true },
+    children: [
+      {
+        path: '',
+        name: 'AllSettings',
+        component: () => import('@/views/SettingItems.vue')
+      },
+      {
+        path: 'networks',
+        name: 'NetworkSettings',
+        component: () => import('@/views/NetworkSettings.vue')
+      }
+    ]
   },
   {
     path: '/settings/experiments',
@@ -79,7 +90,6 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
-    name: 'Wallet',
     component: Wallet,
     meta: { protect: true },
     children: [
