@@ -21,6 +21,7 @@
             :amount="amount"
             :account="account"
             :amount-fiat="amountFiat"
+            :reserve-balance="minimumAssetReserveBalance"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toggle-max="toggleMaxAmount"
             @update:amountFiat="(newAmount) => (amountFiat = newAmount)"
@@ -327,9 +328,15 @@ export default {
       updatingFees: false,
       domainData: {},
       domainResolver: null,
-      minimumAssetsSendAmounts: {
-        SOL: 0.0015,
-        BTC: 0.0000055
+      minimumAssetsSettings: {
+        SOL: {
+          minSendAmount: 0.0015,
+          minReserveBalance: 0.00203928
+        },
+        BTC: {
+          minSendAmount: 0.0000055,
+          minReserveBalance: 0.0
+        }
       }
     }
   },
@@ -350,16 +357,20 @@ export default {
     networkWalletBalances() {
       return this.account?.balances
     },
+    selectedAssetInfo() {
+      return this.minimumAssetsSettings[this.asset]
+    },
     minimumAssetSendAmount() {
-      return this.minimumAssetsSendAmounts[this.asset] || 0.0
+      return this.selectedAssetInfo ? this.selectedAssetInfo['minSendAmount'] : 0.0
+    },
+    minimumAssetReserveBalance() {
+      return this.selectedAssetInfo ? this.selectedAssetInfo['minReserveBalance'] : 0.0
     },
     isValidSendAmount() {
       const amount = BN(this.stateAmount)
       if (amount.eq(0)) {
-        debugger
         return true
       }
-      debugger
       return amount.gte(BN(this.minimumAssetSendAmount))
     },
     amount: {
@@ -493,7 +504,9 @@ export default {
           this.selectedFee in this.maxSendFees ? this.maxSendFees[this.selectedFee] : BN(0)
         const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
-        return unitToCurrency(cryptoassets[this.asset], available)
+
+        const reserveBalance = BN(this.minimumAssetReserveBalance)
+        return unitToCurrency(cryptoassets[this.asset], available).minus(reserveBalance)
       }
     },
     amountInFiat() {

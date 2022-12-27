@@ -50,9 +50,9 @@
         "message": "Sa higayon nga magsugod ka sa paggamit sa imong wallet, dinhi nimo makita ang mga activity."
     },
     "ethRequiredMessage": {
-        "message_swap": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang %{nativeAsset} aron mabayran ang gas.",
+        "message_swap": "A balance is required to swap and you need %{nativeAsset} to pay for gas.",
         "message_send": "You need %{nativeAsset} to pay for gas.",
-        "getETH": "Kuha ug %{nativeAsset}"
+        "getETH": "Get %{nativeAsset}"
     },
     "head": {
         "dappConnected": "naka-konek na ang dApp",
@@ -82,7 +82,7 @@
     "noLiquidityMessage": {
         "noLiquidity": "Dili igo nga liquidity alang niini nga trade. Mahimo kang mohangyo ug %{asset} sa",
         "tryAgainLater": " o sulayi pag-usab.",
-        "noTraded": "Kini nga pares wala pa gi-trade. Sulayi ang ubang paagi sa paghimo sa daghang swap aron makuha ang gusto nga token."
+        "noTraded": "This pair isn't traded yet or there's a problem trading it at the moment. Maybe there is a way to do multiple swaps to get that desired token."
     },
     "operationErrorModal": {
         "cantFindAccount": "Dili makit-an ang ledger Account",

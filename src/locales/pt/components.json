@@ -50,9 +50,9 @@
         "message": "Quando começar a usar sua carteira, verá atividade aqui."
     },
     "ethRequiredMessage": {
-        "message_swap": "Saldo é requerido para realizar trocas, e você precisa de %{nativeAsset} para pagar o gás.",
+        "message_swap": "A balance is required to swap and you need %{nativeAsset} to pay for gas.",
         "message_send": "You need %{nativeAsset} to pay for gas.",
-        "getETH": "Obter %{nativeAsset}"
+        "getETH": "Get %{nativeAsset}"
     },
     "head": {
         "dappConnected": "dApp Conectado",
@@ -82,7 +82,7 @@
     "noLiquidityMessage": {
         "noLiquidity": "Não é liquidez suficiente para esta negociação. Você pode solicitar mais t %{asset} em ",
         "tryAgainLater": " ou tentar novamente.",
-        "noTraded": "Este para não é negociado ainda. Talvez haja uma forma de fazer múltiplas trocas para obter o token desejado."
+        "noTraded": "This pair isn't traded yet or there's a problem trading it at the moment. Maybe there is a way to do multiple swaps to get that desired token."
     },
     "operationErrorModal": {
         "cantFindAccount": "Não é possível encontrar a Conta ledger",
