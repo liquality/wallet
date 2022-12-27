@@ -76,7 +76,18 @@
     "dappConnectionsSub": "Olvidar todas las dapps conectadas.",
     "done": "¡Hecho!",
     "forgetAllConnections": "Olvidar todas las conexiones",
-    "version": "Versión"
+    "version": "Versión",
+    "networks": "Cadenas",
+    "networksSub": "Manage custom RPC network settings.",
+    "customRpcForm": {
+      "networkName": "Network Name",
+      "newRpcURL": "New RPC URL",
+      "chainId": "Chain ID",
+      "currencySymbol": "Currency symbol",
+      "blockExplorerUrl": "Block explorer URL (optional)",
+      "save": "Save",
+      "default": "Default"
+    }
   },
   "experiments": {
     "experiments": "Experimentos",

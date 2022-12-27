@@ -76,7 +76,18 @@
     "dappConnectionsSub": "I-diskonek ang mga dapps na konektado.",
     "done": "Tapos na.",
     "forgetAllConnections": "Kalimutan ang lahat ng koneksyon",
-    "version": "Bersyon"
+    "version": "Bersyon",
+    "networks": "Networks",
+    "networksSub": "Manage custom RPC network settings.",
+    "customRpcForm": {
+      "networkName": "Network Name",
+      "newRpcURL": "New RPC URL",
+      "chainId": "Chain ID",
+      "currencySymbol": "Currency symbol",
+      "blockExplorerUrl": "Block explorer URL (optional)",
+      "save": "Save",
+      "default": "Default"
+    }
   },
   "experiments": {
     "experiments": "Mga eksperimento",
