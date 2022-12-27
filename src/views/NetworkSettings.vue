@@ -1,10 +1,9 @@
 <template>
   <div>
     <div
-      v-for="settings in chainSettings"
+      v-for="settings in settingsList"
       :key="`chain-${settings.chain}`"
       class="overview-screen-chain-section"
-      :id="idx"
     >
       <ListItem @item-selected="toggleExpandedChain(settings.chain)">
         <template #prefix>
@@ -27,7 +26,7 @@
 </template>
 <script>
 import ListItem from '@/components/ListItem'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { getAccountIcon } from '@/utils/accounts'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import {
@@ -38,6 +37,7 @@ import {
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import CustomRpcSettingsForm from '@/components/CustomRpcSettingsForm.vue'
+import { getChain, isEvmChain } from '@liquality/cryptoassets'
 
 export default {
   name: 'NetworkSettings',
@@ -53,7 +53,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['chainSettings'])
+    ...mapState(['activeNetwork']),
+    ...mapGetters(['chainSettings']),
+    settingsList() {
+      return this.chainSettings
+        .map((s) => ({
+          ...s,
+          chainId: getChain(this.activeNetwork, s.chain)?.network.chainId
+        }))
+        .filter(({ chain }) => isEvmChain(this.activeNetwork, chain))
+    }
   },
   methods: {
     getAccountIcon,

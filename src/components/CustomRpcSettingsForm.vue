@@ -28,7 +28,7 @@
     </div>
     <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.blockExplorerUrl`) }}</label>
-      <input type="text" v-model="formData.blockexplorerUrl" placeholder="block explorer url" />
+      <input type="text" v-model="formData.explorerUrl" placeholder="block explorer url" />
     </div>
     <div class="rpc-form-control mt-3">
       <div class="button-group">
@@ -58,15 +58,23 @@ export default {
         newRpcUrl: '',
         chainId: '',
         currencySymbol: '',
-        blockexplorerUrl: ''
+        explorerUrl: ''
       }
     }
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId']),
     canSubmit() {
-      const { networkName, newRpcUrl, chainId, currencySymbol } = this.formData
-      return !!(networkName && newRpcUrl && chainId && currencySymbol)
+      const { networkName, newRpcUrl, chainId, currencySymbol, explorerUrl } = this.formData
+      const { network } = this.settings
+      if (
+        (networkName && newRpcUrl && chainId && currencySymbol && newRpcUrl !== network?.rpcUrl) ||
+        explorerUrl !== network?.explorerUrl
+      ) {
+        return true
+      }
+
+      return false
     }
   },
   methods: {
@@ -81,6 +89,7 @@ export default {
         chainId,
         chanifyNetwork: {
           ...network,
+          explorerUrl: this.formData.explorerUrl,
           rpcUrl: this.formData.newRpcUrl
         }
       }
@@ -104,12 +113,13 @@ export default {
       this.setSettings()
     },
     setSettings() {
-      const { network, asset } = this.settings
-      const { chainId, rpcUrl } = network
-      this.formData.networkName = chainId
+      const { chain, network, asset, chainId } = this.settings
+      const { rpcUrl, explorerUrl } = network
+      this.formData.networkName = chain
       this.formData.chainId = chainId
       this.formData.currencySymbol = asset
       this.formData.newRpcUrl = this.getBaseUrl(rpcUrl)
+      this.formData.explorerUrl = explorerUrl
     }
   },
   created() {

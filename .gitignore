@@ -41,3 +41,6 @@ artifacts
 .yarn/versions
 .yarn/install-state.gz
 .yarn/unplugged
+
+yalc.lock
+.yalc

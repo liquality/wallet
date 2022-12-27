@@ -53,7 +53,6 @@ const routes = [
   {
     path: '/settings',
     component: () => import(/* webpackPrefetch: true */ '@/views/Settings'),
-    name: 'Settings',
     meta: { protect: true },
     children: [
       {
@@ -91,7 +90,6 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
-    name: 'Wallet',
     component: Wallet,
     meta: { protect: true },
     children: [
