@@ -26,7 +26,7 @@
         placeholder="currency synbol"
       />
     </div>
-    <div class="rpc-form-control">
+    <!-- <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.blockExplorerUrl`) }}</label>
       <input type="text" v-model="formData.explorerUrl" placeholder="block explorer url" />
     </div>
@@ -43,7 +43,7 @@
           {{ $t(`pages.settings.customRpcForm.default`) }}
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
