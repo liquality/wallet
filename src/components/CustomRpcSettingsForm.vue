@@ -68,7 +68,11 @@ export default {
       const { networkName, newRpcUrl, chainId, currencySymbol, explorerUrl } = this.formData
       const { network } = this.settings
       if (
-        (networkName && newRpcUrl && chainId && currencySymbol && newRpcUrl !== network?.rpcUrl) ||
+        (networkName &&
+          newRpcUrl &&
+          chainId &&
+          currencySymbol &&
+          newRpcUrl !== this.getBaseUrl(network?.rpcUrl)) ||
         explorerUrl !== network?.explorerUrl
       ) {
         return true
