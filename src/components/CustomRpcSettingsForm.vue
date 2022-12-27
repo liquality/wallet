@@ -29,7 +29,7 @@
     <!-- <div class="rpc-form-control">
       <label>{{ $t(`pages.settings.customRpcForm.blockExplorerUrl`) }}</label>
       <input type="text" v-model="formData.explorerUrl" placeholder="block explorer url" />
-    </div>
+    </div> -->
     <div class="rpc-form-control mt-3">
       <div class="button-group">
         <button
@@ -43,7 +43,7 @@
           {{ $t(`pages.settings.customRpcForm.default`) }}
         </button>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 <script>
