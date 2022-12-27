@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.81.5",
+  "version": "0.82.0",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -23,12 +23,13 @@
     "devtools": "node_modules/.bin/vue-devtools"
   },
   "dependencies": {
+    "@chainify/hw-ledger": "2.2.0",
     "@liquality/cryptoassets": "2.1.0",
     "@liquality/error-parser": "2.0.1",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "3.0.0",
+    "@liquality/wallet-core": "4.0.0",
     "@terra-money/terra.js": "^3.1.6",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
@@ -122,5 +123,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
+  },
+  "resolutions": {
+    "@ledgerhq/devices": "6.27.1",
+    "@ledgerhq/hw-transport": "6.27.1",
+    "@ledgerhq/hw-transport-webhid": "6.27.1",
+    "@ledgerhq/hw-app-eth": "6.26.0"
   }
 }

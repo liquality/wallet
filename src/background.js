@@ -16,11 +16,13 @@ function asyncLoop(fn, delay) {
     .then(() => asyncLoop(fn, delay))
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === 'install') {
-    chrome.runtime.setUninstallURL('https://liquality.typeform.com/feedbackuninst')
-  }
-})
+if (process.env.NODE_ENV !== 'development') {
+  chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+      chrome.runtime.setUninstallURL('https://liquality.typeform.com/feedbackuninst')
+    }
+  })
+}
 
 function getBalance(state) {
   let total = 0

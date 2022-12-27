@@ -39,6 +39,14 @@
           <AccountsIcon />
           {{ $t('components.navbar.manageAccounts') }}
         </li>
+        <li
+          id="manage_accounts"
+          v-if="experiments.customNetworkSettings"
+          @click="customNetworkSettings"
+        >
+          <AccountsIcon />
+          {{ $t('common.customNetworkSettings') }}
+        </li>
         <li id="export_privkey" v-if="showExportPrivateKey" @click="exportPrivateKey">
           <KeyIcon />
           {{ $t('components.navbar.exportPrivateKey') }}
@@ -167,6 +175,19 @@ export default {
       })
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
+    },
+    customNetworkSettings() {
+      this.trackAnalytics({
+        event: 'User clicked on custom Network Settings option in navbar',
+        properties: {
+          walletVersion,
+          category: 'HamburgerIcon',
+          action: 'Click on custom Network Settings',
+          label: 'User clicked on wallet custom Network Settings from menu option'
+        }
+      })
+      this.showMenuList = false
+      this.$router.replace({ name: 'NetworkSettings' })
     },
     settings() {
       this.trackAnalytics({
