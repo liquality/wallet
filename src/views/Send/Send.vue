@@ -11,6 +11,9 @@
       <InfoNotification v-if="nativeAssetRequired">
         <EthRequiredMessage :account-id="account.id" :action="'send'" />
       </InfoNotification>
+      <InfoNotification v-else-if="!isValidSendAmount">
+        {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
@@ -18,10 +21,9 @@
             :amount="amount"
             :account="account"
             :amount-fiat="amountFiat"
-            :minimum-send-amount="minimumAssetSendAmount"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toggle-max="toggleMaxAmount"
-            @update:amountFiat="updateSendAmount"
+            @update:amountFiat="(newAmount) => (amountFiat = newAmount)"
             :max="available"
             :available="available"
             :max-fiat="prettyFiatBalance(available, fiatRates[asset])"
@@ -129,7 +131,7 @@
               class="btn btn-primary btn-lg"
               id="send_review_button"
               @click="review"
-              :disabled="!canSend || !isValidSendAmount"
+              :disabled="!canSend"
             >
               {{ $t('common.review') }}
             </button>
@@ -326,7 +328,8 @@ export default {
       domainData: {},
       domainResolver: null,
       minimumAssetsSendAmounts: {
-        SOL: 0.0015
+        SOL: 0.0015,
+        BTC: 0.0000055
       }
     }
   },
@@ -348,19 +351,23 @@ export default {
       return this.account?.balances
     },
     minimumAssetSendAmount() {
-      return this.minimumAssetsSendAmounts[this.asset] || 0
+      return this.minimumAssetsSendAmounts[this.asset] || 0.0
     },
     isValidSendAmount() {
-      return this.stateAmount >= this.minimumAssetSendAmount
+      const amount = BN(this.stateAmount)
+      if (amount.eq(0)) {
+        debugger
+        return true
+      }
+      debugger
+      return amount.gte(BN(this.minimumAssetSendAmount))
     },
     amount: {
       get() {
         return this.stateAmount
       },
       set(newValue) {
-        this.$nextTick(() => {
-          this.updateSendAmount(newValue)
-        })
+        this.updateSendAmount(newValue)
       }
     },
     amountFiat: {
@@ -371,14 +378,14 @@ export default {
         if (!newValue) {
           // keep it as a number instead of string, otherwise the placeholder of input won't appear
           this.stateAmountFiat = 0.0
-          this.stateAmount = 0.0
         } else {
           this.stateAmountFiat = newValue
-          this.stateAmount = fiatToCrypto(
-            this.stateAmountFiat?.replaceAll(',', ''),
-            this.fiatRates[this.asset]
-          )
         }
+
+        this.stateAmount = fiatToCrypto(
+          this.stateAmountFiat?.replaceAll(',', ''),
+          this.fiatRates[this.asset]
+        )
       }
     },
     balance() {
@@ -467,6 +474,7 @@ export default {
         !this.nativeAssetRequired &&
         this.address &&
         !this.addressError &&
+        BN(this.amount).gte(BN(this.minimumAssetSendAmount)) &&
         BN(this.amount).gt(0) &&
         !this.amountError
       ) {
@@ -535,7 +543,7 @@ export default {
       if (newValue && !isNaN(newValue)) {
         this.stateAmount = newValue
       } else {
-        this.stateAmount = this.minimumAssetSendAmount
+        this.stateAmount = 0.0
       }
       this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
     },
@@ -739,11 +747,6 @@ export default {
         action: 'User on Send screen',
         label: `${this.asset}`
       }
-    })
-
-    //  Set Asset minimum send Amount
-    this.$nextTick(() => {
-      this.stateAmount = this.minimumAssetSendAmount || 0.0
     })
   },
   watch: {

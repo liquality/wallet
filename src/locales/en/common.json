@@ -97,6 +97,6 @@
     },
     "noResults": "No results found",
     "settings": "Settings",
-    "minSendAmount": "Minimum amount that can be sent.",
-    "customNetworkSettings": "Custom Network Settings"
+    "customNetworkSettings": "Custom Network Settings",
+    "minSendAmount": "Minimum send amount is "
 }

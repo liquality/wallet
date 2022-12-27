@@ -96,5 +96,6 @@
         "cb": "Cebuano"
     },
     "noResults": "No results found",
-    "customNetworkSettings": "Custom Network Settings"
+    "customNetworkSettings": "Custom Network Settings",
+    "minSendAmount": "La cantidad mínima a enviar es  "
 }
