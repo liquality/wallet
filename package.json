@@ -123,14 +123,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
-<<<<<<< HEAD
-=======
   },
   "resolutions": {
     "@ledgerhq/devices": "6.27.1",
     "@ledgerhq/hw-transport": "6.27.1",
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@ledgerhq/hw-app-eth": "6.26.0"
->>>>>>> 5a53a707 (feat: implemented custom rpc settings and fixed issuess with wallet core and chanifiy ledger packages)
   }
 }
