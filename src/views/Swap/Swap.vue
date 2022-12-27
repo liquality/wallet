@@ -63,7 +63,7 @@
         <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
-        <EthRequiredMessage :account-id="account.id" />
+        <EthRequiredMessage :account-id="account.id" :action="'swap'" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -89,9 +89,7 @@
             <ArrowDown
               id="arrow"
               v-if="!updatingQuotes"
-              @click="
-                onReverseAssets(asset, toAsset, selectedQuote.toAmount, fromAccountId, toAccountId)
-              "
+              @click="onReverseAssets(asset, toAsset, selectedQuote, fromAccountId, toAccountId)"
             />
             <SpinnerIcon v-else />
           </div>
@@ -464,6 +462,8 @@
         :exclude-asset="assetSelection === 'to' ? asset : toAsset"
         :asset-selection="assetSelection"
         @asset-selected="assetChanged"
+        :account="account"
+        :to-account="toAccount"
       />
     </div>
     <!-- Swap types -->
@@ -488,7 +488,7 @@
       :open="swapErrorModalOpen"
       :account="account"
       @close="closeSwapErrorModal"
-      :error="swapErrorMessage"
+      :liqualityErrorString="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -538,10 +538,10 @@ import ArrowDown from '@/assets/icons/arrow-down.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
-import Accounts from './Accounts'
 import QuotesModal from './QuotesModal'
 import SwapProvidersInfoModal from './SwapProvidersInfoModal'
 import SwapInfo from './SwapInfo'
+import Accounts from './Accounts'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
@@ -864,9 +864,28 @@ export default {
       return this.selectedQuote?.receiveFee
     },
     maxFee() {
-      const selectedSpeed = this.selectedFee[this.assetChain]
-      const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
-      return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
+      try {
+        const selectedSpeed = this.selectedFee[this.assetChain]
+        const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed] || 0
+
+        const getExtraAmountToExtractFromBalance =
+          this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
+        let extraAmountToExtractFromBalance = 0
+        if (getExtraAmountToExtractFromBalance) {
+          extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+        }
+
+        const totalFees = currencyToUnit(cryptoassets[this.assetChain], fee).plus(
+          extraAmountToExtractFromBalance
+        )
+        return totalFees ? totalFees : BN(0)
+      } catch (error) {
+        const liqualityErrorString = errorToLiqualityErrorString(error)
+        reportLiqualityError(error)
+        return {
+          error: liqualityErrorString
+        }
+      }
     },
     receiveFeeRequired() {
       return this.selectedQuoteProvider?.toTxType
@@ -876,20 +895,12 @@ export default {
 
       // Some swap providers like "Jupiter" require extra amount to be extract from balance
       // when perforing swaps using "MAX"
-      const getExtraAmountToExtractFromBalance =
-        this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
-      let extraAmountToExtractFromBalance = 0
-      if (getExtraAmountToExtractFromBalance) {
-        extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
-      }
 
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(
-            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
-            0
-          )
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
+
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     availableBeforeFees() {
@@ -1135,9 +1146,10 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [asset] })
     },
-    onReverseAssets(fromAsset, toAsset, toAmount, fromAccountId, toAccountId) {
+    onReverseAssets(fromAsset, toAsset, selectedQuote, fromAccountId, toAccountId) {
       if (this.updatingQuotes) return
       this.amountOption = null
+      const toAmount = selectedQuote?.toAmount || 0
       this.fromAssetChanged(toAccountId, toAsset, toAmount)
       this.toAssetChanged(fromAccountId, fromAsset)
     },
@@ -1333,6 +1345,7 @@ export default {
       this.showQuotesModal = false
     },
     review() {
+<<<<<<< HEAD
       if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
         // open in a new tab
         const swapParams = qs.stringify({
@@ -1351,6 +1364,28 @@ export default {
         browser.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
         this.currentStep = 'confirm'
+=======
+      if (this.canSwap) {
+        if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+          // open in a new tab
+          const swapParams = qs.stringify({
+            mode: 'tab',
+            selectedFee: this.selectedFee,
+            sendAmount: BN(this.sendAmount).toString(),
+            toAccountId: this.toAccountId,
+            toAsset: this.toAsset,
+            customFees: this.customFees,
+            userSelectedQuote: this.userSelectedQuote,
+            currentStep: 'confirm',
+            maxOptionActive: this.maxOptionActive,
+            selectedQuote: this.selectedQuote
+          })
+          const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
+          chrome.tabs.create({ url: browser.runtime.getURL(url) })
+        } else {
+          this.currentStep = 'confirm'
+        }
+>>>>>>> develop
       }
     },
     async swap() {
@@ -1385,7 +1420,7 @@ export default {
         reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.swapErrorMessage = this.$tle(errorToLiqualityErrorString(error))
+        this.swapErrorMessage = errorToLiqualityErrorString(error)
         this.swapErrorModalOpen = true
       }
     },

@@ -56,6 +56,7 @@
     "transactionFee": "Comisión de Transacción",
     "copied": "¡Copiado!",
     "copyAddress": "Copiar Dirección",
+    "copyError": "Copy Error",
     "clickToCopy": "Click para copiar",
     "viewInExplorer": "Ver en el Explorador",
     "noItems": "Sin items",
@@ -93,5 +94,10 @@
         "pt": "Português",
         "ph": "Tagalog",
         "cb": "Cebuano"
-    }
+    },
+    "noResults": "No results found",
+    "minReserve": "Min reserve amount",
+    "settings": "Configuración",
+    "customNetworkSettings": "Custom Network Settings",
+    "minSendAmount": "Minimum send amount is "
 }

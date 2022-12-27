@@ -18,13 +18,16 @@
       </li>
     </ul>
     <div class="wallet-tab-content">
-      <router-view></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view />
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+
 export default {
   computed: {
     ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),

@@ -50,8 +50,9 @@
         "message": "Dito makikita ang mga activity ng iyong wallet kapag sinimulan mo na itong gamitin."
     },
     "ethRequiredMessage": {
-        "message": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng ETH para sa gas fee.",
-        "getETH": "Kumuha ng ETH"
+        "message_swap": "A balance is required to swap and you need %{nativeAsset} to pay for gas.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
+        "getETH": "Get %{nativeAsset}"
     },
     "head": {
         "dappConnected": "Nakakonek na sa dApp",
@@ -81,7 +82,7 @@
     "noLiquidityMessage": {
         "noLiquidity": "Hindi sapat ang liquidity para sa trade na ito. Maaari kang humiling ng %{asset} sa ",
         "tryAgainLater": " o subukang muli mamaya.",
-        "noTraded": "Ang pares na ito ay hindi pa maaring ipagpalit. Suriin ang ibang paraan para gumawa ng higit sa isang swap para makuha ang ninanais na token."
+        "noTraded": "This pair isn't traded yet or there's a problem trading it at the moment. Maybe there is a way to do multiple swaps to get that desired token."
     },
     "operationErrorModal": {
         "cantFindAccount": "Hindi mahanap ang ledger Account",

@@ -28,9 +28,6 @@ export const mutations = {
   SET_LEDGER_SIGN_REQUEST_MODAL_OPEN(state, { open }) {
     state.ledgertSignRequestModalOpen = open
   },
-  SET_SETTINGS_MODAL_OPEN(state, { open }) {
-    state.settingsModalOpen = open
-  },
   SET_LOCALE(state, { locale }) {
     state.locale = locale
   },

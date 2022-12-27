@@ -52,6 +52,10 @@ module.exports = {
   chainWebpack: (config) => {
     config.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
     config.resolve.alias.set('vuex', path.resolve('./node_modules/vuex'))
+    config.resolve.alias.set(
+      '@ledgerhq/devices/hid-framing',
+      path.resolve('./node_modules/@ledgerhq/devices/lib-es/hid-framing')
+    )
 
     const svgRule = config.module.rule('svg')
 

@@ -100,13 +100,15 @@ export default {
     hideConnectionDrawer() {
       this.showConnectionDrawer = false
     },
-    async switchNetwork(network) {
-      await this.changeActiveNetwork({ network })
-      await this.$router.replace('/wallet')
+    switchNetwork(network) {
+      this.changeActiveNetwork({ network })
+      if (this.$route.name !== 'WalletAssets') {
+        this.$router.replace({ name: 'WalletAssets' })
+      }
       this.showNetworks = false
     }
   },
-  created() {
+  mounted() {
     if (this.showDappConnections) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs.length > 0) {

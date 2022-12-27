@@ -64,10 +64,21 @@
       </div>
     </div>
     <div class="send-bottom">
-      <div class="send-bottom-available" id="send_available_balance">
-        <span class="text-muted">{{ $t('common.available') }}</span>
-        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
-      </div>
+      <v-popover v-if="reserveBalance > 0" offset="1" trigger="hover" :placement="'top'">
+        <AssetAvailableAmount :available="available" :asset="asset" />
+        <template slot="popover">
+          <div class="send-bottom-available">
+            <span>
+              <span class="text-muted">{{ $t('common.minReserve') }}</span
+              ><br />
+              {{ `${reserveBalance} ${asset}` }}
+            </span>
+          </div>
+        </template>
+      </v-popover>
+      <template v-else>
+        <AssetAvailableAmount :available="available" :asset="asset" />
+      </template>
       <div class="send-bottom-options">
         <div class="btn-group">
           <v-popover offset="1" trigger="hover focus">
@@ -97,11 +108,13 @@ import { getAssetColorStyle } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { dpUI, formatFiatUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
+import AssetAvailableAmount from '@/views/Send/AssetAvailableAmount.vue'
 import { mapState } from 'vuex'
 
 export default {
   components: {
-    AccountTooltip
+    AccountTooltip,
+    AssetAvailableAmount
   },
   data() {
     return {
@@ -117,7 +130,8 @@ export default {
     'available',
     'maxFiat',
     'amountError',
-    'maxActive'
+    'maxActive',
+    'reserveBalance'
   ],
   computed: {
     ...mapState(['fiatRates'])
@@ -225,6 +239,10 @@ export default {
       text-transform: none;
       font-weight: $font-weight-light;
       font-size: $font-size-tiny;
+
+      .capitalised {
+        text-transform: capitalize;
+      }
     }
   }
 }

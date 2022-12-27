@@ -50,8 +50,9 @@
         "message": "开始使用钱包后，您将在此处看到活动。"
     },
     "ethRequiredMessage": {
-        "message": "兑换需要一定的余额，您需要 ETH 来支付 gas。",
-        "getETH": "获得ETH"
+        "message_swap": "A balance is required to swap and you need %{nativeAsset} to pay for gas.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
+        "getETH": "Get %{nativeAsset}"
     },
     "head": {
         "dappConnected": "已连接的dApp",
@@ -81,7 +82,7 @@
     "noLiquidityMessage": {
         "noLiquidity": "这笔交易的流动性不足。 您可以在 %{asset} 请求",
         "tryAgainLater": " 或者晚点再试。",
-        "noTraded": "尚未有此交易对。 也许有其他方法可以进行多次交换以获得所需的代币。"
+        "noTraded": "This pair isn't traded yet or there's a problem trading it at the moment. Maybe there is a way to do multiple swaps to get that desired token."
     },
     "operationErrorModal": {
         "cantFindAccount": "无法找到 Ledger 账户",

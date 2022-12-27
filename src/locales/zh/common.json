@@ -56,6 +56,7 @@
     "transactionFee": "交易费用",
     "copied": "已复制",
     "copyAddress": "复制地址",
+    "copyError": "Copy Error",
     "clickToCopy": "点击复制",
     "viewInExplorer": "在浏览器查看",
     "noItems": "No items",
@@ -93,5 +94,10 @@
         "pt": "Português",
         "ph": "Tagalog",
         "cb": "Cebuano"
-    }
+    },
+    "noResults": "No results found",
+    "minReserve": "Min reserve amount",
+    "settings": "设置",
+    "customNetworkSettings": "Custom Network Settings",
+    "minSendAmount": "Minimum send amount is "
 }

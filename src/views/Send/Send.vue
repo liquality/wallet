@@ -8,6 +8,12 @@
       >
         {{ $t('common.send') }}
       </NavBar>
+      <InfoNotification v-if="nativeAssetRequired">
+        <EthRequiredMessage :account-id="account.id" :action="'send'" />
+      </InfoNotification>
+      <InfoNotification v-else-if="!isValidSendAmount">
+        {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
@@ -15,9 +21,10 @@
             :amount="amount"
             :account="account"
             :amount-fiat="amountFiat"
+            :reserve-balance="minimumAssetReserveBalance"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toggle-max="toggleMaxAmount"
-            @update:amountFiat="(amount) => (amountFiat = amount)"
+            @update:amountFiat="(newAmount) => (amountFiat = newAmount)"
             :max="available"
             :available="available"
             :max-fiat="prettyFiatBalance(available, fiatRates[asset])"
@@ -239,7 +246,7 @@
       :open="sendErrorModalOpen"
       :account="account"
       @close="closeSendErrorModal"
-      :error="sendErrorMessage"
+      :liqualityErrorString="sendErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -282,6 +289,8 @@ import qs from 'qs'
 import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
+import InfoNotification from '@/components/InfoNotification'
+import EthRequiredMessage from '@/components/EthRequiredMessage'
 
 export default {
   components: {
@@ -293,7 +302,9 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
-    CustomFeesEIP1559
+    CustomFeesEIP1559,
+    InfoNotification,
+    EthRequiredMessage
   },
   mixins: [ledgerConnectMixin],
   data() {
@@ -316,7 +327,17 @@ export default {
       memo: '',
       updatingFees: false,
       domainData: {},
-      domainResolver: null
+      domainResolver: null,
+      minimumAssetsSettings: {
+        SOL: {
+          minSendAmount: 0.0015,
+          minReserveBalance: 0.00203928
+        },
+        BTC: {
+          minSendAmount: 0.0000055,
+          minReserveBalance: 0.0
+        }
+      }
     }
   },
   mounted() {
@@ -333,17 +354,31 @@ export default {
     account() {
       return this.accountItem(this.accountId)
     },
+    networkWalletBalances() {
+      return this.account?.balances
+    },
+    selectedAssetInfo() {
+      return this.minimumAssetsSettings[this.asset]
+    },
+    minimumAssetSendAmount() {
+      return this.selectedAssetInfo ? this.selectedAssetInfo['minSendAmount'] : 0.0
+    },
+    minimumAssetReserveBalance() {
+      return this.selectedAssetInfo ? this.selectedAssetInfo['minReserveBalance'] : 0.0
+    },
+    isValidSendAmount() {
+      const amount = BN(this.stateAmount)
+      if (amount.eq(0)) {
+        return true
+      }
+      return amount.gte(BN(this.minimumAssetSendAmount))
+    },
     amount: {
       get() {
         return this.stateAmount
       },
       set(newValue) {
-        if (newValue && !isNaN(newValue)) {
-          this.stateAmount = newValue
-        } else {
-          this.stateAmount = 0.0
-        }
-        this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+        this.updateSendAmount(newValue)
       }
     },
     amountFiat: {
@@ -354,14 +389,14 @@ export default {
         if (!newValue) {
           // keep it as a number instead of string, otherwise the placeholder of input won't appear
           this.stateAmountFiat = 0.0
-          this.stateAmount = 0.0
         } else {
           this.stateAmountFiat = newValue
-          this.stateAmount = fiatToCrypto(
-            this.stateAmountFiat?.replaceAll(',', ''),
-            this.fiatRates[this.asset]
-          )
         }
+
+        this.stateAmount = fiatToCrypto(
+          this.stateAmountFiat?.replaceAll(',', ''),
+          this.fiatRates[this.asset]
+        )
       }
     },
     balance() {
@@ -430,11 +465,33 @@ export default {
       const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     },
-    canSend() {
-      if (!this.address || this.addressError) return false
-      if (BN(this.amount).lte(0) || this.amountError) return false
+    nativeAssetRequired() {
+      if (!this.networkWalletBalances) {
+        return true
+      }
 
-      return true
+      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
+      if (
+        !nativeAssetBalance ||
+        BN(nativeAssetBalance).lte(0) ||
+        BN(nativeAssetBalance).minus(BN(this.currentFee)).lt(0)
+      ) {
+        return true
+      }
+      return false
+    },
+    canSend() {
+      if (
+        !this.nativeAssetRequired &&
+        this.address &&
+        !this.addressError &&
+        BN(this.amount).gte(BN(this.minimumAssetSendAmount)) &&
+        BN(this.amount).gt(0) &&
+        !this.amountError
+      ) {
+        return true
+      }
+      return false
     },
     prettyFee() {
       return this.currentFee.dp(6)
@@ -447,7 +504,9 @@ export default {
           this.selectedFee in this.maxSendFees ? this.maxSendFees[this.selectedFee] : BN(0)
         const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
-        return unitToCurrency(cryptoassets[this.asset], available)
+
+        const reserveBalance = BN(this.minimumAssetReserveBalance)
+        return unitToCurrency(cryptoassets[this.asset], available).minus(reserveBalance)
       }
     },
     amountInFiat() {
@@ -493,6 +552,14 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    updateSendAmount(newValue) {
+      if (newValue && !isNaN(newValue)) {
+        this.stateAmount = newValue
+      } else {
+        this.stateAmount = 0.0
+      }
+      this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+    },
     async _updateSendFees(amount) {
       const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
       if (amount === undefined) {
@@ -502,7 +569,16 @@ export default {
       }
     },
     updateSendFees: _.debounce(async function (amount) {
-      await this._updateSendFees(amount)
+      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
+      console.log(
+        `on updateSendFees => amount: ${amount}, nativeAssetBalance: ${nativeAssetBalance}, asset: ${this.asset}, `
+      )
+      if (BN(amount).gt(0) && BN(this.balance).gt(0) && BN(nativeAssetBalance).gt(0)) {
+        console.log('Updating fees')
+        await this._updateSendFees(amount)
+      } else {
+        console.log('balance or amount <= 0, not updating fees')
+      }
     }, 800),
     async updateMaxSendFees() {
       await this._updateSendFees()
@@ -523,21 +599,23 @@ export default {
       this.currentStep = 'inputs'
     },
     review() {
-      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
-        // open in a new tab
-        const sendParams = qs.stringify({
-          mode: 'tab',
-          selectedFee: this.selectedFee,
-          amount: BN(this.amount).toString(),
-          address: this.address,
-          currentStep: 'confirm',
-          maxOptionActive: this.maxOptionActive,
-          customFee: this.customFee
-        })
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
-        chrome.tabs.create({ url: browser.runtime.getURL(url) })
-      } else {
-        this.currentStep = 'confirm'
+      if (this.canSend) {
+        if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+          // open in a new tab
+          const sendParams = qs.stringify({
+            mode: 'tab',
+            selectedFee: this.selectedFee,
+            amount: BN(this.amount).toString(),
+            address: this.address,
+            currentStep: 'confirm',
+            maxOptionActive: this.maxOptionActive,
+            customFee: this.customFee
+          })
+          const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
+          chrome.tabs.create({ url: browser.runtime.getURL(url) })
+        } else {
+          this.currentStep = 'confirm'
+        }
       }
     },
     async send() {
@@ -576,7 +654,7 @@ export default {
         reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.sendErrorMessage = this.$tle(errorToLiqualityErrorString(error))
+        this.sendErrorMessage = errorToLiqualityErrorString(error)
         this.sendErrorModalOpen = true
       }
     },

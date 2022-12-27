@@ -3,47 +3,15 @@ import VueRouter from 'vue-router'
 import store, { broker } from '../store'
 
 import Splash from '@/views/Splash.vue'
-import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
-import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
-import ImportWallet from '@/views/Onboarding/ImportWallet.vue'
-import Open from '@/views/Open.vue'
-import Wallet from '@/views/Wallet/Wallet.vue'
-import Account from '@/views/Account.vue'
-import SwapDetails from '@/views/Details/SwapDetails.vue'
-import TransactionDetails from '@/views/Details/TransactionDetails.vue'
-import NFTAssetDetails from '@/views/Details/NFTAssetDetails.vue'
-import NFTCollectionList from '@/views/Details/NFTCollectionList.vue'
-import Send from '@/views/Send/Send.vue'
-import Receive from '@/views/Receive.vue'
-import Swap from '@/views/Swap/Swap.vue'
-
-import Settings from '@/views/Settings'
-import Experiments from '@/views/Experiments'
 import ManageAssets from '@/views/ManageAssets'
-import CustomToken from '@/views/CustomToken'
-
-import RequestUnlockWallet from '@/views/RequestUnlockWallet.vue'
-import Enable from '@/views/Enable.vue'
-import PermissionSend from '@/views/PermissionSend.vue'
-import PermissionSign from '@/views/PermissionSign.vue'
-import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
-import PermissionTerra from '@/views/PermissionTerra.vue'
-import Permission from '@/views/Permission.vue'
+import OpenWallet from '@/views/Open.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
-import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
-import SendNFT from '@/views/Send/SendNFT.vue'
-import WalletActivity from '@/views/Wallet/WalletActivity.vue'
-import NFTActivity from '@/views/Wallet/NFTActivity.vue'
-import NFTTransactionDetails from '@/views/Details/NFTTransactionDetails.vue'
-import AssetList from '@/views/AssetList.vue'
-import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
-import CreateAccount from '@/views/Accounts/Create.vue'
-import ManageAccounts from '@/views/Accounts/Manage.vue'
-import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
-import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
-import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
-import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
-import WalletConnect from '@/views/WalletConnect/WalletConnect.vue'
+import Wallet from '@/views/Wallet/Wallet.vue'
+
+const Warning = () =>
+  import(/* webpackPrefetch: true */ '@/views/Onboarding/SeedPhrase/Warning.vue')
+const LoginPhrase = () =>
+  import(/* webpackPrefetch: true */ '@/views/Onboarding/SeedPhrase/LoginPhrase.vue')
 
 Vue.use(VueRouter)
 
@@ -57,25 +25,25 @@ const routes = [
   },
   {
     path: '/onboarding/import',
-    component: ImportWallet,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Onboarding/ImportWallet.vue'),
     meta: { protect: false }
   },
   {
     path: '/open',
     name: 'OpenWallet',
-    component: Open,
+    component: OpenWallet,
     meta: { protect: false }
   },
   {
     path: '/onboarding/setup/:seedphrase?',
-    component: OnboardingSetup,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Onboarding/OnboardingSetup.vue'),
     name: 'OnboardingSetup',
     props: true,
     meta: { protect: false }
   },
   {
     path: '/onboarding/home',
-    component: OnboardingHome,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Onboarding/OnboardingHome.vue'),
     name: 'OnboardingHome',
     meta: { protect: false }
   },
@@ -84,22 +52,37 @@ const routes = [
   // Settings
   {
     path: '/settings',
-    component: Settings,
-    meta: { protect: true }
+    component: () => import(/* webpackPrefetch: true */ '@/views/Settings'),
+    meta: { protect: true },
+    children: [
+      {
+        path: '',
+        name: 'AllSettings',
+        component: () => import('@/views/SettingItems.vue')
+      },
+      {
+        path: 'networks',
+        name: 'NetworkSettings',
+        component: () => import('@/views/NetworkSettings.vue')
+      }
+    ]
   },
   {
     path: '/settings/experiments',
-    component: Experiments,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Experiments'),
+    name: 'Experiments',
     meta: { protect: true }
   },
   {
     path: '/settings/manage-assets',
     component: ManageAssets,
+    name: 'ManageAssets',
     meta: { protect: true }
   },
   {
     path: '/settings/manage-assets/custom-token',
-    component: CustomToken,
+    component: () => import(/* webpackPrefetch: true */ '@/views/CustomToken'),
+    name: 'CustomToken',
     meta: { protect: true }
   },
   // Settings
@@ -107,7 +90,6 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
-    name: 'Wallet',
     component: Wallet,
     meta: { protect: true },
     children: [
@@ -118,12 +100,12 @@ const routes = [
       },
       {
         path: 'activity',
-        component: WalletActivity,
+        component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/WalletActivity.vue'),
         name: 'WalletActivity'
       },
       {
         path: 'nfts',
-        component: WalletNFTs,
+        component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/WalletNFTs.vue'),
         name: 'WalletNFTs'
       },
       {
@@ -134,45 +116,46 @@ const routes = [
   },
   {
     path: '/wallet/nfts/activity/:id',
-    component: NFTActivity,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Wallet/NFTActivity.vue'),
     name: 'NFTActivity',
     props: true
   },
   {
     path: '/wallet/nfts/send',
-    component: SendNFT,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Send/SendNFT.vue'),
     name: 'SendNFT'
   },
   {
     path: '/details/nft-transaction/:id',
-    component: NFTTransactionDetails,
+    component: () =>
+      import(/* webpackPrefetch: true */ '@/views/Details/NFTTransactionDetails.vue'),
     name: 'NFTTransactionDetails',
     props: true
   },
   // Details
   {
     path: '/details/swap/:id',
-    component: SwapDetails,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/SwapDetails.vue'),
     name: 'SwapDetails',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/details/transaction/:id',
-    component: TransactionDetails,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/TransactionDetails.vue'),
     name: 'TransactionDetails',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/details/nft-collection/:id',
-    component: NFTCollectionList,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/NFTCollectionList.vue'),
     name: 'NFTCollectionList',
     props: true
   },
   {
     path: '/details/nft-asset/:id',
-    component: NFTAssetDetails,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Details/NFTAssetDetails.vue'),
     name: 'NFTAssetDetails',
     props: true
   },
@@ -180,21 +163,22 @@ const routes = [
   // Accounts
   {
     path: '/accounts/management',
-    component: ManageAccounts,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Accounts/Manage.vue'),
     name: 'ManageAccounts',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/accounts/create/:chainId?',
-    component: CreateAccount,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Accounts/Create.vue'),
     name: 'CreateAccount',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/accounts/hardware-wallet',
-    component: HardwareWallet,
+    component: () =>
+      import(/* webpackPrefetch: true */ '@/views/Accounts/HardwareWallet/HardwareWallet.vue'),
     props: true,
     name: 'HardwareWallet',
     meta: { protect: true }
@@ -202,28 +186,28 @@ const routes = [
   {
     name: 'Account',
     path: '/accounts/:accountId/:asset',
-    component: Account,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Account.vue'),
     props: true,
     meta: { protect: true }
   },
   {
     name: 'Send',
     path: '/accounts/:accountId/:asset/send',
-    component: Send,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Send/Send.vue'),
     props: true,
     meta: { protect: true }
   },
   {
     name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
-    component: Receive,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Receive.vue'),
     props: true,
     meta: { protect: true }
   },
   {
     name: 'Swap',
     path: '/accounts/:accountId/:routeAsset/swap',
-    component: Swap,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Swap/Swap.vue'),
     props: true,
     meta: { protect: true }
   },
@@ -231,46 +215,45 @@ const routes = [
   // Assets list
   {
     path: '/assets/:action',
-    component: AssetList,
+    component: () => import(/* webpackPrefetch: true */ '@/views/AssetList.vue'),
     props: true,
     meta: { protect: true }
   },
-  // Wallet
 
   // Injection
   {
     path: '/request-unlock',
-    component: RequestUnlockWallet,
+    component: () => import(/* webpackPrefetch: true */ '@/views/RequestUnlockWallet.vue'),
     meta: { protect: false }
   },
   {
     path: '/enable',
-    component: Enable,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Enable.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/send',
-    component: PermissionSend,
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionSend.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/terra',
-    component: PermissionTerra,
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionTerra.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/sign',
-    component: PermissionSign,
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionSign.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/signPsbt',
-    component: PermissionSignPsbt,
+    component: () => import(/* webpackPrefetch: true */ '@/views/PermissionSignPsbt.vue'),
     meta: { protect: false }
   },
   {
     path: '/permission/default',
-    component: Permission,
+    component: () => import(/* webpackPrefetch: true */ '@/views/Permission.vue'),
     meta: { protect: false }
   },
   // Injection
@@ -288,11 +271,13 @@ const routes = [
   },
   {
     path: '/seedreveal',
-    component: PhraseReveal,
+    component: () =>
+      import(/* webpackPrefetch: true */ '@/views/Onboarding/SeedPhrase/PhraseReveal'),
     meta: { protect: true }
   },
 
   // Export Private Key
+
   {
     path: '/export/:accountId',
     meta: { protect: true },
@@ -313,14 +298,14 @@ const routes = [
   },
   {
     path: '/export/:accountId/reveal',
-    component: ExportPrivateKey,
+    component: () => import('@/views/Accounts/ExportPrivateKey.vue'),
     name: 'ExportPrivateKey',
     props: true,
     meta: { protect: true }
   },
   {
     path: '/wallet-connect',
-    component: WalletConnect,
+    component: () => import('@/views/WalletConnect/WalletConnect.vue'),
     name: 'WalletConnect',
     meta: { protect: true },
     props: (route) => ({

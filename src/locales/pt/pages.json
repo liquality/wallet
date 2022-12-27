@@ -76,12 +76,25 @@
     "dappConnectionsSub": "Esquecer todos os dApps conectados.",
     "done": "Feito!",
     "forgetAllConnections": "Esquecer todas conexões",
-    "version": "Versão"
+    "version": "Versão",
+    "networks": "Redes",
+    "networksSub": "Manage custom RPC network settings.",
+    "customRpcForm": {
+      "networkName": "Network Name",
+      "newRpcURL": "New RPC URL",
+      "chainId": "Chain ID",
+      "currencySymbol": "Currency symbol",
+      "blockExplorerUrl": "Block explorer URL (optional)",
+      "save": "Save",
+      "default": "Default"
+    }
   },
   "experiments": {
     "experiments": "Experimental",
     "multiaccounts": "Multi-Accounts",
-    "multiaccountsDescription": "Permite a gestão de contas e múltiplas contas em cada rede"
+    "multiaccountsDescription": "Permite a gestão de contas e múltiplas contas em cada rede",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "Visão de Ativos",

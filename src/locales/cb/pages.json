@@ -76,12 +76,25 @@
     "dappConnectionsSub": "Idiskonekta ang tanan nga mga dapps nga konektado.",
     "done": "Humana!",
     "forgetAllConnections": "Kalimti ang tanan nga koneksyon",
-    "version": "Bersyon"
+    "version": "Bersyon",
+    "networks": "Networks",
+    "networksSub": "Manage custom RPC network settings.",
+    "customRpcForm": {
+      "networkName": "Network Name",
+      "newRpcURL": "New RPC URL",
+      "chainId": "Chain ID",
+      "currencySymbol": "Currency symbol",
+      "blockExplorerUrl": "Block explorer URL (optional)",
+      "save": "Save",
+      "default": "Default"
+    }
   },
   "experiments": {
     "experiments": "Experiments",
     "multiaccounts": "Multi-Accounts",
-    "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network"
+    "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "Asset View",
