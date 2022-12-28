@@ -90,7 +90,11 @@
         >
           <img
             ref="nftPreviewImage"
-            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
+            :src="
+              assetOriginalImageUrl(nftAsset?.image_original_url) ||
+              nftAsset?.image_preview_url ||
+              thumbnailImage
+            "
             :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftPreviewImage')"
           />
