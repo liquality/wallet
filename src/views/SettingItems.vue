@@ -100,6 +100,7 @@
             {{ $t('pages.settings.networksSub') }}
           </span>
         </div>
+        <ChevronRightIcon class="list-item-chevron" />
       </router-link>
     </div>
   </div>
@@ -232,6 +233,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+.setting-item {
+  a {
+    display: flex;
+  }
+}
 .setting-item_title {
   &_accounts {
     display: inline-flex;
@@ -242,5 +248,10 @@ export default {
       margin-left: 4px !important;
     }
   }
+}
+
+.list-item-chevron {
+  width: 6px;
+  margin-bottom: 2px;
 }
 </style>
