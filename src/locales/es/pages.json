@@ -77,7 +77,7 @@
     "done": "¡Hecho!",
     "forgetAllConnections": "Olvidar todas las conexiones",
     "version": "Versión",
-    "networks": "Cadenas",
+    "networks": "Redes",
     "networksSub": "Manage custom RPC network settings.",
     "customRpcForm": {
       "networkName": "Network Name",
