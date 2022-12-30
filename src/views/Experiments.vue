@@ -28,6 +28,8 @@
             @change="toggleExperiment({ name: 'manageAccounts' })"
           />
         </div>
+      </div>
+      <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
           {{ $t('pages.experiments.errorReporting') }}
           <span class="setting-item_sub">
@@ -42,6 +44,8 @@
             @change="toggleExperiment({ name: 'reportErrors' })"
           />
         </div>
+      </div>
+      <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
           {{ $t('common.customNetworkSettings') }}
           <span class="setting-item_sub">

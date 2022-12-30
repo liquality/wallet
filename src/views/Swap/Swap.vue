@@ -1345,26 +1345,6 @@ export default {
       this.showQuotesModal = false
     },
     review() {
-<<<<<<< HEAD
-      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
-        // open in a new tab
-        const swapParams = qs.stringify({
-          mode: 'tab',
-          selectedFee: this.selectedFee,
-          sendAmount: BN(this.sendAmount).toString(),
-          toAccountId: this.toAccountId,
-          toAsset: this.toAsset,
-          customFees: this.customFees,
-          userSelectedQuote: this.userSelectedQuote,
-          currentStep: 'confirm',
-          maxOptionActive: this.maxOptionActive,
-          selectedQuote: this.selectedQuote
-        })
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
-        browser.tabs.create({ url: browser.runtime.getURL(url) })
-      } else {
-        this.currentStep = 'confirm'
-=======
       if (this.canSwap) {
         if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
           // open in a new tab
@@ -1385,7 +1365,6 @@ export default {
         } else {
           this.currentStep = 'confirm'
         }
->>>>>>> develop
       }
     },
     async swap() {
