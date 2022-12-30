@@ -47,22 +47,6 @@
       </div>
       <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
-          {{ $t('common.customNetworkSettings') }}
-          <span class="setting-item_sub">
-            {{ $t('common.customNetworkSettings') }}
-          </span>
-        </div>
-        <div class="setting-item_control">
-          <toggle-button
-            id="exp-customNetworkSettings-toggle-switch"
-            :css-colors="true"
-            :value="experiments['customNetworkSettings']"
-            @change="toggleExperiment({ name: 'customNetworkSettings' })"
-          />
-        </div>
-      </div>
-      <div class="setting-item">
-        <div class="setting-item_title flex-fill mb-2">
           Wallet Connect
           <span class="setting-item_sub"> Connect with dapps using Wallet Connect </span>
         </div>

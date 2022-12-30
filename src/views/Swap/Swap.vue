@@ -59,11 +59,11 @@
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-      <InfoNotification v-else-if="cannotCoverMinimum && !insufficientFundsError">
-        <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
-      </InfoNotification>
       <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
         <EthRequiredMessage :account-id="account.id" :action="'swap'" />
+      </InfoNotification>
+      <InfoNotification v-else-if="cannotCoverMinimum && !insufficientFundsError">
+        <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">

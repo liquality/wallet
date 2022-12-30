@@ -65,15 +65,15 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId']),
     canSubmit() {
-      const { networkName, newRpcUrl, chainId, currencySymbol, explorerUrl } = this.formData
+      const { networkName, newRpcUrl, chainId, currencySymbol } = this.formData
       const { network } = this.settings
+      const { custom } = network
       if (
-        (networkName &&
-          newRpcUrl &&
-          chainId &&
-          currencySymbol &&
-          newRpcUrl !== this.getBaseUrl(network?.rpcUrl)) ||
-        explorerUrl !== network?.explorerUrl
+        networkName &&
+        newRpcUrl &&
+        chainId &&
+        currencySymbol &&
+        newRpcUrl !== this.getBaseUrl(network?.rpcUrl, custom)
       ) {
         return true
       }
@@ -92,6 +92,7 @@ export default {
         walletId: this.activeWalletId,
         chainId,
         chanifyNetwork: {
+          custom: true,
           ...network,
           explorerUrl: this.formData.explorerUrl,
           rpcUrl: this.formData.newRpcUrl
@@ -99,9 +100,12 @@ export default {
       }
 
       await this.saveCustomChainSettings(payload)
-      this.setSettings()
     },
-    getBaseUrl(url) {
+    getBaseUrl(url, custom = true) {
+      if (custom === true) {
+        return url
+      }
+
       const pathArray = url.split('/'),
         protocol = pathArray[0],
         host = pathArray[2]
@@ -114,20 +118,28 @@ export default {
         walletId: this.activeWalletId,
         chainId: chain
       })
-      this.setSettings()
     },
     setSettings() {
       const { chain, network, asset, chainId } = this.settings
-      const { rpcUrl, explorerUrl } = network
+      const { rpcUrl, explorerUrl, custom } = network
       this.formData.networkName = chain
       this.formData.chainId = chainId
       this.formData.currencySymbol = asset
-      this.formData.newRpcUrl = this.getBaseUrl(rpcUrl)
+      this.formData.newRpcUrl = this.getBaseUrl(rpcUrl, custom)
       this.formData.explorerUrl = explorerUrl
     }
   },
   created() {
+    console.log('this.settings', this.settings)
     this.setSettings()
+  },
+  watch: {
+    settings: {
+      handler() {
+        this.setSettings()
+      },
+      deep: true
+    }
   }
 }
 </script>

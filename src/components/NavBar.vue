@@ -39,14 +39,6 @@
           <AccountsIcon />
           {{ $t('components.navbar.manageAccounts') }}
         </li>
-        <li
-          id="manage_accounts"
-          v-if="experiments.customNetworkSettings"
-          @click="customNetworkSettings"
-        >
-          <AccountsIcon />
-          {{ $t('common.customNetworkSettings') }}
-        </li>
         <li id="export_privkey" v-if="showExportPrivateKey" @click="exportPrivateKey">
           <KeyIcon />
           {{ $t('components.navbar.exportPrivateKey') }}
