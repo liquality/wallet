@@ -8,7 +8,7 @@
       "Minimum send amount for SOL and BTC",
       "Minimum reserve amount for SOL for rent-exemption",
       "Fixes for Arbitrum Gas Limit for token swaps and cross-chain swaps",
-      "NFT view fixes for Ethereum IPFS",
+      "NFT view fixes for Ethereum IPFS"
     ]
   },
   {
