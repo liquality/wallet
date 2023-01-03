@@ -154,7 +154,8 @@
     "onYourLedger": "Em Seu Ledger",
     "today": "hoje",
     "time": "Hora",
-    "sent": "Enviado"
+    "sent": "Enviado",
+    "txtNotFoundRetry": "The Transaction maybe is not ready, Please Retry."
   },
   "accounts": {
     "manageAccounts": "Gerenciar Contas",

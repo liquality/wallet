@@ -154,7 +154,8 @@
     "onYourLedger": "On Your Ledger",
     "today": "today",
     "time": "Time",
-    "sent": "Sent"
+    "sent": "Sent",
+    "txtNotFoundRetry": "The Transaction maybe is not ready, Please Retry."
   },
   "accounts": {
     "manageAccounts": "Manage Accounts",

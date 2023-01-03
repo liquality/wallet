@@ -51,28 +51,30 @@ export default {
     ...mapActions(['initializeAnalytics']),
     ...mapActions('app', ['setLocalePreference', 'getBrowserLocale', 'setWhatsNewModalContent'])
   },
-  async mounted() {
+  mounted() {
     this.initializeAnalytics()
-    if (this.locale) {
-      await this.changeLocale(this.locale)
-    } else {
-      const browserLocale = await this.getBrowserLocale()
-      const _locale = this.locales.includes(browserLocale)
-        ? browserLocale
-        : process.env.VUE_APP_DEFAULT_LOCALE
-      await this.changeLocale(_locale)
-      // store the locale in state
-      await this.setLocalePreference({ locale: _locale })
-    }
+    setTimeout(async () => {
+      if (this.locale) {
+        await this.changeLocale(this.locale)
+      } else {
+        const browserLocale = await this.getBrowserLocale()
+        const _locale = this.locales.includes(browserLocale)
+          ? browserLocale
+          : process.env.VUE_APP_DEFAULT_LOCALE
+        await this.changeLocale(_locale)
+        // store the locale in state
+        await this.setLocalePreference({ locale: _locale })
+      }
 
-    if (
-      this.whatsNewModalVersion !== this.appVersion ||
-      process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
-    ) {
-      const content = await import(`@/locales/${this.currentLocale}/whats_new.json`)
-      this.setWhatsNewModalContent({ content: content.default })
-    }
-    this.localesLoaded = true
+      if (
+        this.whatsNewModalVersion !== this.appVersion ||
+        process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
+      ) {
+        const content = await import(`@/locales/${this.currentLocale}/whats_new.json`)
+        this.setWhatsNewModalContent({ content: content.default })
+      }
+      this.localesLoaded = true
+    }, 1000)
   }
 }
 </script>
