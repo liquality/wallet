@@ -293,7 +293,7 @@
           <tr v-if="item.error">
             <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ translatedItemError }} 
+              <pre>{{ translatedItemError }}
                 <CopyError
                   :translatedError="translatedItemError"
                   :liqualityErrorString="item.error"
@@ -309,7 +309,7 @@
                 v-if="item.error"
                 @click="$emit('retrySwap')"
               >
-                Retry
+              {{ $t('pages.details.retry') }}
               </button>
             </td>
           </tr>
@@ -629,6 +629,7 @@ export default {
 
     pre {
       margin: 0px;
+      white-space: initial;
     }
   }
 

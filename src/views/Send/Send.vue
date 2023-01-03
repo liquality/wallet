@@ -11,6 +11,9 @@
       <InfoNotification v-if="nativeAssetRequired">
         <EthRequiredMessage :account-id="account.id" :action="'send'" />
       </InfoNotification>
+      <InfoNotification v-else-if="!isValidSendAmount">
+        {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
@@ -18,9 +21,10 @@
             :amount="amount"
             :account="account"
             :amount-fiat="amountFiat"
+            :reserve-balance="minimumAssetReserveBalance"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toggle-max="toggleMaxAmount"
-            @update:amountFiat="(amount) => (amountFiat = amount)"
+            @update:amountFiat="(newAmount) => (amountFiat = newAmount)"
             :max="available"
             :available="available"
             :max-fiat="prettyFiatBalance(available, fiatRates[asset])"
@@ -323,7 +327,17 @@ export default {
       memo: '',
       updatingFees: false,
       domainData: {},
-      domainResolver: null
+      domainResolver: null,
+      minimumAssetsSettings: {
+        SOL: {
+          minSendAmount: 0.0015,
+          minReserveBalance: 0.00203928
+        },
+        BTC: {
+          minSendAmount: 0.0000055,
+          minReserveBalance: 0.0
+        }
+      }
     }
   },
   mounted() {
@@ -343,17 +357,28 @@ export default {
     networkWalletBalances() {
       return this.account?.balances
     },
+    selectedAssetInfo() {
+      return this.minimumAssetsSettings[this.asset]
+    },
+    minimumAssetSendAmount() {
+      return this.selectedAssetInfo ? this.selectedAssetInfo['minSendAmount'] : 0.0
+    },
+    minimumAssetReserveBalance() {
+      return this.selectedAssetInfo ? this.selectedAssetInfo['minReserveBalance'] : 0.0
+    },
+    isValidSendAmount() {
+      const amount = BN(this.stateAmount)
+      if (amount.eq(0)) {
+        return true
+      }
+      return amount.gte(BN(this.minimumAssetSendAmount))
+    },
     amount: {
       get() {
         return this.stateAmount
       },
       set(newValue) {
-        if (newValue && !isNaN(newValue)) {
-          this.stateAmount = newValue
-        } else {
-          this.stateAmount = 0.0
-        }
-        this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+        this.updateSendAmount(newValue)
       }
     },
     amountFiat: {
@@ -364,14 +389,14 @@ export default {
         if (!newValue) {
           // keep it as a number instead of string, otherwise the placeholder of input won't appear
           this.stateAmountFiat = 0.0
-          this.stateAmount = 0.0
         } else {
           this.stateAmountFiat = newValue
-          this.stateAmount = fiatToCrypto(
-            this.stateAmountFiat?.replaceAll(',', ''),
-            this.fiatRates[this.asset]
-          )
         }
+
+        this.stateAmount = fiatToCrypto(
+          this.stateAmountFiat?.replaceAll(',', ''),
+          this.fiatRates[this.asset]
+        )
       }
     },
     balance() {
@@ -460,6 +485,7 @@ export default {
         !this.nativeAssetRequired &&
         this.address &&
         !this.addressError &&
+        BN(this.amount).gte(BN(this.minimumAssetSendAmount)) &&
         BN(this.amount).gt(0) &&
         !this.amountError
       ) {
@@ -478,7 +504,9 @@ export default {
           this.selectedFee in this.maxSendFees ? this.maxSendFees[this.selectedFee] : BN(0)
         const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
-        return unitToCurrency(cryptoassets[this.asset], available)
+
+        const reserveBalance = BN(this.minimumAssetReserveBalance)
+        return unitToCurrency(cryptoassets[this.asset], available).minus(reserveBalance)
       }
     },
     amountInFiat() {
@@ -524,6 +552,14 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    updateSendAmount(newValue) {
+      if (newValue && !isNaN(newValue)) {
+        this.stateAmount = newValue
+      } else {
+        this.stateAmount = 0.0
+      }
+      this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+    },
     async _updateSendFees(amount) {
       const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
       if (amount === undefined) {

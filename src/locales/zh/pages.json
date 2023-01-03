@@ -76,7 +76,18 @@
     "dappConnectionsSub": "断开与所有dapp的连接",
     "done": "完成",
     "forgetAllConnections": "断开所有连接",
-    "version": "版本"
+    "version": "版本",
+    "networks": "网络",
+    "networksSub": "Manage custom RPC network settings.",
+    "customRpcForm": {
+      "networkName": "Network Name",
+      "newRpcURL": "New RPC URL",
+      "chainId": "Chain ID",
+      "currencySymbol": "Currency symbol",
+      "blockExplorerUrl": "Block explorer URL (optional)",
+      "save": "Save",
+      "default": "Default"
+    }
   },
   "experiments": {
     "experiments": "实验功能",
@@ -143,7 +154,8 @@
     "onYourLedger": "在你的Ledger钱包",
     "today": "今天",
     "time": "时间",
-    "sent": "发送"
+    "sent": "发送",
+    "txtNotFoundRetry": "The Transaction maybe is not ready, Please Retry."
   },
   "accounts": {
     "manageAccounts": "管理资产",

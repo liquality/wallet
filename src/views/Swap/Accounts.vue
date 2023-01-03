@@ -30,44 +30,40 @@
 <script>
 import SearchIcon from '@/assets/icons/search.svg'
 import WalletAccounts from '@/components/WalletAccounts'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import { isEvmChain } from '@liquality/cryptoassets'
 
 export default {
   computed: {
+    ...mapState(['activeNetwork']),
     ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
     accounts() {
-      if (this.assetSelection === 'from') {
-        return this.accountsWithBalance
-          .map((account) => {
-            const assets = this.chainAssets[account.chain].filter(
-              (asset) => asset !== this.excludeAsset
-            )
-            return {
-              ...account,
-              assets
-            }
-          })
-          .filter((a) => a.assets?.length > 0)
-      } else {
-        return this.accountsData
-          .map((account) => {
-            const assets = this.chainAssets[account.chain].filter(
-              (asset) => asset !== this.excludeAsset
-            )
-            return {
-              ...account,
-              assets
-            }
-          })
-          .filter((a) => a.assets?.length > 0)
-      }
+      return (this.assetSelection === 'from' ? this.accountsWithBalance : this.accountsData)
+        .filter((acc) => {
+          if (isEvmChain(this.activeNetwork, acc.chain) && this.assetSelection === 'to') {
+            return this.account.addresses[0] === acc.addresses[0] && acc.assets?.length > 0
+          }
+          return acc.assets?.length > 0
+        })
+        .map((acc) => {
+          const assets = this.chainAssets[acc.chain].filter((asset) => asset !== this.excludeAsset)
+          return {
+            ...acc,
+            assets
+          }
+        })
     }
   },
   components: {
     WalletAccounts,
     SearchIcon
   },
-  props: ['excludeAsset', 'assetSelection'],
+  props: {
+    account: Object,
+    toAccount: Object,
+    assetSelection: String,
+    excludeAsset: String
+  },
   data() {
     return {
       search: ''

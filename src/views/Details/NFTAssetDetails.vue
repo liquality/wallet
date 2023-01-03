@@ -54,7 +54,11 @@
         <div class="nft-img">
           <img
             ref="nftImage"
-            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
+            :src="
+              assetOriginalImageUrl(nftAsset?.image_original_url) ||
+              nftAsset?.image_preview_url ||
+              thumbnailImage
+            "
             :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftImage')"
           />
@@ -86,7 +90,11 @@
         >
           <img
             ref="nftPreviewImage"
-            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
+            :src="
+              assetOriginalImageUrl(nftAsset?.image_original_url) ||
+              nftAsset?.image_preview_url ||
+              thumbnailImage
+            "
             :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftPreviewImage')"
           />
@@ -331,6 +339,9 @@ export default {
       if (ref) {
         this.$refs[ref].src = this.thumbnailImage
       }
+    },
+    assetOriginalImageUrl(url) {
+      return url.replace('ipfs://', 'https://ipfs.io/ipfs/')
     }
   }
 }

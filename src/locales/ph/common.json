@@ -95,5 +95,9 @@
         "ph": "Tagalog",
         "cb": "Cebuano"
     },
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "minReserve": "Min reserve amount",
+    "settings": "Mga setting",
+    "customNetworkSettings": "Custom Network Settings",
+    "minSendAmount": "Minimum send amount is "
 }

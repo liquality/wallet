@@ -35,7 +35,7 @@
           <AssetsIcon />
           {{ $t('components.navbar.manageAssets') }}
         </li>
-        <li id="manage_accounts" v-if="experiments.manageAccounts" @click="manageAccounts">
+        <li id="manage_accounts" @click="manageAccounts">
           <AccountsIcon />
           {{ $t('components.navbar.manageAccounts') }}
         </li>
@@ -167,6 +167,19 @@ export default {
       })
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
+    },
+    customNetworkSettings() {
+      this.trackAnalytics({
+        event: 'User clicked on custom Network Settings option in navbar',
+        properties: {
+          walletVersion,
+          category: 'HamburgerIcon',
+          action: 'Click on custom Network Settings',
+          label: 'User clicked on wallet custom Network Settings from menu option'
+        }
+      })
+      this.showMenuList = false
+      this.$router.replace({ name: 'NetworkSettings' })
     },
     settings() {
       this.trackAnalytics({

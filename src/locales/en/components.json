@@ -22,7 +22,7 @@
         "get": "Get"
     },
     "cannotCoverMinimumMessage": {
-        "needMore": "More %{asset} required to cover min trade plus fees."
+        "needMore": "More %{asset} required to cover minimum trade."
     },
     "connectionDrawer": {
         "dappNetwork": "dApp Network",

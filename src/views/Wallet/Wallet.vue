@@ -21,8 +21,6 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { isERC20 } from '@liquality/wallet-core/dist/src/utils/asset'
 import NavBar from '@/components/NavBar.vue'
-import InfoNotification from '@/components/InfoNotification.vue'
-import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
 import NFTStats from './NFTStats'
@@ -34,21 +32,23 @@ export default {
     WalletStats,
     NFTStats,
     WalletTabs,
-    InfoNotification,
-    LedgerRequestMessage
+    InfoNotification: () => import('@/components/InfoNotification.vue'),
+    LedgerRequestMessage: () => import('@/components/LedgerRequestMessage.vue')
   },
-  async created() {
+  async mounted() {
     try {
-      await this.updateBalances({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        loadingInitialBalance: true
-      })
+      await Promise.all([
+        this.updateBalances({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          loadingInitialBalance: true
+        }),
+        this.getNFTs()
+      ])
     } catch (error) {
       // TODO: manage error
       reportLiqualityError(error)
     }
-    await this.getNFTs()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
