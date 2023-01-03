@@ -12,6 +12,7 @@ const { isMigrationNeeded, processMigrations } = migrations
 
 const Broker = (state) => {
   if (isBackgroundScript(window)) {
+    const locale = state.app?.locale
     const vuexPersist = new VuexPersist({
       key: 'liquality-wallet',
       storage: Storage,
@@ -20,7 +21,7 @@ const Broker = (state) => {
         return {
           ...omit(state, ['key', 'wallets', 'unlockedAt', 'app']),
           app: {
-            locale: state.app?.locale
+            locale
           }
         }
       }
