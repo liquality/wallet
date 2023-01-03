@@ -154,7 +154,8 @@
     "onYourLedger": "Sa imong Ledger",
     "today": "karong adlawa",
     "time": "Time",
-    "sent": "Gipadala"
+    "sent": "Gipadala",
+    "txtNotFoundRetry": "The Transaction maybe is not ready, Please Retry."
   },
   "accounts": {
     "manageAccounts": "Manage Accounts",
