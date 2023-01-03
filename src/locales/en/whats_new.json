@@ -3,10 +3,12 @@
     "page": "1",
     "title": "What's New?",
     "content": [
-      "Solana fees fix for swaps",
-      "User friendly error messages improvements",
-      "Solana NFTs fixes",
-      "Activity filter fixes"
+      "New multi-account feature",
+      "New Custom RPC settings",
+      "Minimum send amount for SOL and BTC",
+      "Minimum reserve amount for SOL for rent-exemption",
+      "Fixes for Arbitrum Gas Limit for token swaps and cross-chain swaps",
+      "NFT view fixes for Ethereum IPFS",
     ]
   },
   {
