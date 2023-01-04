@@ -5,9 +5,6 @@
     </NavBar>
     <InfoNotification v-if="hasTxNotFoundError">
       {{ $t('pages.details.txtNotFoundRetry') }}
-      <button class="retry-button btn btn-option" @click="retry">
-        {{ $t('pages.details.retry') }}
-      </button>
     </InfoNotification>
     <div class="swap-details">
       <div class="swap-details_info">
