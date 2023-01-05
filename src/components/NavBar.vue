@@ -35,7 +35,7 @@
           <AssetsIcon />
           {{ $t('components.navbar.manageAssets') }}
         </li>
-        <li id="manage_accounts" v-if="experiments.manageAccounts" @click="manageAccounts">
+        <li id="manage_accounts" @click="manageAccounts">
           <AccountsIcon />
           {{ $t('components.navbar.manageAccounts') }}
         </li>

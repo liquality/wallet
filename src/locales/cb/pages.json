@@ -154,7 +154,8 @@
     "onYourLedger": "Sa imong Ledger",
     "today": "karong adlawa",
     "time": "Time",
-    "sent": "Gipadala"
+    "sent": "Gipadala",
+    "txtNotFoundRetry": "The transaction was not found in the network. Please click the Retry button to check again."
   },
   "accounts": {
     "manageAccounts": "Manage Accounts",

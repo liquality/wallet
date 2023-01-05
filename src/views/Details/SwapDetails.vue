@@ -3,6 +3,9 @@
     <NavBar :showBackButton="true" :backClick="goBack" :backLabel="$t('common.back')">
       {{ `Swap ${item.from} to ${item.to}` }}
     </NavBar>
+    <InfoNotification v-if="hasTxNotFoundError">
+      {{ $t('pages.details.txtNotFoundRetry') }}
+    </InfoNotification>
     <div class="swap-details">
       <div class="swap-details_info">
         <div class="row">
@@ -103,7 +106,7 @@ import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes
 import { feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
 import { getStatusLabel } from '@liquality/wallet-core/dist/src/utils/history'
 import { isERC20, getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
-
+import InfoNotification from '@/components/InfoNotification.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import RefundedIcon from '@/assets/icons/refunded.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -112,6 +115,7 @@ import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 import Timeline from '@/swaps/views/Timeline.vue'
+import { liqualityErrorStringToJson } from '@liquality/error-parser'
 
 export default {
   components: {
@@ -122,7 +126,8 @@ export default {
     Timeline,
     Modal,
     LedgerSignRquest,
-    SwapProviderLabel
+    SwapProviderLabel,
+    InfoNotification
   },
   data() {
     return {
@@ -138,6 +143,15 @@ export default {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
+    },
+    hasTxNotFoundError() {
+      if (this.item?.error) {
+        const errorContent = liqualityErrorStringToJson(this.item.error)
+        if (errorContent?.rawError?.name === 'TxNotFoundError') {
+          return true
+        }
+      }
+      return false
     },
     status() {
       return getStatusLabel(this.item)
@@ -393,6 +407,7 @@ export default {
     .left {
       left: 0;
       padding-right: 14px;
+
       .content {
         text-align: right;
       }
@@ -402,6 +417,7 @@ export default {
     .right {
       left: 50%;
       padding-left: 14px;
+
       .content {
         text-align: left;
       }

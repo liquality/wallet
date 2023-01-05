@@ -154,7 +154,8 @@
     "onYourLedger": "En Tu Ledger",
     "today": "hoy",
     "time": "Fecha",
-    "sent": "Enviado"
+    "sent": "Enviado",
+    "txtNotFoundRetry": "The transaction was not found in the network. Please click the Retry button to check again."
   },
   "accounts": {
     "manageAccounts": "Gestionar Cuentas",

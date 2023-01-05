@@ -154,7 +154,8 @@
     "onYourLedger": "在你的Ledger钱包",
     "today": "今天",
     "time": "时间",
-    "sent": "发送"
+    "sent": "发送",
+    "txtNotFoundRetry": "The transaction was not found in the network. Please click the Retry button to check again."
   },
   "accounts": {
     "manageAccounts": "管理资产",
