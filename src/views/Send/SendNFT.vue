@@ -8,7 +8,7 @@
         <div>
           <Accordion v-for="(assets, key) in nftCollection" :key="assets.id">
             <h3 slot="header" id="nft-asset-header">
-              bohohohho {{ nftCollectionName(assets, key) }} ({{ assets.length }})
+              {{ nftCollectionName(assets, key) }} ({{ assets.length }})
             </h3>
             <div class="nft-assets__container__images">
               <div
