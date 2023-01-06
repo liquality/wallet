@@ -604,6 +604,7 @@ export default {
       this.selectedFee = 'average'
     },
     async _updateSendFees() {
+      if (!this.selectedNFT) return
       const sendFees = await estimateTransferNFT(
         this.account.id,
         this.activeNetwork,

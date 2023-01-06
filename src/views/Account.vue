@@ -94,13 +94,13 @@
           </router-link>
         </div>
       </div>
-      <div class="account-container_transactions" v-if="activityData.length > 0">
+      <div class="account-container_transactions" v-if="filteredTransactions.length > 0">
         <ActivityFilter
           @filters-changed="applyFilters"
           :activity-data="activityData"
           :showTypeFilters="true"
         />
-        <TransactionList :transactions="activityData" />
+        <TransactionList :transactions="filteredTransactions" />
       </div>
       <div class="account-container_transactions" v-else>
         <EmptyActivity
@@ -198,6 +198,9 @@ export default {
     },
     chain() {
       return cryptoassets[this.asset]?.chain
+    },
+    filteredTransactions() {
+      return this.activityData.filter((t) => t.accountId === this.accountId)
     }
   },
   methods: {
