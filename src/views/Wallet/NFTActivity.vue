@@ -74,7 +74,7 @@ export default {
     NFTStats,
     NFTIcon
   },
-  props: ['id'],
+  props: ['id'], // accountId
   data() {
     return {
       activityData: [],
