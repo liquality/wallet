@@ -652,8 +652,8 @@ export default {
       await this._updateQuotes()
     } else {
       this.selectedFee = {
-        [this.assetChain]: 'average',
-        [this.toAssetChain]: 'average'
+        [this.assetChain]: 'fast',
+        [this.toAssetChain]: 'fast'
       }
       this.sendAmount = dpUI(this.defaultAmount)
       // Try to use the same account for (from and to) if it has more than one asset
@@ -1225,11 +1225,11 @@ export default {
           await this.updateMaxSwapFees()
         })()
 
-        selectedFee[this.assetChain] = 'average'
+        selectedFee[this.assetChain] = 'fast'
       }
       if (this.toAssetChain) {
         this.updateFees({ asset: this.toAssetChain })
-        selectedFee[this.toAssetChain] = 'average'
+        selectedFee[this.toAssetChain] = 'fast'
       }
       this.selectedFee = { ...selectedFee }
     },
@@ -1239,7 +1239,7 @@ export default {
     },
     cancelCustomFee(asset) {
       this.currentStep = 'inputs'
-      this.selectedFee[asset] = 'average'
+      this.selectedFee[asset] = 'fast'
     },
     resetQuoteTimer(resetInterval) {
       clearTimeout(this.quoteTimer)
