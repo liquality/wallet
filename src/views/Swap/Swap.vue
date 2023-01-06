@@ -1295,11 +1295,11 @@ export default {
         this.selectedQuote = null
       }
 
-      this.cannotCoverMinimum =
-        !this.canSwap &&
-        !shouldChooseNewQuote &&
-        !BN(this.sendAmount).eq(this.defaultAmount) &&
-        BN(this.sendAmount).lt(this.max)
+      // this.cannotCoverMinimum =
+      //   !this.canSwap &&
+      //   !shouldChooseNewQuote &&
+      //   !BN(this.sendAmount).eq(this.defaultAmount) &&
+      //   BN(this.sendAmount).lt(this.max)
       // if(this.cannotCoverMinimum) this.sendAmount = 1
       this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 1000 : QUOTE_TIMER_MS)
     },

@@ -40,10 +40,10 @@ export default {
     accounts() {
       return (this.assetSelection === 'from' ? this.accountsWithBalance : this.accountsData)
         .filter((acc) => {
-          if (isEvmChain(this.activeNetwork, acc.chain) && this.assetSelection === 'to') {
-            return this.account.addresses[0] === acc.addresses[0] && acc.assets?.length > 0
+          if (isEvmChain(this.activeNetwork, this.account.chain) && this.assetSelection === 'to') {
+            return this.account.addresses[0] === acc.addresses[0]
           }
-          return acc.assets?.length > 0
+          return true
         })
         .map((acc) => {
           const assets = this.chainAssets[acc.chain].filter((asset) => asset !== this.excludeAsset)
@@ -51,6 +51,9 @@ export default {
             ...acc,
             assets
           }
+        })
+        .filter((acc) => {
+          return acc.assets?.length > 0
         })
     }
   },
