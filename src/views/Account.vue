@@ -204,7 +204,6 @@ export default {
       return cryptoassets[this.asset]?.chain
     },
     filteredTransactions() {
-      debugger
       return this.activityData.filter(
         (t) => t.fromAccountId === this.accountId || t.toAccountId === this.accountId
       )
@@ -255,7 +254,6 @@ export default {
     this.address = getChain(this.activeNetwork, chainId).formatAddressUI(addresses[0])
 
     await this.refresh()
-    debugger
     this.activityData = [...this.assetHistory]
   },
   watch: {
