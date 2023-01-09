@@ -88,8 +88,8 @@ export default {
           }
         })
       } catch (e) {
-        reportLiqualityError(e)
         this.error = this.$tle(errorToLiqualityErrorString(e))
+        reportLiqualityError(e)
         this.trackAnalytics({
           event: 'UnlockWallet failed',
           properties: {
