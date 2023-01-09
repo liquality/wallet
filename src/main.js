@@ -14,6 +14,7 @@ Vue.config.productionTip = false
 Vue.use(Localization)
 
 new Vue({
+  name: 'Liquality Wallet',
   router,
   store,
   render: (h) => h(App)

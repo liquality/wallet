@@ -40,7 +40,11 @@ export default {
     accounts() {
       return (this.assetSelection === 'from' ? this.accountsWithBalance : this.accountsData)
         .filter((acc) => {
-          if (isEvmChain(this.activeNetwork, this.account.chain) && this.assetSelection === 'to') {
+          if (
+            isEvmChain(this.activeNetwork, this.account.chain) && // from
+            isEvmChain(this.activeNetwork, acc.chain) && // to
+            this.assetSelection === 'to'
+          ) {
             return this.account.addresses[0] === acc.addresses[0]
           }
           return true

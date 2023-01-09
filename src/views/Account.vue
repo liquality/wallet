@@ -188,7 +188,11 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
-      return this.activity.filter((item) => this.isNotNftTransaction(item))
+      return this.activity.filter((item) => {
+        return (
+          (item.from === this.asset || item.to === this.asset) && this.isNotNftTransaction(item)
+        )
+      })
     },
     addressLink() {
       if (this.account) {
@@ -200,7 +204,9 @@ export default {
       return cryptoassets[this.asset]?.chain
     },
     filteredTransactions() {
-      return this.activityData.filter((t) => t.accountId === this.accountId)
+      return this.activityData.filter(
+        (t) => t.fromAccountId === this.accountId || t.toAccountId === this.accountId
+      )
     }
   },
   methods: {
@@ -212,7 +218,7 @@ export default {
     formatFiat,
     formatFiatUI,
     isNotNftTransaction(item) {
-      return item.from === this.asset && item.type !== 'NFT'
+      return item.type !== 'NFT'
     },
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)
