@@ -6,7 +6,7 @@ export const getSignClient = async () => {
   if (!_signClient) {
     const core = new Core({
       projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECT_ID,
-      relayUrl: process.env.VUE_APP_WALLET_CONNECT_RELAY_URL
+      relayUrl: 'wss://relay.walletconnect.com'
     })
     const metadata = {
       name: 'Liquality',
