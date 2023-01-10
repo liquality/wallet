@@ -5664,8 +5664,8 @@ __metadata:
   linkType: hard
 
 "@uniswap/sdk-core@npm:^3.0.0-alpha.3, @uniswap/sdk-core@npm:^3.0.1":
-  version: 3.1.0
-  resolution: "@uniswap/sdk-core@npm:3.1.0"
+  version: 3.1.1
+  resolution: "@uniswap/sdk-core@npm:3.1.1"
   dependencies:
     "@ethersproject/address": ^5.0.2
     big.js: ^5.2.2
@@ -5673,7 +5673,7 @@ __metadata:
     jsbi: ^3.1.4
     tiny-invariant: ^1.1.0
     toformat: ^2.0.0
-  checksum: 5b7db0c65aa65e3961b438f5198e9abca29c65b64bf404a3340644a222fc60e8192e79d68526fc8cb8b0e1487449fc3497810a4cd5b6556d0b9952b75a6ed13b
+  checksum: d9535bdd8285eca1865ff9fa2d47f03ee498fb8bffd67da543adeaba678b1fcb161e49453f2aa95de8d78dbf17d06683d6dd2708ec1afb00c47ffc10a4e04dbd
   languageName: node
   linkType: hard
 

@@ -1301,7 +1301,7 @@ export default {
       //   !BN(this.sendAmount).eq(this.defaultAmount) &&
       //   BN(this.sendAmount).lt(this.max)
       // if(this.cannotCoverMinimum) this.sendAmount = 1
-      this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 1000 : QUOTE_TIMER_MS)
+      this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 10000 : QUOTE_TIMER_MS)
     },
     async _updateQuotes() {
       const result = await this.getQuotes({

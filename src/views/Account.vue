@@ -204,9 +204,13 @@ export default {
       return cryptoassets[this.asset]?.chain
     },
     filteredTransactions() {
-      return this.activityData.filter(
-        (t) => t.fromAccountId === this.accountId || t.toAccountId === this.accountId
-      )
+      return this.activityData.filter((t) => {
+        return (
+          t.accountId === this.accountId ||
+          t.fromAccountId === this.accountId ||
+          t.toAccountId === this.accountId
+        )
+      })
     }
   },
   methods: {

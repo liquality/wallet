@@ -349,6 +349,20 @@ export default {
       updatingFees: true
     }
   },
+  watch: {
+    activeView: {
+      handler: async function (newVal) {
+        if (newVal === 'selectedAsset') {
+          this.updatingFees = true
+          await this.updateFees({ asset: this.assetChain })
+          await this.updateSendFees(this.amount)
+          setTimeout(() => {
+            this.updatingFees = false
+          }, 1500)
+        }
+      }
+    }
+  },
   async created() {
     if (this.$route.query.nftAsset) {
       this.activeView = 'selectedAsset'
