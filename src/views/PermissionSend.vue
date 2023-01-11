@@ -324,7 +324,6 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        debugger
         this.customFee = this.calculateFee(fee)
         this.selectedFee = 'custom'
       }

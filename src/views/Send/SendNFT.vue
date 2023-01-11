@@ -346,7 +346,14 @@ export default {
       sendErrorMessage: '',
       address: '',
       selectedFee: 'average',
-      updatingFees: true
+      updatingFees: false
+    }
+  },
+  watch: {
+    activeView(newVal) {
+      if (newVal === 'selectedAsset' && this.selectedNFT && !this.updatingFees) {
+        this.requestUpdateFees()
+      }
     }
   },
   async created() {
@@ -357,13 +364,9 @@ export default {
       const collections = this.accountNftCollections(this.accountId)
       if (collections && collections[collectionName]) {
         this.selectedNFT = collections[collectionName].find((i) => i.token_id == nftAssetId)
+        this.requestUpdateFees()
       }
     }
-    await this.updateFees({ asset: this.assetChain })
-    await this.updateSendFees(this.amount)
-    setTimeout(() => {
-      this.updatingFees = false
-    }, 1500)
     await this.trackAnalytics({
       event: 'Send NFT screen',
       properties: {
@@ -603,12 +606,13 @@ export default {
       this.customFee = null
       this.selectedFee = 'average'
     },
-    async _updateSendFees() {
+    async _updateSendFees(amount = 1) {
+      if (!this.selectedNFT) return
       const sendFees = await estimateTransferNFT(
         this.account.id,
         this.activeNetwork,
         this.address,
-        [1],
+        [amount],
         this.selectedNFT,
         this.customFee
       )
@@ -621,7 +625,7 @@ export default {
       )
       if (BN(this.balance).gt(0)) {
         console.log('Updating fees')
-        await this._updateSendFees(amount)
+        await this._updateSendFees()
       } else {
         console.log('balance <= 0, not updating fees')
       }
@@ -670,6 +674,17 @@ export default {
       if (ref) {
         this.$refs[ref].src = this.thumbnailImage
       }
+    },
+    requestUpdateFees() {
+      this.updatingFees = true
+      Promise.all([
+        this.updateFees({ asset: this.assetChain }),
+        this.updateSendFees(this.amount)
+      ]).finally(() => {
+        setTimeout(() => {
+          this.updatingFees = false
+        }, 1000);
+      })
     }
   }
 }
