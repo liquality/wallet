@@ -309,7 +309,7 @@
                 v-if="item.error"
                 @click="$emit('retrySwap')"
               >
-              {{ $t('pages.details.retry') }}
+                {{ $t('pages.details.retry') }}
               </button>
             </td>
           </tr>

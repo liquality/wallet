@@ -74,7 +74,7 @@ export default {
     NFTStats,
     NFTIcon
   },
-  props: ['id'],
+  props: ['id'], // accountId
   data() {
     return {
       activityData: [],
@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'history']),
-    ...mapGetters(['activity', 'accountsData', 'accountNftCollections']),
+    ...mapGetters(['activity', 'accountItem', 'accountNftCollections']),
     assetHistory() {
       return this.activity.filter((item) => item.type === 'NFT' && item.accountId === this.id)
     },
@@ -100,10 +100,10 @@ export default {
       return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.id)[0]
+      return this.accountItem(this.id)
     },
     asset() {
-      return getNativeAssetCode(this.activeNetwork, this.account.chain)
+      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
     }
   },
   methods: {

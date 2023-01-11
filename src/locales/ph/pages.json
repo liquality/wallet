@@ -155,7 +155,7 @@
     "today": "ngayon",
     "time": "Oras",
     "sent": "Ipinadala",
-    "txtNotFoundRetry": "The Transaction maybe is not ready, Please Retry."
+    "txtNotFoundRetry": "The transaction was not found in the network. Please click the Retry button to check again."
   },
   "accounts": {
     "manageAccounts": "Pamahalaan ang Mga Account",

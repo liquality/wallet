@@ -155,7 +155,7 @@
     "today": "今天",
     "time": "时间",
     "sent": "发送",
-    "txtNotFoundRetry": "The Transaction maybe is not ready, Please Retry."
+    "txtNotFoundRetry": "The transaction was not found in the network. Please click the Retry button to check again."
   },
   "accounts": {
     "manageAccounts": "管理资产",

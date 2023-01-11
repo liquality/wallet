@@ -94,13 +94,13 @@
           </router-link>
         </div>
       </div>
-      <div class="account-container_transactions" v-if="activityData.length > 0">
+      <div class="account-container_transactions" v-if="filteredTransactions.length > 0">
         <ActivityFilter
           @filters-changed="applyFilters"
           :activity-data="activityData"
           :showTypeFilters="true"
         />
-        <TransactionList :transactions="activityData" />
+        <TransactionList :transactions="filteredTransactions" />
       </div>
       <div class="account-container_transactions" v-else>
         <EmptyActivity
@@ -188,7 +188,11 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
-      return this.activity.filter((item) => this.isNotNftTransaction(item))
+      return this.activity.filter((item) => {
+        return (
+          (item.from === this.asset || item.to === this.asset) && this.isNotNftTransaction(item)
+        )
+      })
     },
     addressLink() {
       if (this.account) {
@@ -198,6 +202,15 @@ export default {
     },
     chain() {
       return cryptoassets[this.asset]?.chain
+    },
+    filteredTransactions() {
+      return this.activityData.filter((t) => {
+        return (
+          t.accountId === this.accountId ||
+          t.fromAccountId === this.accountId ||
+          t.toAccountId === this.accountId
+        )
+      })
     }
   },
   methods: {
@@ -209,7 +222,7 @@ export default {
     formatFiat,
     formatFiatUI,
     isNotNftTransaction(item) {
-      return item.from === this.asset && item.type !== 'NFT'
+      return item.type !== 'NFT'
     },
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)

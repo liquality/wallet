@@ -3,18 +3,17 @@
     "page": "1",
     "title": "What's New?",
     "content": [
-      "Solana fees fix for swaps",
-      "User friendly error messages improvements",
-      "Solana NFTs fixes",
-      "Activity filter fixes"
+      "Fixes for send NFT on Solana and Arbitrum",
+      "Fix for Polygon's new minimum miner tip / priority fee",
+      "Fix for Optimism chainId error"
     ]
   },
   {
     "page": "2",
     "title": "Did you know you can...",
     "content": [
-      "Use LI.FI and deBridge with more than 100 different swap paths",
-      "Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports"
+      "Derive more addresses for your wallet in each network using the new multi-account feature in the top-right hamburger button",
+      "Set your preferred Custom RPC URL for EVM networks in Settings so your balances in that chain are checked using your Custom RPC"
     ]
   }
 ]
