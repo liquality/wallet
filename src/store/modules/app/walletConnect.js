@@ -1,8 +1,11 @@
 import { getSignClient } from '@/utils/wallet-connect'
 import { notify } from '@/utils/notification'
+import { DappProviderFactory } from '@/dapps/DappProviderFactory'
 import qs from 'qs'
 
 let clientInitialized = false
+const dappProviderFactory = new DappProviderFactory()
+
 export const initializeSignClient = async ({ state, dispatch }) => {
   const signClient = await getSignClient()
   if (!clientInitialized) {
@@ -32,9 +35,13 @@ export const initializeSignClient = async ({ state, dispatch }) => {
     signClient.on('session_event', (event) => {
       console.log('session_event', event)
     })
-    signClient.on('session_request', async (event) => {
-      console.log('session_request', event)
-      console.log('WalletConnect: session_request', event)
+    signClient.on('session_request', async ({ id, topic, params }) => {
+      console.log('session_request', { id, topic, params })
+      const { chainId, request } = params
+
+      const provider = dappProviderFactory.resolve(chainId)
+      const result = provider.handleRequest(request)
+      console.log('session_request => result', result)
     })
     signClient.on('session_ping', ({ id, topic }) => {
       console.log('WalletConnect: session_ping', { id, topic })
