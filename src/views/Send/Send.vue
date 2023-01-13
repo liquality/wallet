@@ -368,8 +368,7 @@ export default {
     },
     nativeAssetBalance() {
       const balance = this.account.balances?.[this.nativeAsset] || 0
-      const pBalance = prettyBalance(balance, this.nativeAsset)
-      return new BN(pBalance)
+      return new BN(balance)
     },
     hasEnoughGasFee() {
       return this.nativeAssetBalance.gte(this.prettyFee)
