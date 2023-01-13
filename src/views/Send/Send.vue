@@ -14,6 +14,12 @@
       <InfoNotification v-else-if="!isValidSendAmount">
         {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
       </InfoNotification>
+      <InfoNotification v-else-if="!hasEnoughGasFee">
+        {{ $t('components.noFundsForNetworkFee.noEnoughAsset', { asset: nativeAsset }) }}
+        <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
+          {{ $t('common.get') }} {{ nativeAsset }}
+        </router-link>
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
@@ -351,8 +357,22 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
+    nativeAsset() {
+      return this.getNativeAsset(this.asset)
+    },
+    accountUrl() {
+      return `/accounts/${this.accountId}/${this.nativeAsset}/receive`
+    },
     account() {
       return this.accountItem(this.accountId)
+    },
+    nativeAssetBalance() {
+      const balance = this.account.balances?.[this.nativeAsset] || 0
+      const pBalance = prettyBalance(balance, this.nativeAsset)
+      return new BN(pBalance);
+    },
+    hasEnoughGasFee() {
+      return this.nativeAssetBalance.gte(this.prettyFee);
     },
     networkWalletBalances() {
       return this.account?.balances
@@ -474,7 +494,7 @@ export default {
       if (
         !nativeAssetBalance ||
         BN(nativeAssetBalance).lte(0) ||
-        BN(nativeAssetBalance).minus(BN(this.currentFee)).lt(0)
+        BN(nativeAssetBalance).minus(BN(this.currentFee)).lte(0)
       ) {
         return true
       }
@@ -488,6 +508,7 @@ export default {
         BN(this.amount).gte(BN(this.minimumAssetSendAmount)) &&
         BN(this.amount).gt(0) &&
         !this.amountError
+        && this.hasEnoughGasFee
       ) {
         return true
       }
@@ -552,6 +573,7 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    getNativeAsset,
     updateSendAmount(newValue) {
       if (newValue && !isNaN(newValue)) {
         this.stateAmount = newValue
