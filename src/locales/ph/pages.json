@@ -163,6 +163,7 @@
     "eyeInstructions": "Maging mapagmatyag sa mga nanunuod sa paligid",
     "exportLedger": "Hindi ma-export mula sa isang Ledger account",
     "createAccount": "Gumawa ng Account",
+    "editAccount": "Edit Account",
     "selectNetwork": "Pumili ng Network",
     "chooseAccountName": "Pumili ng Account Name",
     "accountAliasErrorFiveChars": "Dapat may 5 o higit pang character ang pangalan",

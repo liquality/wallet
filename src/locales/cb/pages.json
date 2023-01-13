@@ -163,6 +163,7 @@
     "eyeInstructions": "Ipahilayo kini gikan sa mga mata sa uban!",
     "exportLedger": "Dili ma-export gikan sa usa ka Ledger account",
     "createAccount": "Paghimo og Account",
+    "editAccount": "Edit Account",
     "selectNetwork": "Pili ug Network",
     "chooseAccountName": "Pilia ang Ngalan sa Account",
     "accountAliasErrorFiveChars": "Ang ngalan kinahanglan adunay 5 o labaw pa nga mga karakter",
