@@ -2,7 +2,7 @@ import { EvmDappProvider } from './EvmDappProvider'
 
 // maps the chainId with a specific dapp provider
 export const DappProvidersMap = {
-  [1]: EvmDappProvider
+  'eip155:1': EvmDappProvider
 }
 
 export class DappProviderFactory {
