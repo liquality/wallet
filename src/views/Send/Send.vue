@@ -9,16 +9,13 @@
         {{ $t('common.send') }}
       </NavBar>
       <InfoNotification v-if="nativeAssetRequired">
-        <EthRequiredMessage :account-id="account.id" :action="'send'" />
+        {{ $t('components.noFundsForNetworkFee.noEnoughAsset', { asset: assetChain }) }}
+        <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
+          {{ $t('common.get') }} {{ assetChain }}
+        </router-link>
       </InfoNotification>
       <InfoNotification v-else-if="!isValidSendAmount">
         {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
-      </InfoNotification>
-      <InfoNotification v-else-if="!hasEnoughGasFee">
-        {{ $t('components.noFundsForNetworkFee.noEnoughAsset', { asset: nativeAsset }) }}
-        <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
-          {{ $t('common.get') }} {{ nativeAsset }}
-        </router-link>
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -296,7 +293,6 @@ import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 import InfoNotification from '@/components/InfoNotification'
-import EthRequiredMessage from '@/components/EthRequiredMessage'
 
 export default {
   components: {
@@ -309,8 +305,7 @@ export default {
     LedgerSignRequestModal,
     CustomFees,
     CustomFeesEIP1559,
-    InfoNotification,
-    EthRequiredMessage
+    InfoNotification
   },
   mixins: [ledgerConnectMixin],
   data() {
@@ -357,21 +352,11 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
-    nativeAsset() {
-      return this.getNativeAsset(this.asset)
-    },
     accountUrl() {
       return `/accounts/${this.accountId}/${this.nativeAsset}/receive`
     },
     account() {
       return this.accountItem(this.accountId)
-    },
-    nativeAssetBalance() {
-      const balance = this.account.balances?.[this.nativeAsset] || 0
-      return new BN(balance)
-    },
-    hasEnoughGasFee() {
-      return this.nativeAssetBalance.gte(this.prettyFee)
     },
     networkWalletBalances() {
       return this.account?.balances
@@ -489,12 +474,14 @@ export default {
         return true
       }
 
-      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
-      if (
-        !nativeAssetBalance ||
-        BN(nativeAssetBalance).lte(0) ||
-        BN(nativeAssetBalance).minus(BN(this.currentFee)).lte(0)
-      ) {
+      const balance = this.networkWalletBalances[this.assetChain]
+
+      if (!balance) {
+        return true
+      }
+
+      const nativeAssetBalance = unitToCurrency(cryptoassets[this.assetChain], BN(balance))
+      if (nativeAssetBalance.lte(0) || nativeAssetBalance.minus(BN(this.currentFee)).lte(0)) {
         return true
       }
       return false
@@ -506,8 +493,7 @@ export default {
         !this.addressError &&
         BN(this.amount).gte(BN(this.minimumAssetSendAmount)) &&
         BN(this.amount).gt(0) &&
-        !this.amountError &&
-        this.hasEnoughGasFee
+        !this.amountError
       ) {
         return true
       }
