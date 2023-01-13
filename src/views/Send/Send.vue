@@ -369,10 +369,10 @@ export default {
     nativeAssetBalance() {
       const balance = this.account.balances?.[this.nativeAsset] || 0
       const pBalance = prettyBalance(balance, this.nativeAsset)
-      return new BN(pBalance);
+      return new BN(pBalance)
     },
     hasEnoughGasFee() {
-      return this.nativeAssetBalance.gte(this.prettyFee);
+      return this.nativeAssetBalance.gte(this.prettyFee)
     },
     networkWalletBalances() {
       return this.account?.balances
@@ -507,8 +507,8 @@ export default {
         !this.addressError &&
         BN(this.amount).gte(BN(this.minimumAssetSendAmount)) &&
         BN(this.amount).gt(0) &&
-        !this.amountError
-        && this.hasEnoughGasFee
+        !this.amountError &&
+        this.hasEnoughGasFee
       ) {
         return true
       }

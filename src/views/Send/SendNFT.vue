@@ -683,7 +683,7 @@ export default {
       ]).finally(() => {
         setTimeout(() => {
           this.updatingFees = false
-        }, 1000);
+        }, 1000)
       })
     }
   }
