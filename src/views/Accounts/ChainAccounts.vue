@@ -48,13 +48,23 @@
           {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
         </template>
         <template #detail>
-          <toggle-button
-            :css-colors="true"
-            :value="account.enabled"
-            :sync="true"
-            :disabled="!isChainEnabled(chain.id)"
-            @change="(e) => toggleAccount([account.id], e.value)"
-          />
+          <div class="d-flex">
+            <router-link
+              :to="{ name: 'EditAccount', params: { accountId: account.id } }"
+              class="edit-link"
+              :id="'edit-account-plus-icon-' + account.id"
+              v-tooltip="$t('pages.accounts.editAccount')"
+            >
+              <EditIcon />
+            </router-link>
+            <toggle-button
+              :css-colors="true"
+              :value="account.enabled"
+              :sync="true"
+              :disabled="!isChainEnabled(chain.id)"
+              @change="(e) => toggleAccount([account.id], e.value)"
+            />
+          </div>
         </template>
       </ListItem>
     </div>
@@ -65,6 +75,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_circle.svg'
+import EditIcon from '@/assets/icons/edit_icon.svg'
 import { formatFiat, formatFiatUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getAccountIcon } from '@/utils/accounts'
 import { getChainIcon } from '@/utils/accounts'
@@ -73,7 +84,8 @@ import ListItem from '@/components/ListItem'
 export default {
   components: {
     PlusIcon,
-    ListItem
+    ListItem,
+    EditIcon
   },
   props: {
     chain: Object
@@ -171,15 +183,16 @@ export default {
       font-size: $font-size-tiny;
       color: $text-muted;
     }
+  }
+}
 
-    .create-link {
-      width: 20px;
-      height: 20px;
-      margin-right: 20px;
-      svg {
-        width: 20px;
-      }
-    }
+.create-link,
+.edit-link {
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+  svg {
+    width: 20px;
   }
 }
 

@@ -163,6 +163,7 @@
     "eyeInstructions": "¡Mantén esto alejado de miradas indiscretas!",
     "exportLedger": "No se puede exportar de una cuenta de Ledger",
     "createAccount": "Crear Cuenta",
+    "editAccount": "Editar Cuenta",
     "selectNetwork": "Selecionar Red",
     "chooseAccountName": "Elige un Nombre de Cuenta",
     "accountAliasErrorFiveChars": "El nombre debe tener 5 o más caracteres",

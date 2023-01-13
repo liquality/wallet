@@ -163,6 +163,7 @@
     "eyeInstructions": "别让他人看到",
     "exportLedger": "不能从Ledger账户导出",
     "createAccount": "创建新账户",
+    "editAccount": "Edit Account",
     "selectNetwork": "选择网络",
     "chooseAccountName": "选择账户名称",
     "accountAliasErrorFiveChars": "名称至少5位字符",

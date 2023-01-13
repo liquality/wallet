@@ -163,6 +163,7 @@
     "eyeInstructions": "Keep this away from prying eyes!",
     "exportLedger": "Cannot export from a Ledger account",
     "createAccount": "Create Account",
+    "editAccount": "Edit Account",
     "selectNetwork": "Select Network",
     "chooseAccountName": "Choose Account Name",
     "accountAliasErrorFiveChars": "Name should have 5 or more characters",
