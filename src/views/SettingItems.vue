@@ -103,6 +103,19 @@
         <ChevronRightIcon class="list-item-chevron" />
       </router-link>
     </div>
+    <div class="setting-item" id="settings_item_wallet_logs">
+      <router-link :to="{ name: 'ManageAccounts', params: { from: currentRoutePath } }">
+        <div class="setting-item_title flex-fill mb-2">
+          <div class="setting-item_title_accounts">
+            {{ $t('pages.settings.manageAccounts') }}
+          </div>
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.manageAccountsSub') }}
+          </span>
+        </div>
+        <ChevronRightIcon class="list-item-chevron" />
+      </router-link>
+    </div>
   </div>
 </template>
 <script>
@@ -129,6 +142,10 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum']),
     ...mapGetters(['analyticsEnabled']),
+
+    currentRoutePath() {
+      return this.$route.path;
+    },
 
     localeOptions() {
       return (this.locales?.filter((i) => i !== this.currentLocale) || [])

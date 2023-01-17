@@ -87,7 +87,9 @@
       "blockExplorerUrl": "Block explorer URL (optional)",
       "save": "Save",
       "default": "Default"
-    }
+    },
+    "manageAccounts": "Manage accounts",
+    "manageAccountsSub": "Create more addresses for each network and edit their names."
   },
   "experiments": {
     "experiments": "Experiments",

@@ -115,6 +115,9 @@ export default {
     ...mapState(['experiments', 'activeNetwork']),
     ...mapGetters('app', ['isSettingsModalOpen']),
     ...mapGetters(['accountItem']),
+    currentRoutePath() {
+      return this.$route.path;
+    },
     account() {
       if (this.$route.params.accountId) {
         return this.accountItem(this.$route.params.accountId)
@@ -219,7 +222,7 @@ export default {
         }
       })
       this.showMenuList = false
-      this.$router.replace('/accounts/management')
+      this.$router.replace({ name: 'ManageAccounts', params: { from: this.currentRoutePath }})
     },
     ledger() {
       this.trackAnalytics({
