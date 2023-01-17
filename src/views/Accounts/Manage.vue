@@ -1,6 +1,11 @@
 <template>
   <div class="manage-accounts">
-    <NavBar showMenu="false" showBack="true" :backPath="routeBackRoutePath || '/wallet'" :backLabel="$t('common.back')">
+    <NavBar
+      showMenu="false"
+      showBack="true"
+      :backPath="routeBackRoutePath || '/wallet'"
+      :backLabel="$t('common.back')"
+    >
       <span class="wallet_header">
         <strong>{{ $t('pages.accounts.manageAccounts') }}</strong>
       </span>
@@ -41,7 +46,7 @@ export default {
       })
     },
     routeBackRoutePath() {
-      return this.$route.params.from;
+      return this.$route.params.from
     }
   },
   methods: {

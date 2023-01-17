@@ -144,7 +144,7 @@ export default {
     ...mapGetters(['analyticsEnabled']),
 
     currentRoutePath() {
-      return this.$route.path;
+      return this.$route.path
     },
 
     localeOptions() {
