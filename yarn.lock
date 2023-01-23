@@ -3731,23 +3731,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-app-btc@npm:9.1.0":
-  version: 9.1.0
-  resolution: "@ledgerhq/hw-app-btc@npm:9.1.0"
+"@ledgerhq/hw-app-btc@npm:6.27.1":
+  version: 6.27.1
+  resolution: "@ledgerhq/hw-app-btc@npm:6.27.1"
   dependencies:
-    "@ledgerhq/hw-transport": ^6.27.8
-    "@ledgerhq/logs": ^6.10.1
+    "@ledgerhq/hw-transport": ^6.27.1
+    "@ledgerhq/logs": ^6.10.0
     bip32-path: ^0.4.2
     bitcoinjs-lib: ^5.2.0
     bs58: ^4.0.1
-    bs58check: ^2.1.2
     invariant: ^2.2.4
     ripemd160: 2
     semver: ^7.3.5
     sha.js: 2
     tiny-secp256k1: 1.1.6
     varuint-bitcoin: 1.1.2
-  checksum: 0d07a6725aedce02f17d32bd6d47c601b0d3f688e4d5be1bcfbb378099c457b6a062ec49c9ff019944dbdfa4c99b4f6282f01885491abcd2b7af7e9899ffde19
+  checksum: 4af10e5ba3dab8b20b42af9eb21283d975f7c20d09f205ffcaf18eeb714a59914274345d18a10c83099ca3ca0ada5352b7cbaacd75897c5e8b8829e22d952a79
   languageName: node
   linkType: hard
 
@@ -3838,7 +3837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/logs@npm:^6.10.0, @ledgerhq/logs@npm:^6.10.1":
+"@ledgerhq/logs@npm:^6.10.0":
   version: 6.10.1
   resolution: "@ledgerhq/logs@npm:6.10.1"
   checksum: 4dde46557d9daa6028f7040d26585aaa7260445212ad8348ae4a01463b7d76a1592dfc36921e47f5fc477c50b5d73e840070ac167e3cbe5b45123f36a4f96b08
