@@ -3,9 +3,7 @@
     "page": "1",
     "title": "What's New?",
     "content": [
-      "Fixes for send NFT on Solana and Arbitrum",
-      "Fix for Polygon's new minimum miner tip / priority fee",
-      "Fix for Optimism chainId error"
+      "Fixes for Thorchain cross-chain Swaps (ETH<=>BTC)"
     ]
   },
   {

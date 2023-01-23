@@ -137,7 +137,7 @@ export default {
     },
     faucet() {
       const asset = cryptoassets[this.asset]
-      const chain = getChain(this.activeNetwork, asset.chain)
+      const chain = getChain(this.activeNetwork, asset?.chain)
 
       if (chain.faucetUrl) {
         return {
@@ -168,7 +168,6 @@ export default {
     }
 
     const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
-
     QRCode.toString(
       uri,
       {
