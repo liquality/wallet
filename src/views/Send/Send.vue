@@ -353,7 +353,7 @@ export default {
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
     accountUrl() {
-      return `/accounts/${this.accountId}/${this.nativeAsset}/receive`
+      return `/accounts/${this.accountId}/${this.assetChain}/receive`
     },
     account() {
       return this.accountItem(this.accountId)
