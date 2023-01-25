@@ -55,7 +55,6 @@ import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
 import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { version as walletVersion } from '../../package.json'
-import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 export default {
@@ -69,6 +68,11 @@ export default {
       loading: false,
       error: null,
       password: ''
+    }
+  },
+  watch: {
+    password() {
+      this.error = null
     }
   },
   methods: {
@@ -88,8 +92,9 @@ export default {
           }
         })
       } catch (e) {
-        this.error = this.$tle(errorToLiqualityErrorString(e))
         reportLiqualityError(e)
+        const { plain } = this.$tle({ translationKey: 'PasswordError' })
+        this.error = plain
         this.trackAnalytics({
           event: 'UnlockWallet failed',
           properties: {
