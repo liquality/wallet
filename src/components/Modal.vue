@@ -24,7 +24,7 @@
             <h5 class="modal-title" v-else-if="hasSlot('title')">
               <slot name="title"></slot>
             </h5>
-            <ModalClose class="modal-close" @click="close" :id="closeId" />
+            <ModalClose class="modal-close" @click="close" :id="closeId" v-if="showClose" />
           </div>
           <div :class="bodyClass">
             <slot></slot>
@@ -68,6 +68,10 @@ export default {
     closeId: {
       type: String,
       required: false
+    },
+    showClose: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
