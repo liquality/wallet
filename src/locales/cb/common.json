@@ -1,4 +1,6 @@
 {
+    "error": "Error",
+    "warning": "Warning",
     "cancel": "I-kansel",
     "create": "Paghimo",
     "type": "Type",

@@ -1,4 +1,6 @@
 {
+    "error": "Error",
+    "warning": "Warning",
     "cancel": "取消",
     "create": "创建",
     "type": "类别",
