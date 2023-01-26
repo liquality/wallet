@@ -1,4 +1,6 @@
 {
+    "error": "Error",
+    "warning": "Warning",
     "cancel": "Cancel",
     "create": "Create",
     "type": "Type",
