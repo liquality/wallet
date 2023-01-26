@@ -16,14 +16,23 @@
             </div>
           </div>
           <template v-else>
-            <div class="row">
+            <div class="row mt-2">
               <div class="col">
-                {{
-                  $t('pages.permission.chainIdErrorNetwork', {
-                    network: requestedChain ? requestedChain.name : 'UNKNOWN',
-                    origin: request.origin
-                  })
-                }}
+                <p>
+                  {{
+                    $t('pages.permission.chainIdErrorNetwork', {
+                      network: requestedChain ? requestedChain.name : 'UNKNOWN',
+                      origin: request.origin
+                    })
+                  }}
+                </p>
+                <p>
+                  {{
+                    $t('pages.permission.chainIdErrorApprovedChain', {
+                      network: approvedChainName
+                    })
+                  }}
+                </p>
               </div>
             </div>
             <div class="row mt-3">
@@ -142,7 +151,8 @@ export default {
       signRequestModalOpen: false,
       showErrorModal: false,
       requestedChainId: null,
-      requestedChain: null
+      requestedChain: null,
+      approvedChainName: ''
     }
   },
   methods: {
@@ -240,22 +250,29 @@ export default {
        **/
       this.requestedChainId = `${msgParams.data?.domain?.chainId}`.trim()
       // the requested chainId can be an integer, string or hex so we should convert it to int if we get an hex
-      const chainIdToValidate = isHex(this.requestedChainId)
+      const chainIdToValidate = this.requestedChainId.match(/^0[xX][0-9a-fA-F]+/i)
         ? parseInt(this.requestedChainId, 16)
         : this.requestedChainId
 
+      debugger
       // We shuold try to get the chain details from the requested chainId if it's valid
       const supportedChains = getAllSupportedChains()[this.activeNetwork] || {}
-      console.log(supportedChains)
-      this.requestedChain = Object.keys(supportedChains).find(
+
+      const requestedChainName = Object.keys(supportedChains).find(
         (chain) => supportedChains[chain]?.network?.chainId == chainIdToValidate
       )
-
+      if (requestedChainName) {
+        this.requestedChain = supportedChains[requestedChainName]
+      }
       // We get the chains inside the dapp permissions, the chain name should be inside the list
       const chains = Object.keys(this.dappConnections[this.request.origin] || {})
         .map((chainName) => getChain(this.activeNetwork, chainName))
         .filter((i) => i)
-      if (chains.findIndex((chain) => chain.network.chainId == chainIdToValidate) < 0) {
+      const index = chains.findIndex((chain) => chain.network.chainId == chainIdToValidate)
+      if (chains.length > 0) {
+        this.approvedChainName = chains[0].name
+      }
+      if (index < 0) {
         console.error(
           `The request chainId is not matching with the asset chainId and stored permissions, RequestChainId: ${msgParams.data?.domain?.chainId}`,
           this.request
