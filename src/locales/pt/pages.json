@@ -222,8 +222,9 @@
     "signTransaction": "Assinar Transação",
     "requestToSign": "Solicitação para Assinar",
     "request": "Solicitar",
-    "chainIdErrorNetwork": "This site %{origin} is requesting a signature for the network %{network}",
-    "chainIdErrorRequestedChainId": "Requested chainId %{chainId}",
+    "chainIdErrorNetwork": "This site %{origin} is requesting a signature for the network: %{network}",
+    "chainIdErrorApprovedChain": "You connected to this dapp, using this other network: %{network}",
+    "chainIdErrorRequestedChainId": "Requested chainId: %{chainId}",
     "chainIdErrorRequestedAsset": "Requested asset: %{asset}"
   },
   "send": {
