@@ -126,7 +126,7 @@
   },
   "resolutions": {
     "@ledgerhq/devices": "6.27.1",
-    "@ledgerhq/hw-transport": "6.27.1",
+    "@ledgerhq/hw-transport": "6.27.10",
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@ledgerhq/hw-app-eth": "6.26.0",
     "@ledgerhq/hw-app-btc": "6.27.1"
