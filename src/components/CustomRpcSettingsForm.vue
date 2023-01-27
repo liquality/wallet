@@ -68,17 +68,13 @@ export default {
       const { networkName, newRpcUrl, chainId, currencySymbol } = this.formData
       const { network } = this.settings
       const { custom } = network
-      if (
+      return !!(
         networkName &&
         newRpcUrl &&
         chainId &&
         currencySymbol &&
         newRpcUrl !== this.getBaseUrl(network?.rpcUrl, custom)
-      ) {
-        return true
-      }
-
-      return false
+      )
     }
   },
   methods: {

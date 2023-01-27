@@ -56,12 +56,17 @@ const routes = [
       {
         path: '',
         name: 'AllSettings',
-        component: () => import('@/views/SettingItems.vue')
+        component: () => import('@/views/Settings/SettingItems.vue')
       },
       {
         path: 'networks',
         name: 'NetworkSettings',
-        component: () => import('@/views/NetworkSettings.vue')
+        component: () => import('@/views/Settings/NetworkSettings.vue')
+      },
+      {
+        path: 'userBackups',
+        name: 'userBackups',
+        component: () => import('@/views/Settings/UserBackups.vue')
       }
     ]
   },

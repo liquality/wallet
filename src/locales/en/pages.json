@@ -89,7 +89,11 @@
       "default": "Default"
     },
     "manageAccounts": "Manage Accounts",
-    "manageAccountsSub": "Create more addresses for each network and edit their names."
+    "manageAccountsSub": "Create more addresses for each network and edit their names.",
+    "backupUserData": "Backup User Data",
+    "backupUserDataSub": "Download/Upload custom RPC settings.",
+    "upload": "Upload custom RPC Settings",
+    "download": "Download custom RPC Settings"
   },
   "experiments": {
     "experiments": "Experiments",

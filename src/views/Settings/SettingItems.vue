@@ -116,6 +116,19 @@
         <ChevronRightIcon class="list-item-chevron" />
       </router-link>
     </div>
+    <div class="setting-item">
+      <router-link :to="{ name: 'userBackups' }">
+        <div class="setting-item_title flex-fill mb-2">
+          <div class="setting-item_title_accounts">
+            {{ $t('pages.settings.backupUserData') }}
+          </div>
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.backupUserDataSub') }}
+          </span>
+        </div>
+        <ChevronRightIcon class="list-item-chevron" />
+      </router-link>
+    </div>
   </div>
 </template>
 <script>
@@ -124,7 +137,7 @@ import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { getWalletStateLogs, downloadFile } from '@/utils/export'
-import { version } from '../../package.json'
+import { version } from '../../../package.json'
 
 export default {
   name: 'SettingItems',
