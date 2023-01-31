@@ -1,6 +1,7 @@
 const path = require('path')
 const AssetReplacePlugin = require('./plugins/AssetReplacePlugin')
 const CopyPlugin = require('copy-webpack-plugin')
+const webpack = require('webpack')
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -18,6 +19,25 @@ module.exports = {
 
   configureWebpack: (config) => {
     config.entry.pageProvider = path.resolve('./src/pageProvider/index.js')
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /@ledgerhq\/cryptoassets\/data\/erc20-signatures/,
+        '@ledgerhq/cryptoassets/lib/data/erc20-signatures'
+      )
+    )
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /@ledgerhq\/cryptoassets\/data\/eip712/,
+        '@ledgerhq/cryptoassets/lib/data/eip712'
+      )
+    )
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /@ledgerhq\/devices\/hid-framing/,
+        '@ledgerhq/devices/lib/hid-framing'
+      )
+    )
+
     config.plugins.push(
       new AssetReplacePlugin({
         name: '#PAGEPROVIDER#',
