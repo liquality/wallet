@@ -3,8 +3,7 @@
     "page": "1",
     "title": "What's New?",
     "content": [
-      "Fixes for Thorchain cross-chain Swaps (ETH<=>BTC)",
-      "Warning for non compliant EIP-712 injection request"
+      "Ledger fixes"
     ]
   },
   {
