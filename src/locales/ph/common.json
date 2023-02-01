@@ -1,4 +1,6 @@
 {
+    "error": "Error",
+    "warning": "Warning",
     "cancel": "Kanselahin",
     "create": "Gumawa",
     "type": "Uri",

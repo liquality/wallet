@@ -92,8 +92,8 @@ export default {
         walletId: this.activeWalletId,
         chainId,
         chanifyNetwork: {
-          custom: true,
           ...network,
+          custom: true,
           explorerUrl: this.formData.explorerUrl,
           rpcUrl: this.formData.newRpcUrl
         }
@@ -102,9 +102,7 @@ export default {
       await this.saveCustomChainSettings(payload)
     },
     getBaseUrl(url, custom = true) {
-      if (custom === true) {
-        return url
-      }
+      if (custom) return url
 
       const pathArray = url.split('/'),
         protocol = pathArray[0],

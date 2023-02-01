@@ -173,6 +173,13 @@ const routes = [
     meta: { protect: true }
   },
   {
+    path: '/accounts/edit/:accountId?',
+    component: () => import('@/views/Accounts/Edit.vue'),
+    name: 'EditAccount',
+    props: true,
+    meta: { protect: true }
+  },
+  {
     path: '/accounts/hardware-wallet',
     component: () => import('@/views/Accounts/HardwareWallet/HardwareWallet.vue'),
     props: true,

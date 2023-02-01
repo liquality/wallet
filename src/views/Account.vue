@@ -32,10 +32,12 @@
             trigger="hover focus"
             placement="top"
             :hideOnTargetClick="false"
-            :delay="{ hide: 1000, show: 200 }"
+            :delay="tooltipDelay"
           >
             <button
               @click.prevent="copyAddress"
+              @mouseleave="offsetToolTipDelay"
+              @mouseenter="setInitialToolTipDelay"
               class="btn btn-outline-light"
               :id="`${asset}_address_container`"
             >
@@ -161,7 +163,8 @@ export default {
       activityData: [],
       updatingBalances: false,
       address: null,
-      showPopOver: true
+      showPopOver: true,
+      tooltipDelay: { hide: 1000, show: 200 }
     }
   },
   props: ['accountId', 'asset'],
@@ -245,6 +248,16 @@ export default {
     },
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
+    },
+    offsetToolTipDelay() {
+      this.$nextTick(() => {
+        this.tooltipDelay = { hide: 0, show: 0 }
+      })
+    },
+    setInitialToolTipDelay() {
+      this.$nextTick(() => {
+        this.tooltipDelay = { hide: 1000, show: 200 }
+      })
     }
   },
   async created() {

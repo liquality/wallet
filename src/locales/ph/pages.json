@@ -87,7 +87,9 @@
       "blockExplorerUrl": "Block explorer URL (optional)",
       "save": "Save",
       "default": "Default"
-    }
+    },
+    "manageAccounts": "Manage Accounts",
+    "manageAccountsSub": "Create more addresses for each network and edit their names."
   },
   "experiments": {
     "experiments": "Mga eksperimento",
@@ -163,6 +165,7 @@
     "eyeInstructions": "Maging mapagmatyag sa mga nanunuod sa paligid",
     "exportLedger": "Hindi ma-export mula sa isang Ledger account",
     "createAccount": "Gumawa ng Account",
+    "editAccount": "Edit Account",
     "selectNetwork": "Pumili ng Network",
     "chooseAccountName": "Pumili ng Account Name",
     "accountAliasErrorFiveChars": "Dapat may 5 o higit pang character ang pangalan",
@@ -218,7 +221,11 @@
     "myWallet": "Aking Wallet",
     "signTransaction": "I-sign ang Transaksyon",
     "requestToSign": "Kahilingan na Pumirma",
-    "request": "Kahilingan"
+    "request": "Kahilingan",
+    "chainIdErrorNetwork": "This site %{origin} is requesting a signature for the network: %{network}",
+    "chainIdErrorApprovedChain": "You connected to this dapp, using this other network: %{network}",
+    "chainIdErrorRequestedChainId": "Requested chainId: %{chainId}",
+    "chainIdErrorRequestedAsset": "Requested asset: %{asset}"
   },
   "send": {
     "sendTo": "Ipadala sa",

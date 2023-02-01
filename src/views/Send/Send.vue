@@ -9,7 +9,10 @@
         {{ $t('common.send') }}
       </NavBar>
       <InfoNotification v-if="nativeAssetRequired">
-        <EthRequiredMessage :account-id="account.id" :action="'send'" />
+        {{ $t('components.noFundsForNetworkFee.noEnoughAsset', { asset: assetChain }) }}
+        <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
+          {{ $t('common.get') }} {{ assetChain }}
+        </router-link>
       </InfoNotification>
       <InfoNotification v-else-if="!isValidSendAmount">
         {{ `${$t('common.minSendAmount')} ${minimumAssetSendAmount} ${asset}` }}
@@ -290,7 +293,6 @@ import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 import InfoNotification from '@/components/InfoNotification'
-import EthRequiredMessage from '@/components/EthRequiredMessage'
 
 export default {
   components: {
@@ -303,8 +305,7 @@ export default {
     LedgerSignRequestModal,
     CustomFees,
     CustomFeesEIP1559,
-    InfoNotification,
-    EthRequiredMessage
+    InfoNotification
   },
   mixins: [ledgerConnectMixin],
   data() {
@@ -351,6 +352,9 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
+    accountUrl() {
+      return `/accounts/${this.accountId}/${this.assetChain}/receive`
+    },
     account() {
       return this.accountItem(this.accountId)
     },
@@ -470,12 +474,14 @@ export default {
         return true
       }
 
-      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
-      if (
-        !nativeAssetBalance ||
-        BN(nativeAssetBalance).lte(0) ||
-        BN(nativeAssetBalance).minus(BN(this.currentFee)).lt(0)
-      ) {
+      const balance = this.networkWalletBalances[this.assetChain]
+
+      if (!balance) {
+        return true
+      }
+
+      const nativeAssetBalance = unitToCurrency(cryptoassets[this.assetChain], BN(balance))
+      if (nativeAssetBalance.lte(0) || nativeAssetBalance.minus(BN(this.currentFee)).lte(0)) {
         return true
       }
       return false
@@ -552,6 +558,7 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    getNativeAsset,
     updateSendAmount(newValue) {
       if (newValue && !isNaN(newValue)) {
         this.stateAmount = newValue

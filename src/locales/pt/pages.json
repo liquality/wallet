@@ -87,7 +87,9 @@
       "blockExplorerUrl": "Block explorer URL (optional)",
       "save": "Save",
       "default": "Default"
-    }
+    },
+    "manageAccounts": "Manage Accounts",
+    "manageAccountsSub": "Create more addresses for each network and edit their names."
   },
   "experiments": {
     "experiments": "Experimental",
@@ -163,6 +165,7 @@
     "eyeInstructions": "Mantenha a salvo!",
     "exportLedger": "Não é possível exportar de uma conta Ledger",
     "createAccount": "Criar Conta",
+    "editAccount": "Edit Account",
     "selectNetwork": "Selecionar Rede",
     "chooseAccountName": "Escolha o Nome da Conta",
     "accountAliasErrorFiveChars": "O nome deve ter 5 ou mais caracteres",
@@ -218,7 +221,11 @@
     "myWallet": "Minha Carteira",
     "signTransaction": "Assinar Transação",
     "requestToSign": "Solicitação para Assinar",
-    "request": "Solicitar"
+    "request": "Solicitar",
+    "chainIdErrorNetwork": "This site %{origin} is requesting a signature for the network: %{network}",
+    "chainIdErrorApprovedChain": "You connected to this dapp, using this other network: %{network}",
+    "chainIdErrorRequestedChainId": "Requested chainId: %{chainId}",
+    "chainIdErrorRequestedAsset": "Requested asset: %{asset}"
   },
   "send": {
     "sendTo": "Enviar para",

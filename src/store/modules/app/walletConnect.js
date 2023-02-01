@@ -1,4 +1,5 @@
-import { getSignClient } from '@/utils/wallet-connect'
+import { getWeb3Wallet } from '@/utils/wallet-connect'
+import { getSdkError } from '@walletconnect/utils'
 import { notify } from '@/utils/notification'
 import { DappProviderFactory } from '@/dapps/DappProviderFactory'
 import qs from 'qs'
@@ -7,9 +8,9 @@ let clientInitialized = false
 const dappProviderFactory = new DappProviderFactory()
 
 export const initializeSignClient = async ({ state, dispatch }) => {
-  const signClient = await getSignClient()
+  const web3wallet = await getWeb3Wallet()
   if (!clientInitialized) {
-    signClient.on('session_proposal', async ({ id, params }) => {
+    web3wallet.on('session_proposal', async ({ id, params }) => {
       console.log('session_proposal', { id, params })
       dispatch('getSessionProposals')
       const notificationId = `session-proposal:${params.pairingTopic}`
@@ -32,10 +33,10 @@ export const initializeSignClient = async ({ state, dispatch }) => {
         }
       )
     })
-    signClient.on('session_event', (event) => {
+    web3wallet.on('session_event', (event) => {
       console.log('session_event', event)
     })
-    signClient.on('session_request', async ({ id, topic, params }) => {
+    web3wallet.on('session_request', async ({ id, topic, params }) => {
       console.log('session_request', { id, topic, params })
       const { chainId, request } = params
 
@@ -43,23 +44,23 @@ export const initializeSignClient = async ({ state, dispatch }) => {
       const result = provider.handleRequest(request)
       console.log('session_request => result', result)
     })
-    signClient.on('session_ping', ({ id, topic }) => {
+    web3wallet.on('session_ping', ({ id, topic }) => {
       console.log('WalletConnect: session_ping', { id, topic })
     })
-    signClient.on('session_delete', ({ id, topic }) => {
+    web3wallet.on('session_delete', ({ id, topic }) => {
       console.log('WalletConnect: session_delete', { id, topic })
       dispatch('getSessions')
     })
 
     // TODO: check when these events are called and how to handle it inside the wallet data
-    signClient.core.pairing.events.on('pairing_delete', ({ id, topic }) => {
+    web3wallet.core.pairing.events.on('pairing_delete', ({ id, topic }) => {
       console.log('pairing_delete', { id, topic })
       dispatch('getPairings')
     })
-    signClient.core.pairing.events.on('pairing_ping', ({ id, topic }) => {
+    web3wallet.core.pairing.events.on('pairing_ping', ({ id, topic }) => {
       console.log('pairing_ping', { id, topic })
     })
-    signClient.core.pairing.events.on('pairing_expire', ({ id, topic }) => {
+    web3wallet.core.pairing.events.on('pairing_expire', ({ id, topic }) => {
       console.log('pairing_expire', { id, topic })
       dispatch('getPairings')
     })
@@ -72,33 +73,33 @@ export const initializeSignClient = async ({ state, dispatch }) => {
 }
 
 export const getPairings = async ({ commit }) => {
-  const signClient = await getSignClient()
-  const pairings = signClient.core.pairing.getPairings()
+  const web3wallet = await getWeb3Wallet()
+  const pairings = web3wallet.core.pairing.getPairings()
   console.log('existing pairings', pairings)
   commit('SET_PAIRINGS', { pairings })
 }
 export const pairSignClient = async (_, { uri }) => {
-  const signClient = await getSignClient()
-  await signClient.core.pairing.pair({ uri })
+  const web3wallet = await getWeb3Wallet()
+  await web3wallet.core.pairing.pair({ uri })
 }
 
 export const getSessionProposals = async ({ commit }) => {
-  const signClient = await getSignClient()
-  const propsals = signClient.proposal.getAll()
+  const web3wallet = await getWeb3Wallet()
+  const propsals = web3wallet.getPendingSessionProposals()
   console.log('propsals', propsals)
   commit('SET_SESSION_PROPOSALS', { propsals })
 }
 
 export const getSessions = async ({ commit }) => {
-  const signClient = await getSignClient()
-  const sessions = signClient.session.getAll()
+  const web3wallet = await getWeb3Wallet()
+  const sessions = web3wallet.getActiveSessions()
   console.log('sessions', sessions)
   commit('SET_SESSIONS', { sessions })
 }
 
-export const approveSession = async ({ dispatch }, { session, accounts }) => {
-  console.log('approveSession', { session, accounts })
-  const { id, requiredNamespaces } = session
+export const approveSession = async ({ dispatch }, { proposal, accounts }) => {
+  console.log('approveSession', proposal)
+  const { id, requiredNamespaces } = proposal
   const { eip155 } = requiredNamespaces
   const { chains, methods, events } = eip155
   // Approve session proposal, use id from session proposal event and respond with namespace(s) that satisfy dapps request and contain approved accounts
@@ -113,47 +114,43 @@ export const approveSession = async ({ dispatch }, { session, accounts }) => {
     }
   }
   console.log('req', req)
-  const signClient = await getSignClient()
-  const { topic, acknowledged } = await signClient.approve(req)
-  console.log('topic', topic)
-  const approvedSession = await acknowledged()
+  const web3wallet = await getWeb3Wallet()
+  const approvedSession = await web3wallet.approveSession(req)
+
   console.log('approvedSession', approvedSession)
   dispatch('getPairings')
   dispatch('getSessions')
   dispatch('getSessionProposals')
-  return approvedSession && approvedSession.acknowledged
+  return approvedSession
 }
 
-export const rejectSession = async (_, { session }) => {
-  const signClient = await getSignClient()
-  const { id } = session
-  await signClient.reject({
+export const rejectSession = async (_, { propsal }) => {
+  const web3wallet = await getWeb3Wallet()
+  const { id } = propsal
+  await web3wallet.rejectSession({
     id,
-    reason: {
-      code: 1,
-      message: 'rejected'
-    }
+    reason: getSdkError('USER_REJECTED_METHODS')
   })
   // TODO: maybe we need to call to remove proposal
   // commit('REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL', { topic: pairingTopic })
 }
 
 export const removeSessionProposal = async (_, { topic }) => {
-  const signClient = await getSignClient()
-  return signClient.proposal.delete(topic)
+  const web3wallet = await getWeb3Wallet()
+  return web3wallet.proposal.delete(topic)
 }
 
 export const removeSession = async ({ dispatch }, { topic }) => {
-  const signClient = await getSignClient()
-  const result = signClient.session.delete(topic)
+  const web3wallet = await getWeb3Wallet()
+  const result = web3wallet.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') })
   dispatch('getPairings')
   dispatch('getSessions')
   return result
 }
 
 export const removePairing = async ({ dispatch }, { topic }) => {
-  const signClient = await getSignClient()
-  const result = signClient.core.pairing.disconnect({ topic })
+  const web3wallet = await getWeb3Wallet()
+  const result = web3wallet.core.pairing.disconnect({ topic })
   dispatch('getPairings')
   return result
 }

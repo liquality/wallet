@@ -135,14 +135,14 @@ export default {
     async approve() {
       if (this.selectedAccount && this.sessionProposal) {
         await this.approveSession({
-          session: this.sessionProposal,
+          proposal: this.sessionProposal,
           accounts: [this.selectedAccount.addresses]
         })
         this.$emit('approved')
       }
     },
     async cancel() {
-      this.rejectSession({ topic: this.pairingTopic })
+      this.rejectSession({ propsal: this.sessionProposal })
       this.$emit('cancel')
     }
   },
