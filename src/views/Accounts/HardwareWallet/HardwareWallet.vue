@@ -232,21 +232,22 @@ export default {
 
           if (chain === ChainId.Ethereum) {
             const evmChains = getAllEvmChains()[this.activeNetwork]
-            const tasks = Object.keys(evmChains)
-              .filter(
-                (k) =>
-                  evmChains[k] && ![ChainId.Optimism, ChainId.Rootstock].includes(evmChains[k].id)
-              )
-              .map((k) => {
-                return this.createAccounts({
-                  assetKeys,
-                  accounts: selectedAccounts,
-                  chain: evmChains[k].id,
-                  name: evmChains[k].name,
-                  accountType
+            await Promise.all(
+              Object.keys(evmChains)
+                .filter(
+                  (k) =>
+                    evmChains[k] && ![ChainId.Optimism, ChainId.Rootstock].includes(evmChains[k].id)
+                )
+                .map((k) => {
+                  return this.createAccounts({
+                    assetKeys,
+                    accounts: selectedAccounts,
+                    chain: evmChains[k].id,
+                    name: evmChains[k].name,
+                    accountType
+                  })
                 })
-              })
-            await Promise.all(tasks)
+            )
           } else {
             await this.createAccounts({
               assetKeys,
