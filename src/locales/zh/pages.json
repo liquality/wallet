@@ -199,7 +199,11 @@
     "accountMessage1": "我们无法获得帐户列表。 请重试，检查ledger是否选择了正确的app/资产，或者取消后再选择其他资产。",
     "accountMessage2": "最后关闭您ledger连接的所有app，包括 Ledger Live。",
     "tryAgain": "重试",
-    "unlock": "解锁"
+    "unlock": "解锁",
+    "allEvmLedgerEnabled": {
+      "message": "All currently supported EVM networks have been added as Ledger accounts. If you want to hide any of them you can do this at ",
+      "manage": "Manage Accounts"
+    }
   },
   "receive": {
     "yourCurrentAddress": "您当前的 %{asset} 地址",
@@ -221,7 +225,11 @@
     "myWallet": "我的钱包",
     "signTransaction": "签署交易",
     "requestToSign": "请求签名",
-    "request": "请求"
+    "request": "请求",
+    "chainIdErrorNetwork": "This site %{origin} is requesting a signature for the network: %{network}",
+    "chainIdErrorApprovedChain": "You connected to this dapp, using this other network: %{network}",
+    "chainIdErrorRequestedChainId": "Requested chainId: %{chainId}",
+    "chainIdErrorRequestedAsset": "Requested asset: %{asset}"
   },
   "send": {
     "sendTo": "发送到",

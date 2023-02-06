@@ -199,7 +199,11 @@
     "accountMessage1": "Wala kami makakuha og lista sa mga account. Palihug sulayi pag-usab, susiha ang ledger kung ang husto nga app/asset gipili o kanselahon ug pagpili og lain nga asset.",
     "accountMessage2": "Isira ang bisan unsang ubang mga app nga konektado sa imong ledger, lakip ang Ledger Live.",
     "tryAgain": "Sulayi Pag-usab",
-    "unlock": "Unlock"
+    "unlock": "Unlock",
+    "allEvmLedgerEnabled": {
+      "message": "All currently supported EVM networks have been added as Ledger accounts. If you want to hide any of them you can do this at ",
+      "manage": "Manage Accounts"
+    }
   },
   "receive": {
     "yourCurrentAddress": "Ang imohang %{asset} Address",
@@ -221,7 +225,11 @@
     "myWallet": "Imohang Wallet",
     "signTransaction": "Pirmahi ang Transaksyon",
     "requestToSign": "Paghangyo sa Pagpirma",
-    "request": "Request"
+    "request": "Request",
+    "chainIdErrorNetwork": "This site %{origin} is requesting a signature for the network: %{network}",
+    "chainIdErrorApprovedChain": "You connected to this dapp, using this other network: %{network}",
+    "chainIdErrorRequestedChainId": "Requested chainId: %{chainId}",
+    "chainIdErrorRequestedAsset": "Requested asset: %{asset}"
   },
   "send": {
     "sendTo": "Ipadala Sa",

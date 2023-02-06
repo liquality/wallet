@@ -1,4 +1,6 @@
 {
+    "error": "Error",
+    "warning": "Warning",
     "cancel": "Cancelar",
     "create": "Criar",
     "type": "Tipo",
