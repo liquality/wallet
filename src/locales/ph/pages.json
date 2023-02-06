@@ -199,7 +199,11 @@
     "accountMessage1": "Walang nakukuhang listahan ng mga account. Tingnan ang ledger kung napili ang tamang app/asset o pumili ng ibang asset at subukang muli.",
     "accountMessage2": "Isara ang anumang iba pang app kung saan nakakonekta ang iyong ledger, kabilang ang Ledger Live.",
     "tryAgain": "Subukan muli",
-    "unlock": "I-unlock"
+    "unlock": "I-unlock",
+    "allEvmLedgerEnabled": {
+      "message": "All currently supported EVM networks have been added as Ledger accounts. If you want to hide any of them you can do this at ",
+      "manage": "Manage Accounts"
+    }
   },
   "receive": {
     "yourCurrentAddress": "Ang Iyong Kasalukuyang %{asset} Address",

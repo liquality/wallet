@@ -26,7 +26,7 @@
       @on-cancel="cancel"
       @on-select-account="selectAccount"
     />
-    <Completed v-else />
+    <Completed v-else :selected-asset="selectedAsset" />
   </div>
 </template>
 
