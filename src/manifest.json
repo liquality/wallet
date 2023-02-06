@@ -1,10 +1,6 @@
 {
   "manifest_version": 2,
-<<<<<<< HEAD
-  "version": "0.83.9",
-=======
   "version": "0.84.1",
->>>>>>> 572854a630735dc2e19713e30842eba14e5471eb
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
