@@ -26,7 +26,7 @@
       @on-cancel="cancel"
       @on-select-account="selectAccount"
     />
-    <Completed v-else />
+    <Completed v-else :selected-asset="selectedAsset" />
   </div>
 </template>
 
@@ -45,7 +45,7 @@ import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../../../package.json'
 import { getNextAccountColor } from '@liquality/wallet-core/dist/src/utils/accounts'
-import { ChainId } from '@liquality/cryptoassets'
+import { ChainId, getAllEvmChains } from '@liquality/cryptoassets'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
@@ -189,42 +189,72 @@ export default {
       this.currentStep = 'token-management'
       this.selectedWalletType = walletType
     },
+    async createAccounts({ assetKeys, accounts, chain, name, accountType }) {
+      const assets = assetKeys.filter((asset) => {
+        return cryptoassets[asset]?.chain === chain
+      })
+
+      for (const key in accounts) {
+        const item = accounts[key]
+        const { publicKey, chainCode, derivationPath } = item
+        const index = item.index + 1
+
+        const account = {
+          name: `Ledger ${name} ${index}`,
+          alias: '',
+          chain,
+          addresses: [item.account],
+          assets,
+          index: item.index,
+          type: accountType,
+          enabled: true,
+          derivationPath,
+          color: getNextAccountColor(chain, item.index),
+          publicKey,
+          chainCode
+        }
+
+        await this.createAccount({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          account
+        })
+      }
+    },
     async addAccounts({ walletType }) {
       if (Object.keys(this.selectedAccounts).length > 0) {
         try {
           this.creatingAccount = true
           const { chain } = this.selectedAsset
           const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
-
-          const assets = assetKeys.filter((asset) => {
-            return cryptoassets[asset]?.chain === this.selectedAsset.chain
-          })
-
           const selectedAccounts = { ...this.selectedAccounts }
-          for (const key in selectedAccounts) {
-            const item = selectedAccounts[key]
-            const { publicKey, chainCode, derivationPath } = item
-            const index = item.index + 1
+          const accountType = walletType || this.selectedAsset.types[0]
 
-            const account = {
-              name: `Ledger ${this.selectedAsset.name} ${index}`,
-              alias: '',
+          if (chain === ChainId.Ethereum) {
+            const evmChains = getAllEvmChains()[this.activeNetwork]
+            await Promise.all(
+              Object.keys(evmChains)
+                .filter(
+                  (k) =>
+                    evmChains[k] && ![ChainId.Optimism, ChainId.Rootstock].includes(evmChains[k].id)
+                )
+                .map((k) => {
+                  return this.createAccounts({
+                    assetKeys,
+                    accounts: selectedAccounts,
+                    chain: evmChains[k].id,
+                    name: evmChains[k].name,
+                    accountType
+                  })
+                })
+            )
+          } else {
+            await this.createAccounts({
+              assetKeys,
+              accounts: selectedAccounts,
               chain,
-              addresses: [item.account],
-              assets,
-              index: item.index,
-              type: walletType || this.selectedAsset.types[0],
-              enabled: true,
-              derivationPath,
-              color: getNextAccountColor(chain, item.index),
-              publicKey,
-              chainCode
-            }
-
-            await this.createAccount({
-              network: this.activeNetwork,
-              walletId: this.activeWalletId,
-              account
+              name: this.selectedAsset.name,
+              accountType
             })
           }
 
