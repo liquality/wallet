@@ -14,6 +14,14 @@
           </div>
         </div>
       </div>
+      <div class="row mt-5" v-if="showEvmMessage">
+        <div class="col text-center">
+          {{ $t('pages.accounts.allEvmLedgerEnabled.message') }}
+          <router-link :to="{ name: 'ManageAccounts' }">
+            {{ $t('pages.accounts.allEvmLedgerEnabled.manage') }} </router-link
+          >.
+        </div>
+      </div>
     </div>
     <div class="wrapper_bottom">
       <button class="btn btn-primary btn-lg btn-icon" @click="close">
@@ -24,10 +32,25 @@
 </template>
 <script>
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
+  props: {
+    selectedAsset: {
+      type: Object
+    }
+  },
   components: {
     CircleProgressBar
+  },
+  computed: {
+    showEvmMessage() {
+      if (this.selectedAsset) {
+        const { chain } = this.selectedAsset
+        return chain === ChainId.Ethereum
+      }
+      return false
+    }
   },
   methods: {
     close() {

@@ -199,7 +199,11 @@
     "accountMessage1": "No pudimos obtener una lista de cuentas. Por favor inténtalo de nuevo, verifica en el Ledger si el activo o app correcta está seleccionada, o cancela y elige un activo diferente.",
     "accountMessage2": "Cierra cualquier otra aplicación a la que esté conectado su Ledger, incluido Ledger Live.",
     "tryAgain": "Volver a Intentar",
-    "unlock": "Desbloquear"
+    "unlock": "Desbloquear",
+    "allEvmLedgerEnabled": {
+      "message": "Todas las redes EVM soportadas han sido agregadas como Cuentas Ledger. Si desea que no se muestra alguna de estas, puede hacerlo en ",
+      "manage": "Administrar Cuentas"
+    }
   },
   "receive": {
     "yourCurrentAddress": "Tu Dirección Actual de %{asset}",

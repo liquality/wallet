@@ -199,7 +199,11 @@
     "accountMessage1": "We weren’t able to get a list of accounts. Please try again, check on the ledger if the right app/asset was selected or cancel and choose a different asset.",
     "accountMessage2": "Eventually close any other apps your ledger is connected to, including Ledger Live.",
     "tryAgain": "Try Again",
-    "unlock": "Unlock"
+    "unlock": "Unlock",
+    "allEvmLedgerEnabled": {
+      "message": "All currently supported EVM networks have been added as Ledger accounts. If you want to hide any of them you can do this at ",
+      "manage": "Manage Accounts"
+    }
   },
   "receive": {
     "yourCurrentAddress": "Your Current %{asset} Address",
