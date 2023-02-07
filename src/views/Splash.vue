@@ -44,7 +44,9 @@ export default {
     Logo,
     NewWalletText
   },
-  computed: mapState(['keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
+  computed: {
+    ...mapState(['keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt'])
+  },
   data() {
     return {
       showFooter: false

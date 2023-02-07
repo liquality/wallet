@@ -11,7 +11,7 @@ export const state = () => ({
   whatsNewModalContent: null,
   locale: null,
   extensionIsOpen: false,
+  wcParings: [],
   wcSessions: [],
-  wcSessionProposals: [],
-  wcPairings: []
+  wcSessionProposals: []
 })

@@ -1,9 +1,9 @@
 import { Core } from '@walletconnect/core'
-import { Web3Wallet } from '@walletconnect/web3wallet'
+import { SignClient } from '@walletconnect/sign-client'
 
-let _web3Wallet = null
-export const getWeb3Wallet = async () => {
-  if (!_web3Wallet) {
+let _signClient = null
+export const getSignClient = async () => {
+  if (!_signClient) {
     const core = new Core({
       projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECT_ID,
       relayUrl: 'wss://relay.walletconnect.com'
@@ -17,11 +17,11 @@ export const getWeb3Wallet = async () => {
       ]
     }
 
-    _web3Wallet = await Web3Wallet.init({
+    _signClient = await SignClient.init({
       core,
       metadata
     })
   }
 
-  return _web3Wallet
+  return _signClient
 }

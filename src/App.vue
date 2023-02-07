@@ -82,14 +82,18 @@ export default {
         this.setWhatsNewModalContent({ content: content.default })
       }
       this.localesLoaded = true
-      if (this.experiments.walletConnect) {
-        this.initializeSignClient()
-      }
     }, 1000)
   },
   watch: {
     localeKey(newVal, oldVal) {
       console.log('localeKey', newVal, oldVal)
+    },
+    unlockedAt(newVal) {
+      if (newVal) {
+        if (this.experiments.walletConnect) {
+          this.initializeSignClient()
+        }
+      }
     }
   },
   beforeDestroy() {

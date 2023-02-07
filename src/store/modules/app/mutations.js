@@ -37,8 +37,8 @@ export const mutations = {
   SET_SESSIONS(state, { sessions }) {
     state.wcSessions = [...sessions]
   },
-  SET_SESSION_PROPOSALS(state, { propsals }) {
-    state.wcSessionProposals = [...propsals]
+  SET_SESSION_PROPOSALS(state, { proposals }) {
+    state.wcSessionProposals = [...proposals]
   },
   SET_EXTENSION_IS_OPEN(state, { open }) {
     state.extensionIsOpen = open
