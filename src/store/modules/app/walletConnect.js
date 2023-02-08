@@ -32,9 +32,11 @@ export const initializeSignClient = async ({ state, dispatch }) => {
         }
       )
     })
+
     signClient.on('session_event', (event) => {
       console.log('session_event', event)
     })
+
     signClient.on('session_request', async ({ id, topic, params }) => {
       console.log('session_request', { id, topic, params })
       const { chainId, request } = params
@@ -43,9 +45,11 @@ export const initializeSignClient = async ({ state, dispatch }) => {
       const result = provider.handleRequest(request)
       console.log('session_request => result', result)
     })
+
     signClient.on('session_ping', ({ id, topic }) => {
       console.log('WalletConnect: session_ping', { id, topic })
     })
+
     signClient.on('session_delete', ({ id, topic }) => {
       console.log('WalletConnect: session_delete', { id, topic })
       dispatch('getSessions')
@@ -77,9 +81,11 @@ export const getPairings = async ({ commit }) => {
   console.log('existing pairings', pairings)
   commit('SET_PAIRINGS', { pairings })
 }
-export const pairSignClient = async (_, { uri }) => {
+
+export const pairSignClient = async ({ dispatch }, { uri }) => {
   const signClient = await getSignClient()
   await signClient.core.pairing.pair({ uri })
+  dispatch('getPairings')
 }
 
 export const getSessionProposals = async ({ commit }) => {
@@ -118,9 +124,9 @@ export const approveSession = async ({ dispatch }, { proposal, accounts }) => {
   console.log('topic', topic)
   const session = await acknowledged()
   console.log('approvedSession', session)
-  dispatch('getPairings')
-  dispatch('getSessions')
-  dispatch('getSessionProposals')
+  await dispatch('getPairings')
+  await dispatch('getSessions')
+  await dispatch('getSessionProposals')
   return session && session.acknowledged
 }
 
@@ -134,8 +140,6 @@ export const rejectSession = async (_, { session }) => {
       message: 'rejected'
     }
   })
-  // TODO: maybe we need to call to remove proposal
-  // commit('REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL', { topic: pairingTopic })
 }
 
 export const removeSessionProposal = async (_, { topic }) => {
@@ -166,4 +170,13 @@ export const openWalletConnectTab = async (_, query = null) => {
   browser.tabs.create({
     url
   })
+}
+
+export const removeConnection = async (_, { connection }) => {
+  const { sessions, pairings } = connection
+  // another option is to receive the url and get the connection from the getter 
+  // const { dappConnections } = getters
+  // const  { sessions, pairings } = dappConnections[url]
+  // TODO call dispatch => removeSession and removeParigin
+  console.log('removeConnection called', sessions, pairings)
 }

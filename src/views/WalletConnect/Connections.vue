@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper">
-    <Modal v-if="modalPairing" type="modal-lg" @close="closePairingModal">
+    <Modal v-if="modalConnection" type="modal-lg" @close="closeModalConnection">
       <template #title>
-        <h6 class="modal-header mt-4 text-uppercase">Pairing details</h6>
+        <h6 class="modal-header mt-4 text-uppercase">Connection details</h6>
       </template>
-      <div class="list-items">
+      <!-- <div class="list-items">
         <ul class="list-group" v-if="modalPairing.peerMetadata && modalPairing.active">
           <li class="list-group-item">Name: {{ modalPairing.peerMetadata.name }}</li>
           <li class="list-group-item">Active: {{ modalPairing.active }}</li>
@@ -22,11 +22,18 @@
             <img :src="modalPairing.peerMetadata.icons[0]" />
           </li>
         </ul>
-      </div>
+      </div> -->
+      <textarea
+        name="modalConnection"
+        id="modalConnection"
+        cols="30"
+        rows="10"
+        :value="JSON.stringify(modalConnection)"
+      ></textarea>
       <template> </template>
       <template #footer>
-        <button class="btn btn-primary btn-block" @click="onRemoveModalPairing">
-          Remove Pairing
+        <button class="btn btn-primary btn-block" @click="onRemoveModalConnection">
+          Remove Connection
         </button>
       </template>
     </Modal>
@@ -84,36 +91,18 @@
           <div class="row mt-5">
             <div class="col">
               <div class="d-flex justify-content-between">
-                <h5>Pairings</h5>
+                <h5>Connections</h5>
               </div>
               <div class="list-items">
-                <ul class="list-group" v-for="pairing in pairings" :key="pairing.topic">
+                <ul class="list-group" v-for="(connection, key) in dappConnections" :key="key">
                   <li
                     class="list-group-item list-group-item-action"
-                    @click="showModalPairing(pairing)"
-                    v-if="pairing.peerMetadata"
+                    @click="showModalConnection(connection)"
                   >
-                    Url: {{ pairing.peerMetadata.url }}
-                  </li>
-                  <li
-                    class="list-group-item list-group-item-action"
-                    @click="showModalPairing(pairing)"
-                    v-else
-                  >
-                    Topic: {{ pairing.topic }}
+                    Url: {{ key }}
                   </li>
                 </ul>
               </div>
-            </div>
-          </div>
-          <div class="row mt-5">
-            <div class="col">
-              <h5>Sessions</h5>
-              <ul class="list-group" v-for="(session, key) in sessions" :key="key">
-                <li class="list-group-item">
-                  {{ session }}
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -123,7 +112,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { parseUri } from '@walletconnect/utils'
 import Modal from '@/components/Modal'
@@ -141,10 +130,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      sessions: (state) => state.app.wcSessions,
-      pairings: (state) => state.app.wcPairings
-    })
+    ...mapGetters('app', ['dappConnections'])
   },
   data() {
     return {
@@ -152,7 +138,7 @@ export default {
       uri: null,
       error: null,
       isPairing: false,
-      modalPairing: null
+      modalConnection: null
     }
   },
   methods: {
@@ -163,7 +149,7 @@ export default {
       this.showUriInput = false
       this.url = null
     },
-    ...mapActions('app', ['pairSignClient', 'removePairing']),
+    ...mapActions('app', ['pairSignClient', 'removeConnection']),
     async pair() {
       if (this.uri) {
         try {
@@ -181,19 +167,18 @@ export default {
         this.error = 'Please paste the Wallet Connect Uri'
       }
     },
-    async onRemoveModalPairing() {
-      if (this.modalPairing) {
-        const { topic } = this.modalPairing
-        await this.removePairing({ topic })
+    async onRemoveModalConnection() {
+      if (this.modalConnection) {
+        await this.removeConnection({ connection: this.modalConnection })
       }
 
-      this.modalPairing = null
+      this.modalConnection = null
     },
-    showModalPairing(pairing) {
-      this.modalPairing = pairing
+    showModalConnection(conection) {
+      this.modalConnection = conection
     },
-    closePairingModal() {
-      this.modalPairing = null
+    closeModalConnection() {
+      this.modalConnection = null
     }
   },
   created() {

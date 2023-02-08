@@ -21,7 +21,8 @@ import {
   getPairings,
   removeSessionProposal,
   removeSession,
-  removePairing
+  removePairing,
+  removeConnection
 } from './walletConnect'
 
 export const actions = {
@@ -137,5 +138,6 @@ export const actions = {
   getPairings,
   removeSessionProposal,
   removeSession,
-  removePairing
+  removePairing,
+  removeConnection
 }
