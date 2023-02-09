@@ -44,8 +44,10 @@ export default {
           useNonceField: true,
           usePhishDetect: true,
           dismissSeedBackUpReminder: false,
+          useMultiAccountBalanceChecker: false,
           useTokenDetection: false,
-          useCollectibleDetection: false,
+          useNftDetection: false,
+          useCurrencyRateCheck: true,
           openSeaEnabled: false,
           advancedGasFee: null,
           featureFlags: {
@@ -65,9 +67,13 @@ export default {
           infuraBlocked: false,
           ledgerTransportType: 'webhid',
           theme: 'light',
-          customNetworkListEnabled: false,
+          improvedTokenAllowanceEnabled: false,
+          transactionSecurityCheckEnabled: false,
+          customNetworkListEnabled: true,
+          eip1559V2Enabled: true,
           textDirection: 'auto',
-          eip1559V2Enabled: true
+          useCollectibleDetection: false,
+          useStaticTokenList: false
         },
         addressBook: {
           addressBook: {
