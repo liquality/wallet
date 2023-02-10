@@ -73,7 +73,7 @@
           <button
             class="btn btn-light btn-outline-primary btn-block"
             @click="cancelNewConnection"
-            :disabled="pairing"
+            :disabled="isPairing"
           >
             Cancel
           </button>
