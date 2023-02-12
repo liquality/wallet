@@ -43,7 +43,6 @@ export const initializeSignClient = async ({ state, dispatch, rootGetters }) => 
       const { wcSessions } = state
       // TODO : validate namespace / chainId with network => eip155:5
       const namespace = chainId.split(':')[0]
-
       const { namespaces } = wcSessions.find((s) => s.namespaces[namespace] && s.topic === topic)
       const { accounts } = namespaces[namespace]
       const wcAccounts = accounts.map((a) => a.replace(`${chainId}:`, ''))
@@ -51,7 +50,9 @@ export const initializeSignClient = async ({ state, dispatch, rootGetters }) => 
       const account = networkAccounts.find(
         (a) => a.chain === 'ethereum' && wcAccounts.some((r) => a.addresses.includes(r))
       )
-
+      // => 1: store the request in state
+      
+      // => 2: wait for the reponse
       const provider = DappProviderFactory.resolve({ chainId })
       const result = await provider.handleRequest({ ...request, chainId, accountId: account.id })
       const response = { id, result, jsonrpc: '2.0' }
