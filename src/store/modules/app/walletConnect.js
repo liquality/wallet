@@ -124,9 +124,9 @@ export const approveSession = async ({ dispatch }, { proposal, accounts }) => {
   console.log('topic', topic)
   const session = await acknowledged()
   console.log('approvedSession', session)
-  await dispatch('getPairings')
-  await dispatch('getSessions')
-  await dispatch('getSessionProposals')
+  dispatch('getPairings')
+  dispatch('getSessions')
+  dispatch('getSessionProposals')
   return session && session.acknowledged
 }
 
@@ -175,17 +175,10 @@ export const openWalletConnectTab = async (_, query = null) => {
 }
 
 export const removeConnection = async ({ dispatch }, { connection }) => {
-  // another option is to receive the url and get the connection from the getter
-  // const { dappConnections } = getters
-  // const  { sessions, pairings } = dappConnections[url]
-  // TODO call dispatch => removeSession and removeParigin
-
   const { sessions, pairings } = connection
 
   const sessionsRemovalTasks = sessions.map(({ topic }) => dispatch('removeSession', { topic }))
   const pairingsRemovalRes = pairings.map(({ topic }) => dispatch('removePairing', { topic }))
 
-  const results = await Promise.all([...sessionsRemovalTasks, ...pairingsRemovalRes])
-
-  console.log('removeConnection responses', results)
+  await Promise.all([...sessionsRemovalTasks, ...pairingsRemovalRes])
 }
