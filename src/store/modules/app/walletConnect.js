@@ -51,7 +51,7 @@ export const initializeSignClient = async ({ state, dispatch, rootGetters }) => 
         (a) => a.chain === 'ethereum' && wcAccounts.some((r) => a.addresses.includes(r))
       )
       // => 1: store the request in state
-      
+
       // => 2: wait for the reponse
       const provider = DappProviderFactory.resolve({ chainId })
       const result = await provider.handleRequest({ ...request, chainId, accountId: account.id })
