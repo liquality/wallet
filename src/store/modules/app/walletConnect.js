@@ -4,9 +4,8 @@ import { DappProviderFactory } from '@/dapps/DappProviderFactory'
 import qs from 'qs'
 
 let clientInitialized = false
-const dappProviderFactory = new DappProviderFactory()
 
-export const initializeSignClient = async ({ state, dispatch }) => {
+export const initializeSignClient = async ({ state, dispatch, rootGetters }) => {
   const signClient = await getSignClient()
   if (!clientInitialized) {
     signClient.on('session_proposal', async ({ id, params }) => {
@@ -40,10 +39,26 @@ export const initializeSignClient = async ({ state, dispatch }) => {
     signClient.on('session_request', async ({ id, topic, params }) => {
       console.log('session_request', { id, topic, params })
       const { chainId, request } = params
-
-      const provider = dappProviderFactory.resolve(chainId)
-      const result = provider.handleRequest(request)
-      console.log('session_request => result', result)
+      const { networkAccounts } = rootGetters
+      const { wcSessions } = state
+      // TODO : validate namespace / chainId with network => eip155:5
+      const namespace = chainId.split(':')[0]
+      const { namespaces } = wcSessions.find((s) => s.namespaces[namespace] && s.topic === topic)
+      const { accounts } = namespaces[namespace]
+      const wcAccounts = accounts.map((a) => a.replace(`${chainId}:`, ''))
+      // TODO : validate with chainId map ex: eip155 => ethereum / 5 => testnet
+      const account = networkAccounts.find(
+        (a) => a.chain === 'ethereum' && wcAccounts.some((r) => a.addresses.includes(r))
+      )
+      // => 1: store the request in state
+      
+      // => 2: wait for the reponse
+      const provider = DappProviderFactory.resolve({ chainId })
+      const result = await provider.handleRequest({ ...request, chainId, accountId: account.id })
+      const response = { id, result, jsonrpc: '2.0' }
+      const respond = await signClient.respond({ topic, response })
+      console.log('session_request => respond', respond)
+      await (await signClient.extend({ topic })).acknowledged()
     })
 
     signClient.on('session_ping', ({ id, topic }) => {
@@ -124,9 +139,9 @@ export const approveSession = async ({ dispatch }, { proposal, accounts }) => {
   console.log('topic', topic)
   const session = await acknowledged()
   console.log('approvedSession', session)
-  dispatch('getPairings')
-  dispatch('getSessions')
-  dispatch('getSessionProposals')
+  await dispatch('getPairings')
+  await dispatch('getSessions')
+  await dispatch('getSessionProposals')
   return session && session.acknowledged
 }
 

@@ -1,18 +1,19 @@
 import { EvmDappProvider } from './EvmDappProvider'
-
+import store from '../store'
 // maps the chainId with a specific dapp provider
 export const DappProvidersMap = {
-  'eip155:1': EvmDappProvider
+  'eip155:1': EvmDappProvider,
+  'eip155:5': EvmDappProvider
 }
 
 export class DappProviderFactory {
-  _providers = {}
+  static _providers = {}
 
-  resolve({ chainId }) {
-    if (!this._providers[chainId]) {
-      this._providers[chainId] = new DappProvidersMap[chainId]()
+  static resolve({ chainId }) {
+    if (!DappProviderFactory._providers[chainId]) {
+      DappProviderFactory._providers[chainId] = new DappProvidersMap[chainId](chainId, store)
     }
 
-    return this._providers[chainId]
+    return DappProviderFactory._providers[chainId]
   }
 }
