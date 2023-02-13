@@ -61,7 +61,6 @@ export class EvmDappProvider {
       { root: true }
     )
 
-
     console.log('payload', { chainId, method, params })
     console.log('state', { activeNetwork, activeWalletId })
     return result.txHash

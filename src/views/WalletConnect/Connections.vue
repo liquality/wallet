@@ -170,9 +170,8 @@ export default {
     async onRemoveModalConnection() {
       if (this.modalConnection) {
         await this.removeConnection({ connection: this.modalConnection })
+        this.modalConnection = null
       }
-
-      this.modalConnection = null
     },
     showModalConnection(conection) {
       this.modalConnection = conection

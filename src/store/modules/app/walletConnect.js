@@ -51,7 +51,7 @@ export const initializeSignClient = async ({ state, dispatch, rootGetters }) => 
         (a) => a.chain === 'ethereum' && wcAccounts.some((r) => a.addresses.includes(r))
       )
       // => 1: store the request in state
-      
+
       // => 2: wait for the reponse
       const provider = DappProviderFactory.resolve({ chainId })
       const result = await provider.handleRequest({ ...request, chainId, accountId: account.id })
@@ -163,6 +163,7 @@ export const removeSessionProposal = async (_, { topic }) => {
 }
 
 export const removeSession = async ({ dispatch }, { topic }) => {
+  console.log('remove sessions called')
   const signClient = await getSignClient()
   const result = signClient.session.delete(topic)
   dispatch('getPairings')
@@ -171,6 +172,7 @@ export const removeSession = async ({ dispatch }, { topic }) => {
 }
 
 export const removePairing = async ({ dispatch }, { topic }) => {
+  console.log('removePairing called')
   const signClient = await getSignClient()
   const result = signClient.core.pairing.disconnect({ topic })
   dispatch('getPairings')
@@ -187,11 +189,11 @@ export const openWalletConnectTab = async (_, query = null) => {
   })
 }
 
-export const removeConnection = async (_, { connection }) => {
+export const removeConnection = async ({ dispatch }, { connection }) => {
   const { sessions, pairings } = connection
-  // another option is to receive the url and get the connection from the getter
-  // const { dappConnections } = getters
-  // const  { sessions, pairings } = dappConnections[url]
-  // TODO call dispatch => removeSession and removeParigin
-  console.log('removeConnection called', sessions, pairings)
+
+  const sessionsRemovalTasks = sessions.map(({ topic }) => dispatch('removeSession', { topic }))
+  const pairingsRemovalRes = pairings.map(({ topic }) => dispatch('removePairing', { topic }))
+
+  await Promise.all([...sessionsRemovalTasks, ...pairingsRemovalRes])
 }
