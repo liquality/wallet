@@ -13,5 +13,6 @@ export const state = () => ({
   extensionIsOpen: false,
   wcPairings: [],
   wcSessions: [],
+  wcSessionRequests: [],
   wcSessionProposals: []
 })

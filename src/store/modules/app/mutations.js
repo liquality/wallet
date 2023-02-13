@@ -37,6 +37,12 @@ export const mutations = {
   SET_SESSIONS(state, { sessions }) {
     state.wcSessions = [...sessions]
   },
+  SET_SESSION_REQUESTS(state, { sessions }) {
+    state.wcSessionRequests = [...sessions]
+  },
+  ADD_SESSION_REQUEST(state, { id, topic, params }) {
+    state.wcSessionRequests.push({ id, topic, params })
+  },
   SET_SESSION_PROPOSALS(state, { proposals }) {
     state.wcSessionProposals = [...proposals]
   },

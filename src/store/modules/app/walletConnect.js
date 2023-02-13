@@ -2,10 +2,10 @@ import { getSignClient } from '@/utils/wallet-connect'
 import { notify } from '@/utils/notification'
 import { DappProviderFactory } from '@/dapps/DappProviderFactory'
 import qs from 'qs'
-
+import { getChainInfo } from '@/utils/chains'
 let clientInitialized = false
 
-export const initializeSignClient = async ({ state, dispatch, rootGetters }) => {
+export const initializeSignClient = async ({ commit, state, dispatch, rootGetters }) => {
   const signClient = await getSignClient()
   if (!clientInitialized) {
     signClient.on('session_proposal', async ({ id, params }) => {
@@ -38,27 +38,7 @@ export const initializeSignClient = async ({ state, dispatch, rootGetters }) => 
 
     signClient.on('session_request', async ({ id, topic, params }) => {
       console.log('session_request', { id, topic, params })
-      const { chainId, request } = params
-      const { networkAccounts } = rootGetters
-      const { wcSessions } = state
-      // TODO : validate namespace / chainId with network => eip155:5
-      const namespace = chainId.split(':')[0]
-      const { namespaces } = wcSessions.find((s) => s.namespaces[namespace] && s.topic === topic)
-      const { accounts } = namespaces[namespace]
-      const wcAccounts = accounts.map((a) => a.replace(`${chainId}:`, ''))
-      // TODO : validate with chainId map ex: eip155 => ethereum / 5 => testnet
-      const account = networkAccounts.find(
-        (a) => a.chain === 'ethereum' && wcAccounts.some((r) => a.addresses.includes(r))
-      )
-      // => 1: store the request in state
-
-      // => 2: wait for the reponse
-      const provider = DappProviderFactory.resolve({ chainId })
-      const result = await provider.handleRequest({ ...request, chainId, accountId: account.id })
-      const response = { id, result, jsonrpc: '2.0' }
-      const respond = await signClient.respond({ topic, response })
-      console.log('session_request => respond', respond)
-      await (await signClient.extend({ topic })).acknowledged()
+      commit('ADD_SESSION_REQUEST', { id, topic, params })
     })
 
     signClient.on('session_ping', ({ id, topic }) => {
@@ -177,6 +157,29 @@ export const removePairing = async ({ dispatch }, { topic }) => {
   const result = signClient.core.pairing.disconnect({ topic })
   dispatch('getPairings')
   return result
+}
+
+export const respondSessionRequest = async ({ rootState }, { id, topic, params }) => {
+  const signClient = await getSignClient()
+      const { chainId, request } = params
+      const { accounts } = rootState
+      // Validate namespace / chainId with network => eip155:5
+      const chanIdData = chainId.split(':')
+      const namespace = chanIdData[0]
+      const { namespaces } = wcSessions.find((s) => s.namespaces[namespace] && s.topic === topic)
+      const wcAccounts = namespaces[namespace]?.accounts?.map((a) => a.replace(`${chainId}:`, ''))
+
+      // Validate with chainId map ex: eip155 => ethereum / 5 => testnet
+      const chainInfo = getChainInfo(namespace, chanIdData[1]) 
+      const account = accounts[chainInfo?.networkName]?.find(
+        (a) => a.chain === chainInfo?.name && wcAccounts.some((r) => a.addresses.includes(r))
+      )
+      const provider = DappProviderFactory.resolve({ chainId })
+      const result = await provider.handleRequest({ ...request, chainId, accountId: account?.id })
+      const response = { id, result, jsonrpc: '2.0' }
+      const respond = await signClient.respond({ topic, response })
+      console.log('session_request => respond', respond)
+      await (await signClient.extend({ topic })).acknowledged()
 }
 
 export const openWalletConnectTab = async (_, query = null) => {
