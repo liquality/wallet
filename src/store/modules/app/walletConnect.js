@@ -182,7 +182,7 @@ export const getAccountInfo = ({ rootState, state }, { chainId }) => {
     return null
   }
 }
-
+// send_transaction
 export const respondSessionRequest = async ({ }, { params, accept }) => {
   const signClient = await getSignClient()
   const { id, topic, params } = payload
@@ -221,14 +221,13 @@ export const respondSessionRequest = async ({ }, { params, accept }) => {
 
   } else {
     // user not accepted the session request
-    const response = {
-      id,
-      jsonrpc: '2.0',
-      error: getSdkError('USER_REJECTED')
-    }
     await signClient.respond({
       topic,
-      response
+      response: {
+        id,
+        jsonrpc: '2.0',
+        error: getSdkError('USER_REJECTED')
+      }
     })
     console.log('session_request => USER_REJECTED')
   }
