@@ -11,7 +11,7 @@
           @paired="onPair"
           :pair-request="pairRequest"
         />
-        <SessionRequest
+        <SessionProposal
           :pairing-topic="pairingTopic"
           @cancel="onSessionCancel"
           @approved="onSessionApproved"
@@ -43,7 +43,7 @@
 
 <script>
 import Connections from './Connections'
-import SessionRequest from './SessionRequest'
+import SessionProposal from './SessionProposal'
 import Modal from '@/components/Modal'
 import Logo from '@/assets/icons/logo_left.svg'
 import { mapState } from 'vuex'
@@ -52,7 +52,7 @@ export default {
   components: {
     Logo,
     Connections,
-    SessionRequest,
+    SessionProposal,
     Modal
   },
   props: {

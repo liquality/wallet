@@ -1,4 +1,5 @@
 import { getSignClient } from '@/utils/wallet-connect'
+import { getSdkError } from '@walletconnect/utils'
 import { notify } from '@/utils/notification'
 import { DappProviderFactory } from '@/dapps/DappProviderFactory'
 import qs from 'qs'
@@ -159,27 +160,78 @@ export const removePairing = async ({ dispatch }, { topic }) => {
   return result
 }
 
-export const respondSessionRequest = async ({ rootState }, { id, topic, params }) => {
-  const signClient = await getSignClient()
-      const { chainId, request } = params
-      const { accounts } = rootState
-      // Validate namespace / chainId with network => eip155:5
-      const chanIdData = chainId.split(':')
-      const namespace = chanIdData[0]
-      const { namespaces } = wcSessions.find((s) => s.namespaces[namespace] && s.topic === topic)
-      const wcAccounts = namespaces[namespace]?.accounts?.map((a) => a.replace(`${chainId}:`, ''))
+export const getAccountInfo = ({ rootState, state }, { chainId }) => {
+  try {
+    const { accounts } = rootState
+    const { wcSessions } = state
+    // Validate namespace / chainId with network => eip155:5
+    const chanIdData = chainId.split(':')
+    const namespace = chanIdData[0]
+    const { namespaces } = wcSessions.find((s) => s.namespaces[namespace] && s.topic === topic)
+    const wcAccounts = namespaces[namespace]?.accounts?.map((a) => a.replace(`${chainId}:`, ''))
 
-      // Validate with chainId map ex: eip155 => ethereum / 5 => testnet
-      const chainInfo = getChainInfo(namespace, chanIdData[1]) 
-      const account = accounts[chainInfo?.networkName]?.find(
-        (a) => a.chain === chainInfo?.name && wcAccounts.some((r) => a.addresses.includes(r))
-      )
-      const provider = DappProviderFactory.resolve({ chainId })
-      const result = await provider.handleRequest({ ...request, chainId, accountId: account?.id })
-      const response = { id, result, jsonrpc: '2.0' }
-      const respond = await signClient.respond({ topic, response })
-      console.log('session_request => respond', respond)
+    // Validate with chainId map ex: eip155 => ethereum / 5 => testnet
+    const chainInfo = getChainInfo(namespace, chanIdData[1])
+    const account = accounts[chainInfo?.networkName]?.find(
+      (a) => a.chain === chainInfo?.name && wcAccounts.some((r) => a.addresses.includes(r))
+    )
+
+    return account
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+}
+
+export const respondSessionRequest = async ({ }, { params, accept }) => {
+  const signClient = await getSignClient()
+  const { id, topic, params } = payload
+
+  if (accept === true) {
+    const account = await dispatch('getAccountInfo', { chainId: params.chainId })
+    if (account) {
+      const provider = DappProviderFactory.resolve({ chainId: params.chainId })
+      const providerResponse = await provider.handleRequest({
+        ...params.request,
+        chainId: params.chainId,
+        accountId: account?.id
+      })
+
+      const response = { id, jsonrpc: '2.0' }
+      if (providerResponse.error) {
+        response.error = error
+      } else if (providerResponse.result) {
+        response.result = result
+      }
+
+      await signClient.respond({ topic, response })
+      console.log(`session_request => response: ${response} / accept: ${accept}`)
       await (await signClient.extend({ topic })).acknowledged()
+    } else {
+      // account related not found
+      await signClient.respond({
+        topic,
+        response: {
+          id,
+          jsonrpc: '2.0',
+          error: getSdkError('UNSUPPORTED_ACCOUNTS')
+        }
+      })
+    }
+
+  } else {
+    // user not accepted the session request
+    const response = {
+      id,
+      jsonrpc: '2.0',
+      error: getSdkError('USER_REJECTED')
+    }
+    await signClient.respond({
+      topic,
+      response
+    })
+    console.log('session_request => USER_REJECTED')
+  }
 }
 
 export const openWalletConnectTab = async (_, query = null) => {
