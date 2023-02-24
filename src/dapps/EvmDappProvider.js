@@ -1,3 +1,5 @@
+import { getChainInfo } from '../utils/chains'
+import { getNativeAssetCode, getChain } from '@liquality/cryptoassets'
 export class EvmDappProvider {
   _store
   _chainId
@@ -6,63 +8,94 @@ export class EvmDappProvider {
     this._chainId = chainId
     this._store = store
   }
+
+  _requestMapping = {
+    eth_sendTransaction: this.sendTransaction,
+    eth_signTypedData: this.sign,
+    eth_signTypedData_v3: this.sign,
+    eth_signTypedData_v4: this.sign,
+    eth_accounts: this.getAccounts
+  }
   /**
    * Handle method requests, such as "eth_sign", "eth_sendTransaction", etc.
    * @param {*} payload
    */
   async handleRequest(payload) {
     const { chainId, method, params, accountId } = payload
-
-    // const client = this._getters.client({ network, walletId, chainId, accountId });
-
-    // if (method === 'eth_requestAccounts') {
-    //   return await client.getAddresses() // TODO: validate method sign
-    // }
-
-    // if (method === 'personal_sign') {
-    //   const sig = await client.getMethod('wallet.signMessage')(params[0], params[1])
-    //   return '0x' + sig
-    // }
-
-    // if (['eth_signTypedData', 'eth_signTypedData_v3', 'eth_signTypedData_v4'].includes(method)) {
-    //   const sig = await client.getMethod('wallet.signTypedData')(request)
-    //   return sig
-    // }
-
-    // if (method === 'eth_sendTransaction') {
-    //   const to = params[0].to
-    //   const value = params[0].value
-    //   const data = params[0].data
-    //   const gas = params[0].gasPrice
-    //   const result = await client.getMethod('wallet.sendTransaction')({ to, value, data, gas })
-    //   return result.txHash
-    // }
-    // if (method === 'eth_accounts') {
-    //   return client.getAddresses() // this.getAddresses()
-    // }
-    // return client.getMethod('chain.sendRpcRequest')(method, params)
     const { activeNetwork, activeWalletId } = this._store.state
+    const namespace = this._chainId.split(':')[0]
+    const chainInfo = getChainInfo(namespace, chainId)
 
+    console.log('handleRequest =>', {
+      chainId,
+      method,
+      activeNetwork,
+      activeWalletId,
+      params,
+      accountId,
+      asset
+    })
+    if (activeNetwork !== chainInfo.networkName) {
+      throw new Error('Network name mismatch')
+    }
+    const asset = getNativeAssetCode(chainInfo.networkName, chainInfo.chainName)
+
+    return this._requestMapping[method]({
+      chainId,
+      method,
+      activeNetwork,
+      activeWalletId,
+      params,
+      accountId,
+      chainInfo,
+      asset
+    })
+  }
+
+  async sendTransaction({ activeNetwork, activeWalletId, params, accountId, asset }) {
     const result = await this._store.dispatch(
       'sendTransaction',
       {
         network: activeNetwork,
         walletId: activeWalletId,
-        asset: 'ETH',
+        asset,
         accountId,
         to: params[0].to,
         amount: params[0].value,
         data: params[0].data,
-        //fee: request.args[0].fee,
-        //feeAsset: request.args[0].feeAsset,
-        //feeLabel: request.args[0].feeLabel,
-        gas: params[0].gasPrice
+        fee: params[0].fee, // not part of the standard
+        feeAsset: params[0].feeAsset, // not part of the standard
+        feeLabel: params[0].feeLabel, // not part of the standard
+        gas: params[0].gasPrice // CHECK if we should use gas or gasPrice
       },
       { root: true }
     )
 
-    console.log('payload', { chainId, method, params })
-    console.log('state', { activeNetwork, activeWalletId })
     return result.txHash
+  }
+
+  async getAccounts({ activeNetwork, activeWalletId, accountId, chainInfo }) {
+    const { getters } = this._store
+    const _client = getters.client({
+      network: activeNetwork,
+      walletId: activeWalletId,
+      chainId: chainInfo.chainName,
+      accountId
+    })
+    const addresses = await _client.wallet.getAddresses()
+    const chainUtils = getChain(activeNetwork, chainInfo.chainName)
+    return addresses.map((a) => chainUtils.formatAddress(a.address))
+  }
+
+  async sign({ activeNetwork, activeWalletId, params, accountId, chainInfo }) {
+    const { getters } = this._store
+    const _client = getters.client({
+      network: activeNetwork,
+      walletId: activeWalletId,
+      chainId: chainInfo.chainName,
+      accountId
+    })
+    const sig = await _client.wallet.signTypedData(params)
+    return sig
   }
 }

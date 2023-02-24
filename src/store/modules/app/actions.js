@@ -10,20 +10,7 @@ import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
 import { getChain } from '@liquality/cryptoassets'
 import { trackAnalytics } from './trackAnalytics'
-import {
-  initializeSignClient,
-  pairSignClient,
-  approveSession,
-  rejectSession,
-  openWalletConnectTab,
-  getSessionProposals,
-  getSessions,
-  getPairings,
-  removeSessionProposal,
-  removeSession,
-  removePairing,
-  removeConnection
-} from './walletConnect'
+import * as walletConnectActions from './walletConnect'
 
 export const actions = {
   setExtensionIsOpen: ({ commit }, { open }) => {
@@ -128,16 +115,5 @@ export const actions = {
   initializeAnalytics,
   checkAnalyticsOptIn,
   trackAnalytics,
-  initializeSignClient,
-  pairSignClient,
-  approveSession,
-  openWalletConnectTab,
-  rejectSession,
-  getSessionProposals,
-  getSessions,
-  getPairings,
-  removeSessionProposal,
-  removeSession,
-  removePairing,
-  removeConnection
+  ...walletConnectActions
 }

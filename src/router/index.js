@@ -315,6 +315,12 @@ const routes = [
       sessionRequest: route.query.session,
       pairRequest: route.query.pair
     })
+  },
+  {
+    path: '/dapp-request/wallet-connect',
+    component: () => import('@/views/DappRequest/WCDappRequest.vue'),
+    name: 'WCDappRequest',
+    meta: { protect: true }
   }
 ]
 

@@ -2,11 +2,14 @@ import { getSignClient } from '@/utils/wallet-connect'
 import { getSdkError } from '@walletconnect/utils'
 import { notify } from '@/utils/notification'
 import { DappProviderFactory } from '@/dapps/DappProviderFactory'
-import qs from 'qs'
+import { stringify } from 'qs'
 import { getChainInfo } from '@/utils/chains'
+import { createPopup } from '@/broker/utils'
+import { NoActiveWalletError, WalletLockedError } from '@liquality/error-parser'
+
 let clientInitialized = false
 
-export const initializeSignClient = async ({ commit, state, dispatch, rootGetters }) => {
+export const initializeSignClient = async ({ commit, state, dispatch, rootState }) => {
   const signClient = await getSignClient()
   if (!clientInitialized) {
     signClient.on('session_proposal', async ({ id, params }) => {
@@ -40,6 +43,10 @@ export const initializeSignClient = async ({ commit, state, dispatch, rootGetter
     signClient.on('session_request', async ({ id, topic, params }) => {
       console.log('session_request', { id, topic, params })
       commit('ADD_SESSION_REQUEST', { id, topic, params })
+      await dispatch('requestUnlockWallet', { root: true })
+      if (!rootState.unlockedAt) throw new WalletLockedError()
+      if (!rootState.activeWalletId) throw new NoActiveWalletError()
+      createPopup(`/dapp-request/wallet-connect/?${stringify({ id, topic })}`)
     })
 
     signClient.on('session_ping', ({ id, topic }) => {
@@ -160,7 +167,7 @@ export const removePairing = async ({ dispatch }, { topic }) => {
   return result
 }
 
-export const getAccountInfo = ({ rootState, state }, { chainId }) => {
+export const getAccountInfo = ({ rootState, state }, { chainId, topic }) => {
   try {
     const { accounts } = rootState
     const { wcSessions } = state
@@ -183,12 +190,12 @@ export const getAccountInfo = ({ rootState, state }, { chainId }) => {
   }
 }
 // send_transaction
-export const respondSessionRequest = async ({ }, { params, accept }) => {
+export const respondSessionRequest = async ({ dispatch }, { payload, accept }) => {
   const signClient = await getSignClient()
   const { id, topic, params } = payload
 
   if (accept === true) {
-    const account = await dispatch('getAccountInfo', { chainId: params.chainId })
+    const account = await dispatch('getAccountInfo', { chainId: params.chainId, topic })
     if (account) {
       const provider = DappProviderFactory.resolve({ chainId: params.chainId })
       const providerResponse = await provider.handleRequest({
@@ -199,9 +206,9 @@ export const respondSessionRequest = async ({ }, { params, accept }) => {
 
       const response = { id, jsonrpc: '2.0' }
       if (providerResponse.error) {
-        response.error = error
+        response.error = providerResponse.error
       } else if (providerResponse.result) {
-        response.result = result
+        response.result = providerResponse.result
       }
 
       await signClient.respond({ topic, response })
@@ -218,7 +225,6 @@ export const respondSessionRequest = async ({ }, { params, accept }) => {
         }
       })
     }
-
   } else {
     // user not accepted the session request
     await signClient.respond({
@@ -236,7 +242,7 @@ export const respondSessionRequest = async ({ }, { params, accept }) => {
 export const openWalletConnectTab = async (_, query = null) => {
   let url = browser.runtime.getURL('/index.html#/wallet-connect')
   if (query) {
-    url = `${url}?${qs.stringify(query)}`
+    url = `${url}?${stringify(query)}`
   }
   browser.tabs.create({
     url
