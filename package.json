@@ -24,12 +24,12 @@
   },
   "dependencies": {
     "@chainify/hw-ledger": "2.4.0",
-    "@liquality/cryptoassets": "2.4.0",
-    "@liquality/error-parser": "2.2.3",
+    "@liquality/cryptoassets": "2.5.0",
+    "@liquality/error-parser": "2.2.4",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "4.16.0",
+    "@liquality/wallet-core": "4.17.0",
     "@terra-money/terra.js": "^3.1.6",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
@@ -130,10 +130,6 @@
     "@ledgerhq/hw-transport-webhid": "6.27.10",
     "@ledgerhq/cryptoassets": "7.3.0",
     "@ledgerhq/hw-app-eth": "6.30.5",
-    "@ledgerhq/hw-app-btc": "9.1.2",
-    "liquality": "link:/Users/bradley/Code/Liquality/liquality-swap-provider",
-    "@liquality/cryptoassets": "link:/Users/bradley/Code/Liquality/liquality-swap-provider/packages/cryptoassets",
-    "@liquality/error-parser": "link:/Users/bradley/Code/Liquality/liquality-swap-provider/packages/error-parser",
-    "@liquality/wallet-core": "link:/Users/bradley/Code/Liquality/liquality-swap-provider/packages/wallet-core"
+    "@ledgerhq/hw-app-btc": "9.1.2"
   }
 }
