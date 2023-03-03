@@ -3,6 +3,7 @@
     "page": "1",
     "title": "What's New?",
     "content": [
+      "Now you can use Teleswap Swap Provider http://teleswap.xyz to wrap/unwrap and exchange services for BTC using a trustless light client bridge.",
       "You can now use a Ledger device to interact with the Ethereum, Polygon, BSC, Arbitrum, Avalanche, Rootstock, and Bitcoin networks!"
     ]
   },

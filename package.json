@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.84.6",
+  "version": "0.85.0",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -24,12 +24,12 @@
   },
   "dependencies": {
     "@chainify/hw-ledger": "2.4.0",
-    "@liquality/cryptoassets": "2.5.0",
-    "@liquality/error-parser": "2.2.4",
+    "@liquality/cryptoassets": "2.7.0",
+    "@liquality/error-parser": "2.2.6",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "4.17.0",
+    "@liquality/wallet-core": "4.20.0",
     "@terra-money/terra.js": "^3.1.6",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
