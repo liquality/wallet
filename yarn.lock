@@ -4021,9 +4021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:4.20.0":
-  version: 4.20.0
-  resolution: "@liquality/wallet-core@npm:4.20.0"
+"@liquality/wallet-core@npm:4.21.0":
+  version: 4.21.0
+  resolution: "@liquality/wallet-core@npm:4.21.0"
   dependencies:
     "@blobfishkate/sovryncontracts": 1.3.27
     "@chainify/bitcoin": 2.2.0
@@ -4076,7 +4076,7 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-  checksum: 1bed58f7fbca976a958cf6cf7da8ca75a22e09d5e60d1fe6e249488250588532207835b3f818f7db49bd1031ed454394e9455ad7fd280a01f89e0af20fe7ec74
+  checksum: 08fb68ad84b3bbd831a495de2498149a1151edb54f76b4a8cd9cb3491923db274cd5f01b34901f50c0d6c00fd499f3fd40eaf26c399523bd748ed6b10bbe51e8
   languageName: node
   linkType: hard
 
@@ -18902,7 +18902,7 @@ __metadata:
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": 4.20.0
+    "@liquality/wallet-core": 4.21.0
     "@terra-money/terra.js": ^3.1.6
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/vue": ^5.8.2
