@@ -73,20 +73,16 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork']),
-    unsupportedProviders() {
-      // TODO:: We will need to remove this computed prop after these providers are removed from wallet-core
-      return new Array('liquality', 'liqualityBoostNativeToERC20', 'liqualityBoostERC20toNative')
-    },
     providers() {
-      return Object.entries(buildConfig.swapProviders[this.activeNetwork])
-        .map(([provider, providerConfig]) => {
+      return Object.entries(buildConfig.swapProviders[this.activeNetwork]).map(
+        ([provider, providerConfig]) => {
           return {
             id: provider,
             name: providerConfig.name,
             ...getSwapProviderInfo(this.activeNetwork, provider)
           }
-        })
-        .filter((provider) => !this.unsupportedProviders.includes(provider.id))
+        }
+      )
     },
     uniqueProvides() {
       return [...new Map(this.providers.map((item) => [item['name'], item])).values()]
