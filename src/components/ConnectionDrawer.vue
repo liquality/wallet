@@ -139,7 +139,7 @@ export default {
     }
   },
   created() {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
         const { origin } = new URL(tabs[0].url)
         this.currentOrigin = origin

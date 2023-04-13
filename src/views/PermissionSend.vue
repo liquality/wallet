@@ -275,6 +275,8 @@ export default {
         } else {
           window.close()
         }
+      } catch (err) {
+        console.error(err)
       } finally {
         this.signRequestModalOpen = false
         this.loading = false
