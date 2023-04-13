@@ -235,7 +235,7 @@ export default {
         }
       })
       this.showMenuList = false
-      chrome.tabs.create({
+      browser.tabs.create({
         url: browser.runtime.getURL('/index.html#/accounts/hardware-wallet?mode=tab')
       })
     },

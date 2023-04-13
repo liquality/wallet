@@ -35,10 +35,6 @@ class Background {
         connectRemote(connection, store)
       } else if (isInternal) {
         this.onInternalConnection(connection)
-      } else {
-        if (connection.name !== 'HW-BRIDGE') {
-          this.onExternalConnection(connection)
-        }
       }
     })
   }
