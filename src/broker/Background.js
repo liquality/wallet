@@ -35,6 +35,8 @@ class Background {
         connectRemote(connection, store)
       } else if (isInternal) {
         this.onInternalConnection(connection)
+      } else {
+        this.onExternalConnection(connection)
       }
     })
   }
