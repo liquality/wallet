@@ -107,7 +107,7 @@ export const requestPermission = async (
         const account = rootGetters.accountItem(accountId)
 
         if (account?.type.includes('ledger')) {
-          browser.tabs.create({ url: browser.runtime.getURL(`/index.html#/${url}`) })
+          browser.tabs.create({ url: browser.runtime.getURL(`/index.html#${url}`) })
         } else {
           createPopup(url, () => reject(new UserDeclinedError()))
         }

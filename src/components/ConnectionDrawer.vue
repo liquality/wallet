@@ -138,13 +138,12 @@ export default {
       })
     }
   },
-  created() {
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length > 0) {
-        const { origin } = new URL(tabs[0].url)
-        this.currentOrigin = origin
-      }
-    })
+  async created() {
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
+    if (tab) {
+      const { origin } = new URL(tab.url)
+      this.currentOrigin = origin
+    }
   }
 }
 </script>
