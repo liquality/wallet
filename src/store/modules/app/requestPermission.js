@@ -36,7 +36,7 @@ const ALLOWED = [
 ]
 
 export const requestPermission = async (
-  { state, dispatch, commit, rootState },
+  { state, dispatch, commit, rootState, rootGetters },
   { origin, data }
 ) => {
   const { requestPermissionActive } = state
@@ -103,7 +103,14 @@ export const requestPermission = async (
           permissionRoute = '/permission/signPsbt'
         }
 
-        createPopup(`${permissionRoute}?${query}`, () => reject(new UserDeclinedError()))
+        const url = `${permissionRoute}?${query}`
+        const account = rootGetters.accountItem(accountId)
+
+        if (account?.type.includes('ledger')) {
+          browser.tabs.create({ url: browser.runtime.getURL(`/index.html#${url}`) })
+        } else {
+          createPopup(url, () => reject(new UserDeclinedError()))
+        }
       })
     } else {
       commit('SET_REQUEST_PERMISSION_ACTIVE', { active: false })
