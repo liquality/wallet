@@ -282,8 +282,8 @@ export default {
     }
     // Handle wallet.signMessage
     else {
-      this.messageToDisplay = hexToAscii(this.request.args[0])
-      this.messageToSign = hexToAscii(this.request.args[0])
+      this.messageToDisplay = this.request.args[0] //hexToAscii(this.request.args[0])
+      this.messageToSign = this.request.args[0] //hexToAscii(this.request.args[0])
     }
   }
 }
