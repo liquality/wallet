@@ -91,6 +91,7 @@ export const requestPermission = async (
           args: JSON.stringify(request.args)
         })
 
+        console.log('query', query)
         let permissionRoute = '/permission/default'
 
         if (chain === ChainId.Terra) {
