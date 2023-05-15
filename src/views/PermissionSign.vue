@@ -118,22 +118,6 @@ const signTypedDataMethodToVersion = {
   eth_signTypedData_v4: 'V4'
 }
 
-function isHex(str) {
-  return Boolean(str.match(/^[0-9a-f]+$/i))
-}
-
-function hexToAscii(hex) {
-  hex = hex.replace('0x', '')
-  if (!isHex(hex)) return hex
-
-  let str = ''
-  for (let i = 0; i < hex.length; i += 2) {
-    var code = parseInt(hex.substr(i, 2), 16)
-    str += String.fromCharCode(code)
-  }
-  return str
-}
-
 export default {
   components: {
     SpinnerIcon,
