@@ -74,7 +74,7 @@ jobs:
 
       - name: Get next version
         id: semvers
-        uses: WyriHaximus/github-action-next-semvers@v1.1
+        uses: WyriHaximus/github-action-next-semvers@v1.2
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
