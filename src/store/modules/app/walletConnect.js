@@ -169,7 +169,7 @@ export const removePairing = async ({ dispatch }, { topic }) => {
 
 export const getAccountInfo = ({ rootState, state }, { chainId, topic }) => {
   try {
-    const { accounts } = rootState
+    const { accounts, activeWalletId } = rootState
     const { wcSessions } = state
     // Validate namespace / chainId with network => eip155:5
     const chanIdData = chainId.split(':')
@@ -179,7 +179,7 @@ export const getAccountInfo = ({ rootState, state }, { chainId, topic }) => {
 
     // Validate with chainId map ex: eip155 => ethereum / 5 => testnet
     const chainInfo = getChainInfo(namespace, chanIdData[1])
-    const account = accounts[chainInfo?.networkName]?.find(
+    const account = accounts[activeWalletId]?.[chainInfo?.networkName]?.find(
       (a) => a.chain === chainInfo?.name && wcAccounts.some((r) => a.addresses.includes(r))
     )
 

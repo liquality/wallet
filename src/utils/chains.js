@@ -1,4 +1,5 @@
-import { ChainId as ChainName, Network } from '@liquality/cryptoassets'
+import { ChainId as ChainName } from '@liquality/cryptoassets'
+import { Network } from '@liquality/wallet-core/dist/src/store/types'
 
 export const chainIdsMapping = {
   eip155: {
@@ -10,6 +11,7 @@ export const chainIdsMapping = {
     [97]: `${ChainName.BinanceSmartChain}:${Network.Testnet}`,
     [1]: `${ChainName.Ethereum}:${Network.Mainnet}`,
     [5]: `${ChainName.Ethereum}:${Network.Testnet}`,
+    [42]: `${ChainName.Ethereum}:${Network.Testnet}`,
     [122]: `${ChainName.Fuse}:${Network.Mainnet}`,
     [123]: `${ChainName.Fuse}:${Network.Testnet}`,
     [10]: `${ChainName.Optimism}:${Network.Mainnet}`,
