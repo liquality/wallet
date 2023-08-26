@@ -23,7 +23,7 @@ class EthereumPageProvider extends PageProvider {
     }
     if (req.method === 'personal_sign') {
       const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
-      return '0x' + sig
+      return sig.startsWith('0x') ? sig : `0x${sig}`
     }
 
     if (
