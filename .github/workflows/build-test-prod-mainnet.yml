@@ -83,7 +83,7 @@ jobs:
           args: yarn test-full-regression # Run tests against Prod mainnet
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3.1.3
         if: always()
         with:
           name: screenshots
