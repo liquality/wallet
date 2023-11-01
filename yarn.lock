@@ -6429,8 +6429,8 @@ __metadata:
   linkType: hard
 
 "@vue/devtools@npm:^6.4.5":
-  version: 6.5.0
-  resolution: "@vue/devtools@npm:6.5.0"
+  version: 6.5.1
+  resolution: "@vue/devtools@npm:6.5.1"
   dependencies:
     cross-spawn: ^7.0.3
     electron: ^21.0.1
@@ -6441,7 +6441,7 @@ __metadata:
     utf-8-validate: ^5.0.9
   bin:
     vue-devtools: bin.js
-  checksum: fd1742321814e243d7f2d5a06351e3b7a75e71c7a7fc5c8b02661d1c93936cbb9539c6f063d61b36a0ccded6024ae4fc9d8ac70dd931f0edbdba78126549e985
+  checksum: 0ea1cf23f78cd0f5eae0389f12cd455abba063b61f0c81ab9c4fae40e357f377d2bb00a60150b810d0389d8d6cf7a8d02eca97eb9a02502148af14b1f95c68d3
   languageName: node
   linkType: hard
 
