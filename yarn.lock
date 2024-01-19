@@ -3958,21 +3958,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:2.11.0":
-  version: 2.11.0
-  resolution: "@liquality/cryptoassets@npm:2.11.0"
-  dependencies:
-    "@ethersproject/address": 5.7.0
-    "@types/bs58": 4.0.1
-    bignumber.js: ^9.0.2
-    bitcoin-address-validation: 2.2.1
-    bs58: 5.0.0
-    ethereumjs-util: 7.1.5
-    lodash: 4.17.21
-  checksum: e09041260f3a368452bc82d5f05d91e265c81d4f76a097f34ee65f3d5d38b6b3694c759964673e3a2a15c0c19b81718482809a73b5fbc3c92ee4963412495866
-  languageName: node
-  linkType: hard
-
 "@liquality/cryptoassets@npm:2.12.0":
   version: 2.12.0
   resolution: "@liquality/cryptoassets@npm:2.12.0"
@@ -4000,18 +3985,6 @@ __metadata:
     ethereumjs-util: 7.1.5
     lodash: 4.17.21
   checksum: b8b1681f4ccf02cd5d276b94e9f7d1652706d6ae903d525840cb650e831f47c6bbb3560e31f3a6fb12d10fb8e15731d1f846e774620259baf812505ad888c41b
-  languageName: node
-  linkType: hard
-
-"@liquality/error-parser@npm:2.2.10":
-  version: 2.2.10
-  resolution: "@liquality/error-parser@npm:2.2.10"
-  dependencies:
-    "@chainify/client": 2.0.0
-    "@chainify/errors": 2.0.0
-    "@liquality/cryptoassets": 2.11.0
-    randombytes: ^2.1.0
-  checksum: ad26a4b0faa99b34ff15cedc1d019616a26ee1981e566d87de256d4ad280055b79c887af73ce60afb9a5e85f3f6e655f6f27866f9626769f10623dcd32fe789c
   languageName: node
   linkType: hard
 
@@ -19394,7 +19367,7 @@ __metadata:
     "@babel/eslint-parser": ^7.11.0
     "@chainify/hw-ledger": 2.4.1
     "@liquality/cryptoassets": 2.12.0
-    "@liquality/error-parser": 2.2.10
+    "@liquality/error-parser": 2.2.11
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
