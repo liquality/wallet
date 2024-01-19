@@ -33,6 +33,7 @@
     "@terra-money/terra.js": "3.1.6",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
+    "babel-eslint": "^10.1.0",
     "bignumber.js": "9.1.1",
     "bip39": "^3.0.2",
     "bitcoinjs-lib": "6.0.2",
@@ -44,7 +45,7 @@
     "cryptocurrency-icons": "0.18.0",
     "date-fns": "2.28.0",
     "ethers": "5.7.0",
-    "extension-port-stream": "^2.0.1",
+    "extension-port-stream": "2.0.1",
     "human-standard-token-abi": "^2.0.0",
     "i18n-js": "^4.1.1",
     "lodash-es": "^4.17.15",
@@ -131,6 +132,8 @@
     "@ledgerhq/cryptoassets": "7.3.0",
     "@ledgerhq/hw-app-eth": "6.30.5",
     "@ledgerhq/hw-app-btc": "9.1.2",
-    "@solana/web3.js": "1.50.1"
+    "@solana/web3.js": "1.50.1",
+    "@eth-optimism/core-utils": "0.8.4",
+    "bufio": "1.0.7"
   }
 }
