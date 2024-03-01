@@ -42,7 +42,7 @@
     "chai": "4.3.6",
     "core-js": "^3.25.2",
     "crypto-js": "^4.0.0",
-    "cryptocurrency-icons": "0.18.0",
+    "cryptocurrency-icons": "0.18.1",
     "date-fns": "2.28.0",
     "ethers": "5.7.0",
     "extension-port-stream": "2.0.1",

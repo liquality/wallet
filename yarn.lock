@@ -10453,10 +10453,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cryptocurrency-icons@npm:0.18.0":
-  version: 0.18.0
-  resolution: "cryptocurrency-icons@npm:0.18.0"
-  checksum: 97c4470ff9b5b94174aa49d97487b5e9a8e203b8f9208b67365ce0babf622a924a0be4d3fe67dd202deb65da3d9dbf9cb8a68a243261a26ea4125544e2b134a8
+"cryptocurrency-icons@npm:0.18.1":
+  version: 0.18.1
+  resolution: "cryptocurrency-icons@npm:0.18.1"
+  checksum: abf563d9fdc8d481df80d23c96904c92e76a12689ac5fd95c5241d0d5d25391dcda8d710a0741112ac20fdea750b6e2db77bd39ae5d7527c107bb7dfff0e89b8
   languageName: node
   linkType: hard
 
@@ -19424,7 +19424,7 @@ __metadata:
     copy-webpack-plugin: 6
     core-js: ^3.25.2
     crypto-js: ^4.0.0
-    cryptocurrency-icons: 0.18.0
+    cryptocurrency-icons: 0.18.1
     date-fns: 2.28.0
     eslint: ^6.8.0
     eslint-plugin-import: ^2.23.4
