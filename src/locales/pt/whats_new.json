@@ -1,17 +1,13 @@
 [
   {
     "page": "1",
-    "title": "What's New?",
+    "title": "Dear Liquality Wallet User",
     "content": [
-      "Fixes Sign Message Dapp requests."
-    ]
-  },
-  {
-    "page": "2",
-    "title": "Did you know you can...",
-    "content": [
-      "Derive more addresses for your wallet in each network using the new multi-account feature in the top-right hamburger button",
-      "Set your preferred Custom RPC URL for EVM networks in Settings so your balances in that chain are checked using your Custom RPC"
+     "Effective June 15th 2024 this wallet has been discontinued.",
+     "Your funds are secure.",
+     "Please ensure you have your seed phrase and private keys, and restore a new wallet using these credentials.",
+     "We recommend Phantom for most supported chains.",
+     "For RBTC use the Defiant wallet."
     ]
   }
 ]

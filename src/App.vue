@@ -66,13 +66,8 @@ export default {
         await this.setLocalePreference({ locale: _locale })
       }
 
-      if (
-        this.whatsNewModalVersion !== this.appVersion ||
-        process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
-      ) {
-        const content = await import(`@/locales/${this.currentLocale}/whats_new.json`)
-        this.setWhatsNewModalContent({ content: content.default })
-      }
+      const content = await import(`@/locales/${this.currentLocale}/whats_new.json`)
+      this.setWhatsNewModalContent({ content: content.default })
       this.localesLoaded = true
     }, 1000)
   }

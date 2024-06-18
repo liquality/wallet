@@ -1,12 +1,5 @@
 <template>
-  <Modal
-    v-if="open"
-    @close="close"
-    body-class=""
-    type="modal-lg"
-    isFullHeight
-    :closeId="'wats_new_close_btn'"
-  >
+  <Modal v-if="open" @close="close" body-class="" type="modal-lg" isFullHeight :closeId="'wats_new_close_btn'">
     <template #header>
       <Logo />
     </template>
@@ -14,6 +7,7 @@
       {{ $t('components.whatsNew.title') }} &#124; v {{ appVersion }}
     </h6>
     <template>
+      <h3 style="color: red">This Wallet has been Discontinued</h3>
       <div v-for="item in whatsNewModalContent" :key="item.page">
         <div v-if="item.page == currentView">
           <h2 class="page-title">{{ item.title }}</h2>
@@ -21,35 +15,28 @@
           <ul v-if="item.content">
             <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
           </ul>
+          <p>Best, The Liquality Team</p>
+          <p>
+            <button class="btn btn-primary btn-lg btn-block" @click="close">
+              I have my Seed Phrase
+            </button>
+          </p>
         </div>
       </div>
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
         <div class="carousel">
-          <span
-            v-for="(line, index) in carouselLines"
-            :key="line"
-            class="carousel-line"
-            :class="index + 1 == currentView ? 'active' : ''"
-            @click="currentView = index + 1"
-          ></span>
+          <span v-for="(line, index) in carouselLines" :key="line" class="carousel-line"
+            :class="index + 1 == currentView ? 'active' : ''" @click="currentView = index + 1"></span>
         </div>
         <div class="footer-buttons">
-          <button
-            class="icon-wrapper"
-            :class="currentView === whatsNewModalContent.length ? 'active' : ''"
-            @click="currentView -= 1"
-            :disabled="currentView === 1"
-          >
+          <button class="icon-wrapper" :class="currentView === whatsNewModalContent.length ? 'active' : ''"
+            @click="currentView -= 1" :disabled="currentView === 1">
             <ArrowLeftIcon />
           </button>
-          <button
-            class="icon-wrapper"
-            :class="currentView < whatsNewModalContent.length ? 'active' : ''"
-            @click="currentView += 1"
-            :disabled="currentView === whatsNewModalContent.length"
-          >
+          <button class="icon-wrapper" :class="currentView < whatsNewModalContent.length ? 'active' : ''"
+            @click="currentView += 1" :disabled="currentView === whatsNewModalContent.length">
             <ArrowRightIcon />
           </button>
         </div>
@@ -98,13 +85,8 @@ export default {
     }
   },
   created() {
-    if (
-      this.whatsNewModalVersion !== this.appVersion ||
-      process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
-    ) {
-      this.open = true
-      this.setWhatsNewModalVersion({ version: this.appVersion })
-    }
+    this.open = true
+    this.setWhatsNewModalVersion({ version: this.appVersion })
   }
 }
 </script>
@@ -128,6 +110,7 @@ ul {
   width: 100%;
   align-items: center;
 }
+
 .modal-header {
   font-weight: 600;
   font-size: 12px;
@@ -136,6 +119,7 @@ ul {
   color: $color-text-grey;
   padding-left: 0 !important;
 }
+
 .page-title {
   font-weight: 600;
   font-size: 32px;
@@ -143,6 +127,7 @@ ul {
   letter-spacing: 1px;
   color: $color-text-grey;
 }
+
 .footer {
   position: fixed;
   bottom: 0;
@@ -172,6 +157,7 @@ ul {
       }
     }
   }
+
   .footer-buttons {
     display: flex;
     align-items: center;
@@ -194,7 +180,7 @@ ul {
         border: 1px solid #9742fb;
 
         svg {
-          > path {
+          >path {
             fill: #fff;
           }
         }
