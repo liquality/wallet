@@ -95,7 +95,7 @@ jobs:
           args: yarn test:pullrequest
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3.1.3
         if: always()
         with:
           name: screenshots
