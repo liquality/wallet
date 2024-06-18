@@ -34,7 +34,7 @@
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
     "babel-eslint": "^10.1.0",
-    "bignumber.js": "9.1.1",
+    "bignumber.js": "9.1.2",
     "bip39": "^3.0.2",
     "bitcoinjs-lib": "6.0.2",
     "bluebird": "^3.7.2",
