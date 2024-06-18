@@ -1,5 +1,12 @@
 <template>
-  <Modal v-if="open" @close="close" body-class="" type="modal-lg" isFullHeight :closeId="'wats_new_close_btn'">
+  <Modal
+    v-if="open"
+    @close="close"
+    body-class=""
+    type="modal-lg"
+    isFullHeight
+    :closeId="'wats_new_close_btn'"
+  >
     <template #header>
       <Logo />
     </template>
@@ -27,16 +34,29 @@
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
         <div class="carousel">
-          <span v-for="(line, index) in carouselLines" :key="line" class="carousel-line"
-            :class="index + 1 == currentView ? 'active' : ''" @click="currentView = index + 1"></span>
+          <span
+            v-for="(line, index) in carouselLines"
+            :key="line"
+            class="carousel-line"
+            :class="index + 1 == currentView ? 'active' : ''"
+            @click="currentView = index + 1"
+          ></span>
         </div>
         <div class="footer-buttons">
-          <button class="icon-wrapper" :class="currentView === whatsNewModalContent.length ? 'active' : ''"
-            @click="currentView -= 1" :disabled="currentView === 1">
+          <button
+            class="icon-wrapper"
+            :class="currentView === whatsNewModalContent.length ? 'active' : ''"
+            @click="currentView -= 1"
+            :disabled="currentView === 1"
+          >
             <ArrowLeftIcon />
           </button>
-          <button class="icon-wrapper" :class="currentView < whatsNewModalContent.length ? 'active' : ''"
-            @click="currentView += 1" :disabled="currentView === whatsNewModalContent.length">
+          <button
+            class="icon-wrapper"
+            :class="currentView < whatsNewModalContent.length ? 'active' : ''"
+            @click="currentView += 1"
+            :disabled="currentView === whatsNewModalContent.length"
+          >
             <ArrowRightIcon />
           </button>
         </div>
@@ -180,7 +200,7 @@ ul {
         border: 1px solid #9742fb;
 
         svg {
-          >path {
+          > path {
             fill: #fff;
           }
         }
