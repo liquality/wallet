@@ -38,7 +38,7 @@
     "bip39": "^3.0.2",
     "bitcoinjs-lib": "6.0.2",
     "bluebird": "^3.7.2",
-    "bootstrap": "4.6.2",
+    "bootstrap": "5.0.0",
     "chai": "4.3.6",
     "core-js": "^3.25.2",
     "crypto-js": "^4.0.0",
