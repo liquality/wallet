@@ -4754,9 +4754,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:1.50.1":
-  version: 1.50.1
-  resolution: "@solana/web3.js@npm:1.50.1"
+"@solana/web3.js@npm:1.50.2":
+  version: 1.50.2
+  resolution: "@solana/web3.js@npm:1.50.2"
   dependencies:
     "@babel/runtime": ^7.12.5
     "@ethersproject/sha2": ^5.5.0
@@ -4775,7 +4775,7 @@ __metadata:
     secp256k1: ^4.0.2
     superstruct: ^0.14.2
     tweetnacl: ^1.0.0
-  checksum: 49dca7b9caa776a6184b6008af74907d55b4dde3652babd066d316b585e00f7e2d63d1fb450b7a32591c371dfcee3d4bbfff98409ed80a07216a90dc58c7fb86
+  checksum: f927b53778b4997cb118d4f2c62fe6849e4023644936871244099292e255504f5bed1e7be4b5360478e6b7bb9b44719a4f484229c4caff256770c447deaa3d8d
   languageName: node
   linkType: hard
 
