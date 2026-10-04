@@ -8160,10 +8160,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:9.1.1":
-  version: 9.1.1
-  resolution: "bignumber.js@npm:9.1.1"
-  checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
+"bignumber.js@npm:9.3.1":
+  version: 9.3.1
+  resolution: "bignumber.js@npm:9.3.1"
+  checksum: 6ab100271a23a75bb8b99a4b1a34a1a94967ac0b9a52a198147607bd91064e72c6f356380d7a09cd687bf50d81ad2ed1a0a8edfaa90369c9003ed8bb2440d7f0
   languageName: node
   linkType: hard
 
@@ -19413,7 +19413,7 @@ __metadata:
     "@vue/test-utils": 1.3.6
     amplitude-js: 8.18.2
     babel-eslint: ^10.1.0
-    bignumber.js: 9.1.1
+    bignumber.js: 9.3.1
     bip39: ^3.0.2
     bitcoinjs-lib: 6.0.2
     bluebird: ^3.7.2
