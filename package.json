@@ -36,7 +36,7 @@
     "babel-eslint": "^10.1.0",
     "bignumber.js": "9.1.1",
     "bip39": "^3.0.2",
-    "bitcoinjs-lib": "6.0.2",
+    "bitcoinjs-lib": "6.1.8",
     "bluebird": "^3.7.2",
     "bootstrap": "4.6.2",
     "chai": "4.3.6",

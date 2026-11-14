@@ -8344,19 +8344,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitcoinjs-lib@npm:6.0.2":
-  version: 6.0.2
-  resolution: "bitcoinjs-lib@npm:6.0.2"
+"bitcoinjs-lib@npm:6.1.8":
+  version: 6.1.8
+  resolution: "bitcoinjs-lib@npm:6.1.8"
   dependencies:
+    "@noble/hashes": ^1.2.0
     bech32: ^2.0.0
-    bip174: ^2.0.1
-    bs58check: ^2.1.2
-    create-hash: ^1.1.0
-    ripemd160: ^2.0.2
+    bip174: ^2.1.1
+    bs58check: ^3.0.1
     typeforce: ^1.11.3
     varuint-bitcoin: ^1.1.2
-    wif: ^2.0.1
-  checksum: 4dd39e3c58205e243b3fd4f9928d333604b996c09a490d2d70c49715706d53a8bd51c66ed20f330888816047237e1f5f1187d0e6e06e2d7bd4419e0b01a1eb2e
+  checksum: d07ff15e15a2761256a7359476ae58a165a5d8141745660ba97c4bc23ae67c96f525af3f5ba2a976eefe28a1e964aa72a554f5f07b164eec8066a9949fcf1393
   languageName: node
   linkType: hard
 
@@ -19415,7 +19413,7 @@ __metadata:
     babel-eslint: ^10.1.0
     bignumber.js: 9.1.1
     bip39: ^3.0.2
-    bitcoinjs-lib: 6.0.2
+    bitcoinjs-lib: 6.1.8
     bluebird: ^3.7.2
     bootstrap: 4.6.2
     caniuse-lite: ^1.0.30001397
@@ -24698,7 +24696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ripemd160@npm:2, ripemd160@npm:^2.0.0, ripemd160@npm:^2.0.1, ripemd160@npm:^2.0.2":
+"ripemd160@npm:2, ripemd160@npm:^2.0.0, ripemd160@npm:^2.0.1":
   version: 2.0.2
   resolution: "ripemd160@npm:2.0.2"
   dependencies:
